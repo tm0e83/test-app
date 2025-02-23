@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Rechnung 1",
+    "date": "2025-01-01"
+  },
+  {
+    "id": 2,
+    "name": "Neue Rechnung 2",
+    "date": "2025-01-02"
+  },
+  {
+    "id": 3,
+    "name": "Wichtige Rechnung 3",
+    "date": "2025-01-03"
+  },
+  {
+    "id": 4,
+    "name": "Rechnung 4",
+    "date": "2025-01-04"
+  }
+]
