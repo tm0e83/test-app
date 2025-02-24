@@ -3,6 +3,7 @@ import { isLoggedIn } from './functions.js';
 import PageLogin from './pages/login.js';
 import PageDefault from './pages/default.js';
 import Router from './router.js';
+// import i18next from 'https://deno.land/x/i18next/index.js'
 
 window.state = {
   user: {
@@ -31,6 +32,7 @@ class App extends Component {
     window.router.addEventListener('login', (e) => {
       window.state.token = e.detail.token;
       localStorage.setItem('token', window.state.token);
+      history.replaceState(null, null, '/invoices');
       window.router.dispatchEvent(new CustomEvent('routeChange', { detail: '/invoices' }));
     });
 

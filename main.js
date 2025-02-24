@@ -24,7 +24,7 @@ export default class Main extends Component {
       }
     `
 
-    if (location.pathname == '/addresses') {
+    if (location.pathname.match(/^\/addresses/)) {
       this.element.appendChild((new Addresses()).element);
     } else {
       this.element.appendChild((new Invoices()).element);
