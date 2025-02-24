@@ -1,0 +1,16 @@
+/* header {
+  border-bottom: 1px solid #c4c4c4;
+  padding: 1rem;
+  text-align: right;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .header-menu {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+} */

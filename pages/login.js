@@ -31,6 +31,10 @@ export default class PageLogin extends Component {
         window.router.dispatchEvent(new CustomEvent('login', {
           detail: json
         }));
+
+        window.state.token = json.token;
+        localStorage.setItem('token', json.token);
+        window.router.goTo('/invoices');
       }
       catch (e) {
         alert(e);
@@ -53,8 +57,8 @@ export default class PageLogin extends Component {
             <div class="card p-4">
               <h2 class="mb-4">Login</h2>
               <form>
-                <input type="text" name="username" placeholder="Username" class="form-control mb-4">
-                <input type="password" name="password" placeholder="Password" class="form-control mb-4">
+                <input type="text" name="username" placeholder="Username" class="form-control mb-4" value="admin">
+                <input type="password" name="password" placeholder="Password" class="form-control mb-4" value="pw">
                 <button class="btn btn-primary" type="submit">Login</button>
               </form>
             </div>

@@ -1,9 +1,18 @@
 export default class Router extends EventTarget {
-  get route() {
-    const parts = location.pathname.split('/')
-      .filter(part => !!part)
-      .map(part => `/${part}`);
+  goTo(path) {
+    history.replaceState(null, null, path);
+    this.dispatchEvent(new CustomEvent('routeChange', { detail: path }));
+  }
 
-    return parts;
+  /**
+   * @returns {array}
+   */
+  get routeSegments() {
+    const segments = location.pathname
+      .split('/')
+      .filter(segment => !!segment)
+      .map(segment => isNaN(segment) ? segment : parseInt(segment));
+
+    return segments;
   }
 }

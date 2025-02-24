@@ -6,7 +6,7 @@ export default class Invoices extends Component {
   constructor(element) {
     super();
 
-    this.pageIndex = 0; // todo: extract from pathname; default to 0
+    this.pageIndex = window.router.routeSegments[1] && window.router.routeSegments[1] > 0 ? window.router.routeSegments[1] - 1 : 0;
     this.invoiceData = [];
     this.element = document.createElement('div');
     this.element.classList.add('invoices');

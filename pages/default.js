@@ -2,7 +2,7 @@ import Component from '../core/component.js';
 import Sidebar from '../sidebar.js';
 import Header from '../header.js';
 import Main from '../main.js';
-import Footer from '../footer.js';
+// import Footer from '../footer.js';
 
 export default class PageDefault extends Component {
   constructor() {
@@ -12,6 +12,7 @@ export default class PageDefault extends Component {
   }
 
   addEvents() {
+    this.header.addEventListener('toggleMenu', _ => this.sidebar.render())
   }
 
   render() {
@@ -30,10 +31,10 @@ export default class PageDefault extends Component {
       }
     `
 
-    new Sidebar(this.element.querySelector('aside'));
-    new Header(this.element.querySelector('header'));
+    this.sidebar = new Sidebar(this.element.querySelector('aside'));
+    this.header = new Header(this.element.querySelector('header'));
     new Main(this.element.querySelector('main'));
-    new Footer(this.element.querySelector('footer'));
+    // new Footer(this.element.querySelector('footer'));
 
     this.addEvents();
   }
@@ -45,7 +46,7 @@ export default class PageDefault extends Component {
         <aside></aside>
         <main></main>
       </div>
-      <footer></footer>
     `;
+    // <footer></footer>
   }
 }
