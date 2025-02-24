@@ -6,7 +6,7 @@ export default class Invoices extends Component {
   constructor(element) {
     super();
 
-    this.pageIndex = 0;
+    this.pageIndex = 0; // todo: extract from pathname; default to 0
     this.invoiceData = [];
     this.element = document.createElement('div');
     this.element.classList.add('invoices');
@@ -20,7 +20,7 @@ export default class Invoices extends Component {
   }
 
   load() {
-    return fetch('./data/invoices.json');
+    return fetch('/data/invoices.json');
   }
 
   addEvents() {
@@ -31,6 +31,8 @@ export default class Invoices extends Component {
   }
 
   render() {
+    history.replaceState(null, null, `/invoices${this.pageIndex ? `/${this.pageIndex + 1}` : '/1'}`);
+
     this.element.innerHTML = this.template;
 
     this.css`
