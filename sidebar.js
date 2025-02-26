@@ -20,7 +20,7 @@ export default class Sidebar extends Component {
       linkElement.addEventListener('click', e => {
         e.preventDefault();
         if (e.target.href === '#') return;
-        window.router.goTo(e.target.href);
+        window.mainRouter.goTo(e.target.href);
       });
     });
   }

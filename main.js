@@ -6,6 +6,7 @@ export default class Main extends Component {
 
     this.element = element;
 
+    window.mainRouter.addEventListener('routeChange', this.render.bind(this));
     this.render();
   }
 
@@ -23,7 +24,7 @@ export default class Main extends Component {
       }
     `;
 
-    switch (window.router.routeSegments[0]) {
+    switch (window.mainRouter.routeSegments[0]) {
       case 'calendar':
         const { default: Calendar } = await import('./calendar.js');
         this.element.appendChild((new Calendar()).element);
@@ -37,10 +38,10 @@ export default class Main extends Component {
         this.element.appendChild((new Addresses()).element);
         break;
       case 'invoices':
-        if (window.router.routeSegments[1] === 'details' && !isNaN(window.router.routeSegments[2])) {
+        if (window.mainRouter.routeSegments[1] === 'details' && !isNaN(window.mainRouter.routeSegments[2])) {
           const { default: InvoiceDetails } = await import('./invoice-details.js');
           this.element.appendChild((new InvoiceDetails({
-            id: window.router.routeSegments[2]
+            id: window.mainRouter.routeSegments[2]
           })).element);
         } else {
           const { default: Invoices } = await import('./invoices.js');
@@ -56,7 +57,7 @@ export default class Main extends Component {
         this.element.appendChild((new ManageUsers()).element);
         break;
       default:
-        window.router.goTo('/invoices');
+        window.mainRouter.goTo('/invoices');
     }
 
     this.addEvents();

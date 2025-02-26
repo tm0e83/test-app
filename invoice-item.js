@@ -16,7 +16,7 @@ export default class InvoiceItem extends Component {
   }
 
   onEdit(e) {
-    window.router.goTo(e.target.href);
+    window.mainRouter.goTo(e.target.href);
   }
 
   get languageISO() {

@@ -4,6 +4,7 @@ import PageLogin from './pages/login.js';
 import PageDefault from './pages/default.js';
 import Router from './router.js';
 
+
 // import i18next from 'https://deno.land/x/i18next/index.js'
 
 window.state = {
@@ -14,9 +15,12 @@ window.state = {
 };
 
 window.router;
+window.mainRouter;
 
 window.addEventListener('DOMContentLoaded', () => {
   window.router = new Router();
+  window.mainRouter = new Router();
+
   const app = new App();
 });
 
