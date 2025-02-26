@@ -15,8 +15,8 @@ export default class InvoiceItem extends Component {
     this.editButton.addEventListener('click', this.onEdit.bind(this));
   }
 
-  onEdit() {
-
+  onEdit(e) {
+    window.router.goTo(e.target.href);
   }
 
   get languageISO() {
@@ -58,7 +58,14 @@ export default class InvoiceItem extends Component {
     return /*html*/ `
       <div class="item-date">${this.formatDate(this.data.date)}</div>
       <div class="item-name">${this.data.name}</div>
-      <div class="item-menu"><a class="button-edit btn btn-sm" title="Bearbeiten"><i class="fas fa-edit"></i></a></div>
+      <div class="item-menu">
+        <a
+          class="button-edit btn btn-sm"
+          title="Bearbeiten"
+          href="/invoices/details/${this.data.id}"
+        >
+          <i class="fas fa-edit"></i>
+        </a></div>
     `;
   }
 }

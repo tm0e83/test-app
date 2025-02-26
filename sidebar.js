@@ -9,7 +9,8 @@ export default class Sidebar extends Component {
   }
 
   addEvents() {
-    this.logoutButton.addEventListener('click', () => {
+    this.logoutButton.addEventListener('click', (e) => {
+      e.preventDefault();
       window.state.token = '';
       localStorage.setItem('token', '');
       window.router.goTo('/');
@@ -18,12 +19,16 @@ export default class Sidebar extends Component {
     this.links.forEach(linkElement => {
       linkElement.addEventListener('click', e => {
         e.preventDefault();
+        if (e.target.href === '#') return;
         window.router.goTo(e.target.href);
       });
     });
   }
 
   render() {
+    this.element.classList.add(localStorage.getItem('menu-open') != 0 ? 'open' : 'closed');
+    this.element.classList.remove(localStorage.getItem('menu-open') != 0 ? 'closed' : 'open');
+
     this.element.innerHTML = this.template;
 
     this.css`
@@ -34,6 +39,14 @@ export default class Sidebar extends Component {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        border-right: 1px solid #ccc;
+        position: absolute;
+        z-index: 1;
+        box-shadow: 2px 0 3px 0px rgba(0, 0, 0, 0.15);
+
+        &.closed {
+          display: none;
+        }
 
         strong {
           display: block;
@@ -41,16 +54,31 @@ export default class Sidebar extends Component {
           margin-bottom: 0.5rem;
         }
       }
+
+      @media (min-width: 800px) {
+        aside {
+          position: relative;
+          box-shadow: none;
+
+          &.closed {
+            width: 50px;
+
+            .inner {
+              display: none;
+            }
+          }
+        }
+      }
     `
     this.logoutButton = this.element.querySelector('.button-logout');
-    this.links = this.element.querySelectorAll('[href="/invoices"], [href="/addresses"]');
+    this.links = this.element.querySelectorAll('[href]');
 
     this.addEvents();
   }
 
   get template() {
     return /*html*/ `
-      <div>
+      <div class="inner">
         <strong>Menü</strong>
         <ul class="nav flex-column">
           <li class="nav-item">
@@ -70,14 +98,14 @@ export default class Sidebar extends Component {
           </li>
         </ul>
       </div>
-      <div>
+      <div class="inner">
           <hr>
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link active" href="/manage-users">Benutzerverwaltung</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link button-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+            <a class="nav-link button-logout" href="/"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
           </li>
         </ul>
       </div>

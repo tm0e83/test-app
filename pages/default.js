@@ -19,6 +19,7 @@ export default class PageDefault extends Component {
     this.element = document.createElement('div');
     this.element.classList.add('main');
     this.element.innerHTML = this.template;
+
     this.css`
       .main {
         width: 100%;

@@ -1,0 +1,57 @@
+import Component from './core/component.js';
+
+export default class InvoiceDetails extends Component {
+  constructor(args) {
+    super();
+
+    this.id = args.id;
+    this.element = document.createElement('div');
+    this.element.classList.add('invoice-details');
+
+    // this.render();
+    this.load()
+      .then(response => response.json())
+      .then(data => this.data = data)
+      .then(_ => this.render())
+      .catch(error => console.error('Fehler beim Abrufen von JSON:', error));
+  }
+
+  load() {
+    return fetch(`/data/invoice${this.id}.json`);
+  }
+
+  addEvents() {
+
+  }
+
+  get languageISO() {
+    return 'de-DE';
+  }
+
+  formatDate(dateStr) {
+    return new Intl.DateTimeFormat(this.languageISO, {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(new Date(dateStr))
+  }
+
+  render() {
+    this.element.classList.add('invoice-details');
+    this.element.innerHTML = this.template;
+
+    this.css`
+    `;
+
+    this.addEvents();
+  }
+
+  get template() {
+    return /*html*/ `
+      <h1>Rechnungsdetails</h1>
+      <p class="item-date"><b>Datum:</b><br>${this.formatDate(this.data.date)}</p>
+      <p class="item-name"><b>Titel:</b><br>${this.data.name}</p>
+      <p class="item-description"><b>Beschreibung:</b><br>${this.data.description || 'N/A'}</p>
+    `;
+  }
+}

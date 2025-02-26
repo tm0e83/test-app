@@ -1,6 +1,4 @@
 import Component from './core/component.js';
-// import css from './header.css' assert { type: 'css' };
-// document.adoptedStyleSheets = [css];
 
 export default class Header extends Component {
   constructor(element) {
@@ -20,6 +18,7 @@ export default class Header extends Component {
 
     this.toggleMenuButton.addEventListener('click', e => {
       e.preventDefault();
+      localStorage.setItem('menu-open', localStorage.getItem('menu-open') == 1 ? 0 : 1);
       this.dispatchEvent(new CustomEvent('toggleMenu'));
     });
   }
@@ -38,6 +37,8 @@ export default class Header extends Component {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        position: relative;
+        z-index: 2;
 
         .header-menu {
           display: flex;
