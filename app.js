@@ -1,9 +1,8 @@
-import Component from './core/component.js';
-import { isLoggedIn } from './functions.js';
-import PageLogin from './pages/login.js';
-import PageDefault from './pages/default.js';
-import Router from './router.js';
-
+import Component from '/core/component.js';
+import { isLoggedIn } from '/core/functions.js';
+import PageLogin from '/pages/login.js';
+import PageStandard from '/pages/standard.js';
+import Router from '/core/router.js';
 
 // import i18next from 'https://deno.land/x/i18next/index.js'
 
@@ -37,8 +36,8 @@ class App extends Component {
     window.router.addEventListener('routeChange', this.render.bind(this));
   }
 
-  async render() {
-    this.page = await isLoggedIn() ? new PageDefault() : new PageLogin();
+  render() {
+    this.page = isLoggedIn() ? new PageStandard() : new PageLogin();
     this.element.innerHTML = '';
     this.css`
       #app {

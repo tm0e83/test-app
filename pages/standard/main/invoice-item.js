@@ -1,4 +1,4 @@
-import Component from './core/component.js';
+import Component from '/core/component.js';
 
 export default class InvoiceItem extends Component {
   constructor(args) {

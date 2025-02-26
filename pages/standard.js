@@ -1,10 +1,10 @@
-import Component from '../core/component.js';
-import Sidebar from '../sidebar.js';
-import Header from '../header.js';
-import Main from '../main.js';
-// import Footer from '../footer.js';
+import Component from '/core/component.js';
+import Sidebar from './standard/sidebar.js';
+import Header from './standard/header.js';
+import Main from './standard/main.js';
+// import Footer from './standard/footer.js';
 
-export default class PageDefault extends Component {
+export default class PageStandard extends Component {
   constructor() {
     super();
 

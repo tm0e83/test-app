@@ -1,11 +1,11 @@
-import Component from './core/component.js';
+import Component from '/core/component.js';
 
-export default class OfferManagement extends Component {
+export default class ManageUsers extends Component {
   constructor(element) {
     super();
 
     this.element = document.createElement('div');
-    this.element.classList.add('offer-management');
+    this.element.classList.add('manage-users');
 
     this.addressData = [];
 
@@ -32,7 +32,7 @@ export default class OfferManagement extends Component {
 
   get template() {
     return /*html*/ `
-      <h1>Angebotsverwaltung</h1>
+      <h1>Benutzerverwaltung</h1>
       <div>blablabla</div>
     `;
   }

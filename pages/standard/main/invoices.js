@@ -1,5 +1,5 @@
-import Component from './core/component.js';
-import Pagination from './pagination.js';
+import Component from '/core/component.js';
+import Pagination from '/core/pagination.js';
 import InvoiceItem from './invoice-item.js';
 
 export default class Invoices extends Component {

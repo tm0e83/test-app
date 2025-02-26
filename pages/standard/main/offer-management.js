@@ -1,11 +1,11 @@
-import Component from './core/component.js';
+import Component from '/core/component.js';
 
-export default class Download extends Component {
+export default class OfferManagement extends Component {
   constructor(element) {
     super();
 
     this.element = document.createElement('div');
-    this.element.classList.add('download');
+    this.element.classList.add('offer-management');
 
     this.addressData = [];
 
@@ -32,9 +32,8 @@ export default class Download extends Component {
 
   get template() {
     return /*html*/ `
-      <h1>Download</h1>
-      <div>file 1</div>
-      <div>file 2</div>
+      <h1>Angebotsverwaltung</h1>
+      <div>blablabla</div>
     `;
   }
 }

@@ -1,11 +1,11 @@
-import Component from './core/component.js';
+import Component from '/core/component.js';
 
-export default class ManageUsers extends Component {
+export default class Download extends Component {
   constructor(element) {
     super();
 
     this.element = document.createElement('div');
-    this.element.classList.add('manage-users');
+    this.element.classList.add('download');
 
     this.addressData = [];
 
@@ -32,8 +32,9 @@ export default class ManageUsers extends Component {
 
   get template() {
     return /*html*/ `
-      <h1>Benutzerverwaltung</h1>
-      <div>blablabla</div>
+      <h1>Download</h1>
+      <div>file 1</div>
+      <div>file 2</div>
     `;
   }
 }
