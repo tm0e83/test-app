@@ -3,3 +3,14 @@
  * @returns {boolean}
  */
 export const isLoggedIn = () => !!window.state.token || !!localStorage.getItem('token');
+
+export const getQueryParams = (url = location.href) => {
+  if (url.indexOf('?') == -1) return {};
+  const paramArr = url.slice(url.indexOf('?') + 1).split('&');
+  return paramArr.reduce((params, param) => {
+    const [key, val] = param.split('=');
+    const value = decodeURIComponent(val);
+    params[key] = isNaN(value) ? value : parseFloat(value);
+    return params;
+  }, {});
+}

@@ -1,8 +1,8 @@
 import Component from '/core/component.js';
 
 export default class Sidebar extends Component {
-  constructor(element) {
-    super();
+  constructor(parent, element) {
+    super(parent, element);
 
     this.element = element;
     this.render();
@@ -20,7 +20,7 @@ export default class Sidebar extends Component {
       linkElement.addEventListener('click', e => {
         e.preventDefault();
         if (e.target.href === '#') return;
-        window.mainRouter.goTo(e.target.href);
+        window.router.goTo(e.target.href);
       });
     });
   }
@@ -88,13 +88,13 @@ export default class Sidebar extends Component {
             <a class="nav-link active" href="/download">Download</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="/invoices">Rechnungen</a>
+            <a class="nav-link active" href="/invoice/overview">Rechnungen</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/addresses">Adressen</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/offer-management">Angebotsverwaltung</a>
+            <a class="nav-link" href="/manage-offers">Angebotsverwaltung</a>
           </li>
         </ul>
       </div>

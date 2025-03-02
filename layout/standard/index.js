@@ -1,12 +1,12 @@
 import Component from '/core/component.js';
-import Sidebar from './standard/sidebar.js';
-import Header from './standard/header.js';
-import Main from './standard/main.js';
+import Sidebar from './sidebar.js';
+import Header from './header.js';
+import Main from './main.js';
 // import Footer from './standard/footer.js';
 
-export default class PageStandard extends Component {
-  constructor() {
-    super();
+export default class LayoutStandard extends Component {
+  constructor(parent, element) {
+    super(parent, element);
 
     this.render();
   }
@@ -17,11 +17,11 @@ export default class PageStandard extends Component {
 
   render() {
     this.element = document.createElement('div');
-    this.element.classList.add('main');
+    this.element.classList.add('layout', 'layout-standard');
     this.element.innerHTML = this.template;
 
     this.css`
-      .main {
+      .layout {
         width: 100%;
         height: 100%;
 
@@ -32,10 +32,10 @@ export default class PageStandard extends Component {
       }
     `
 
-    this.sidebar = new Sidebar(this.element.querySelector('aside'));
-    this.header = new Header(this.element.querySelector('header'));
-    new Main(this.element.querySelector('main'));
-    // new Footer(this.element.querySelector('footer'));
+    this.sidebar = new Sidebar(this, this.element.querySelector('aside'));
+    this.header = new Header(this, this.element.querySelector('header'));
+    this.main = new Main(this, this.element.querySelector('main'));
+    // new Footer(this, this.element.querySelector('footer'));
 
     this.addEvents();
   }

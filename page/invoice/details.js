@@ -1,10 +1,10 @@
 import Component from '/core/component.js';
 
-export default class InvoiceDetails extends Component {
+export default class Details extends Component {
   constructor(args) {
     super();
 
-    this.id = args.id;
+    this.id = window.router.route.routeParams[0];
     this.element = document.createElement('div');
     this.element.classList.add('invoice-details');
 

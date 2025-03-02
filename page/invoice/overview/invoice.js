@@ -1,6 +1,6 @@
 import Component from '/core/component.js';
 
-export default class InvoiceItem extends Component {
+export default class Invoice extends Component {
   constructor(args) {
     super();
 
@@ -16,7 +16,7 @@ export default class InvoiceItem extends Component {
   }
 
   onEdit(e) {
-    window.mainRouter.goTo(e.target.href);
+    window.router.goTo(e.target.href);
   }
 
   get languageISO() {
@@ -32,19 +32,22 @@ export default class InvoiceItem extends Component {
   }
 
   render() {
-    this.element.classList.add('invoice-item');
+    this.element.classList.add('invoice');
     this.element.innerHTML = this.template;
 
     this.css`
-      .invoice-item {
+      .invoice {
         display: flex;
         align-items: center;
         gap: 1rem;
         padding: 0.5rem 0;
         border-bottom: 1px dotted #e9e9e9;
 
-        .item-name {
+        &>div {
           flex: 1;
+        }
+        &>.item-menu {
+          flex: 0 1 auto;
         }
       }
     `;
@@ -58,11 +61,12 @@ export default class InvoiceItem extends Component {
     return /*html*/ `
       <div class="item-date">${this.formatDate(this.data.date)}</div>
       <div class="item-name">${this.data.name}</div>
+      <div class="item-type">Typ ${this.data.type}</div>
       <div class="item-menu">
         <a
           class="button-edit btn btn-sm"
           title="Bearbeiten"
-          href="/invoices/details/${this.data.id}"
+          href="/invoice/details/${this.data.id}"
         >
           <i class="fas fa-edit"></i>
         </a></div>

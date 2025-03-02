@@ -1,6 +1,6 @@
 import Component from '../core/component.js';
 
-export default class PageLogin extends Component {
+export default class Login extends Component {
   constructor() {
     super();
 
@@ -34,7 +34,7 @@ export default class PageLogin extends Component {
 
         window.state.token = json.token;
         localStorage.setItem('token', json.token);
-        window.router.goTo('/invoices');
+        window.router.goTo('/invoice/overview?page=0');
       }
       catch (e) {
         alert(e);
@@ -42,7 +42,7 @@ export default class PageLogin extends Component {
     });
   }
 
-  render() {
+  async render() {
     this.element = document.createElement('div');
     this.element.innerHTML = this.template;
 

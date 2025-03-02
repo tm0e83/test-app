@@ -2,7 +2,7 @@ import Component from '/core/component.js';
 
 export default class Footer extends Component {
   constructor(element) {
-    super();
+    super(parent, element);
 
     this.element = element;
     this.render();

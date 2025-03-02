@@ -1,8 +1,8 @@
 import Component from '/core/component.js';
 
 export default class Header extends Component {
-  constructor(element) {
-    super();
+  constructor(parent, element) {
+    super(parent, element);
 
     this.element = element;
     this.render();
