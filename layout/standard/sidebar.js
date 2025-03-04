@@ -35,7 +35,8 @@ export default class Sidebar extends Component {
       aside {
         background-color: #fff;
         padding: 1rem 0;
-        width: 200px;
+        width: 100%;
+        min-height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -59,6 +60,7 @@ export default class Sidebar extends Component {
         aside {
           position: relative;
           box-shadow: none;
+          width: 200px;
 
           &.closed {
             width: 50px;
@@ -79,22 +81,10 @@ export default class Sidebar extends Component {
   get template() {
     return /*html*/ `
       <div class="inner">
-        <strong>Menü</strong>
+        <strong>${i18next.t('menu')}</strong>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="/calendar">Kalender</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/download">Download</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/invoice/overview">Rechnungen</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/addresses">Adressen</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/manage-offers">Angebotsverwaltung</a>
+            <a class="nav-link active" href="/invoice/overview">${i18next.t('invoices')}</a>
           </li>
         </ul>
       </div>
@@ -102,7 +92,7 @@ export default class Sidebar extends Component {
           <hr>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="/manage-users">Benutzerverwaltung</a>
+            <a class="nav-link active" href="/settings">${i18next.t('settings')}</a>
           </li>
           <li class="nav-item">
             <a class="nav-link button-logout" href="/"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>

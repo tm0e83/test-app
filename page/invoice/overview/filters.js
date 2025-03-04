@@ -10,23 +10,26 @@ export default class Filters extends Component {
   }
 
   addEvents() {
-    this.searchInput.addEventListener('input', this.onSearchInput.bind(this));
-    this.typeSelect.addEventListener('change', this.onTypeChange.bind(this));
+    this.searchInput.addEventListener('input', this.onFilterChange.bind(this));
+    this.typeSelect.addEventListener('change', this.onFilterChange.bind(this));
   }
 
-  onSearchInput(e) {
-    this.dispatchEvent(new CustomEvent('change', { detail: this.filters }));
+  onFilterChange(e) {
+    this.dispatchEvent(new CustomEvent('change', { detail: this.values }));
   }
 
-  onTypeChange(e) {
-    this.dispatchEvent(new CustomEvent('change', { detail: this.filters }));
-  }
+  get values() {
+    const values = {};
 
-  get filters() {
-    return {
-      search: this.searchInput.value,
-      type: this.typeSelect.value
+    if (this.searchInput.value) {
+      values.search = this.searchInput.value;
     }
+
+    if (this.typeSelect.value) {
+      values.type = this.typeSelect.value;
+    }
+
+    return values;
   }
 
   render() {
@@ -48,13 +51,18 @@ export default class Filters extends Component {
   get template() {
     return /*html*/ `
       <div>
-        <input type="text" placeholder="Suche" class="form-control mb-4">
+        <input
+          type="text"
+          placeholder="Suche"
+          class="form-control mb-4"
+          value="${window.router.route.params.search ?? ''}"
+        >
       </div>
       <div>
         <select class="form-control mb-4">
           <option value="">Typ</option>
-          <option value="1">Typ 1</option>
-          <option value="2">Typ 2</option>
+          <option value="1" ${window.router.route.params.type == 1 ? 'selected' : ''}>Typ 1</option>
+          <option value="2" ${window.router.route.params.type == 2 ? 'selected' : ''}>Typ 2</option>
         </select>
       </div>
     `;

@@ -49,7 +49,7 @@ export default class Overview extends Component {
 
   updatePath() {
     const queryParams = this.toQueryString(
-      Object.assign({ page: this.pageIndex }, this.filters.filters)
+      Object.assign({ page: this.pageIndex }, this.filters.values)
     );
 
     var path = window.location.pathname + `?${queryParams}`;
@@ -63,12 +63,12 @@ export default class Overview extends Component {
   }
 
   get filteredItems() {
-    const searchVal = this.filters.filters.search ?? '';
+    const searchVal = this.filters.values.search ?? '';
     const regex = searchVal.trim().length ? new RegExp(`${searchVal}`, 'gi') : new RegExp(/^.*$/);
 
     return this.invoiceData.reduce((items, item) => {
       if (item.name.match(regex) === null) return items;
-      if (this.filters.filters.type && item.type != this.filters.filters.type) return items;
+      if (this.filters.values.type && item.type != this.filters.values.type) return items;
       items.push(item);
       return items;
     }, []);
@@ -85,22 +85,24 @@ export default class Overview extends Component {
     this.invoiceList = this.element.querySelector('.invoice-list');
     this.list = this.element.querySelector('.invoice-list');
 
-    this.pagination = new Pagination({
-      targetContainer: this.element.querySelector('.invoice-footer'),
-      totalEntriesAmount: this.invoiceData.length,
-      entriesPerPage: 2,
-      currentPageIndex: this.pageIndex
-    });
-
     this.filters = new Filters(
       this,
       this.element.querySelector('.filters'),
     );
 
+    const filteredItems = this.filteredItems;
+
+    this.pagination = new Pagination({
+      targetContainer: this.element.querySelector('.invoice-footer'),
+      totalEntriesAmount: filteredItems.length,
+      entriesPerPage: 2,
+      currentPageIndex: this.pageIndex
+    });
+
     this.list = new List(
       this.visibleItems,
       this.element.querySelector('.invoice-list'),
-      this.pagination.getVisibleItems(this.filteredItems)
+      this.pagination.getVisibleItems(filteredItems)
     );
 
     this.addEvents();
@@ -108,7 +110,7 @@ export default class Overview extends Component {
 
   get template() {
     return /*html*/ `
-      <h1>Rechnungen</h1>
+      <h1>${i18next.t('settings')}</h1>
       <div class="filters"></div>
       <div class="invoice-head"></div>
       <div class="invoice-list"></div>

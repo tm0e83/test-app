@@ -10,7 +10,7 @@ export const getQueryParams = (url = location.href) => {
   return paramArr.reduce((params, param) => {
     const [key, val] = param.split('=');
     const value = decodeURIComponent(val);
-    params[key] = isNaN(value) ? value : parseFloat(value);
+    params[key] = isNaN(value) || !value.length  ? value : parseFloat(value);
     return params;
   }, {});
 }

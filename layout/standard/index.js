@@ -24,10 +24,13 @@ export default class LayoutStandard extends Component {
       .layout {
         width: 100%;
         height: 100%;
+        display: flex;
+        flex-direction: column;
 
         &>div {
           display: flex;
           flex: 1;
+          position: relative;
         }
       }
     `

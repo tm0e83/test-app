@@ -13,7 +13,7 @@ export default class Overview extends Component {
 
   render(data) {
     this.data = data;
-    this.element.innerHTML = '';
+    this.element.innerHTML = this.template;
 
     this.data.map(invoiceData => {
       const invoiceElement = document.createElement('div');
@@ -28,6 +28,6 @@ export default class Overview extends Component {
   }
 
   get template() {
-    return /*html*/ ``;
+    return /*html*/ `${this.data.length ? '': i18next.t('noResults')}`;
   }
 }

@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import { isLoggedIn } from '/core/functions.js';
 
 export default class LayoutEmpty extends Component {
   constructor() {
@@ -16,7 +17,7 @@ export default class LayoutEmpty extends Component {
       const { default: Page } = await import(`/page/${window.router.route.segments[0]}.js`);
       this.element.appendChild((new Page()).element);
     } catch(error) {
-      const { default: Page } = await import(`/page/404.js`);
+      const { default: Page } = await import(`/page/${isLoggedIn() ? '404' : 'login'}.js`);
       this.element.appendChild((new Page()).element);
     }
   }

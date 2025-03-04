@@ -1,56 +1,83 @@
 import Component from '/core/component.js';
 import { isLoggedIn } from '/core/functions.js';
 import Router from '/core/router.js';
-
-// import i18next from 'https://deno.land/x/i18next/index.js'
+import de from '/i18n/de.js';
 
 window.state = {
   user: {
     name: '',
   },
   token: '',
-  layout: ''
+  layout: '',
+  language: 'de',
 };
 
 window.router;
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   window.router = new Router();
-
-  const app = new App();
+  new App();
 });
 
 class App extends Component {
   constructor() {
     super();
+    this.init();
+  }
+
+  async init() {
     this.element = document.querySelector('#app');
+
+    try {
+      await i18next
+        .init({
+          ns: ['app'],
+          defaultNS: 'app',
+          lng: 'de',
+          resources: { de }
+        });
+    } catch(err) {
+      console.log(err);
+    }
+
     this.render();
     this.addEvents();
   }
 
   addEvents() {
     window.router.addEventListener('routeChange', this.render.bind(this));
+    window.addEventListener('settingsChange', this.onLanguageChange.bind(this));
+  }
+
+  async onLanguageChange() {
+    const {default: lang} = await import(`/i18n/${window.state.language}.js`);
+
+    Object.entries(lang).map(([namespace, translations]) => {
+      i18next.addResourceBundle(
+        window.state.language,
+        namespace,
+        translations
+      )
+    });
+
+    i18next.changeLanguage(window.state.language);
+    this.render();
   }
 
   async render() {
-    // console.log(window.router.route);
-
-    // if (!isLoggedIn()) {
-    //   return window.router.goTo('login');
-    // }
-
     const layoutName = window?.router?.route?.config?.layout ?? 'empty';
 
     if (!window.router.route.config && isLoggedIn()) {
-        return window.router.goTo('/invoice/overview?page=0');
+      return window.router.goTo('/invoice/overview?page=0');
     }
-
 
     const { default: Layout } = await import(`./layout/${layoutName}/index.js`);
     this.page = new Layout(this);
 
     this.element.innerHTML = '';
-    this.css`#app {}`;
+    this.css`#app {
+      height: 100vh;
+    }`;
     this.element.appendChild(this.page.element);
   }
 }

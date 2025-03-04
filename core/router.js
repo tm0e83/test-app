@@ -3,13 +3,9 @@ import { getQueryParams } from '/core/functions.js';
 export default class Router extends EventTarget {
   routes = [
     { path: 'login', layout: 'empty'},
+    { path: 'settings', layout: 'standard'},
     { path: 'invoice/overview', layout: 'standard'},
-    { path: 'calendar', layout: 'standard'},
-    { path: 'download', layout: 'standard'},
-    { path: 'addresses', layout: 'standard'},
-    { path: 'manage-offers', layout: 'standard'},
-    { path: 'manage-users', layout: 'standard'},
-    { path: 'invoice/details:id', layout: 'standard' }
+    { path: 'invoice/details/:id', layout: 'standard' }
   ];
 
   constructor() {
@@ -31,8 +27,10 @@ export default class Router extends EventTarget {
     const returnObj = {
       config: null,
       queryParams: null,
-      routeParams: [],
-      segments: []
+      routeParams: null,
+      params: null,
+      segments: [],
+      path: location.pathname,
     }
 
     this.routes.forEach(route => {
@@ -52,7 +50,8 @@ export default class Router extends EventTarget {
 
         patternSegments.forEach((segment, index) => {
           if (segment[0] == ':') {
-            returnObj.routeParams.push({[segment.substring(1)]: pathSegments[index]});
+            if (returnObj.routeParams === null) returnObj.routeParams = {};
+            returnObj.routeParams[segment.substring(1)] = pathSegments[index];
           } else {
             returnObj.segments.push(pathSegments[index]);
           }
@@ -61,6 +60,7 @@ export default class Router extends EventTarget {
     });
 
     returnObj.queryParams = getQueryParams(location.search);
+    returnObj.params = Object.assign(returnObj.queryParams, returnObj.routeParams);
 
     return returnObj;
   }

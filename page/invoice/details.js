@@ -4,7 +4,7 @@ export default class Details extends Component {
   constructor(args) {
     super();
 
-    this.id = window.router.route.routeParams[0];
+    this.id = window.router.route.routeParams.id;
     this.element = document.createElement('div');
     this.element.classList.add('invoice-details');
 
@@ -48,10 +48,10 @@ export default class Details extends Component {
 
   get template() {
     return /*html*/ `
-      <h1>Rechnungsdetails</h1>
-      <p class="item-date"><b>Datum:</b><br>${this.formatDate(this.data.date)}</p>
-      <p class="item-name"><b>Titel:</b><br>${this.data.name}</p>
-      <p class="item-description"><b>Beschreibung:</b><br>${this.data.description || 'N/A'}</p>
+      <h1>${i18next.t('invoice')} #${this.data.id}</h1>
+      <p class="item-date"><b>${i18next.t('date')}:</b><br>${this.formatDate(this.data.date)}</p>
+      <p class="item-name"><b>${i18next.t('title')}:</b><br>${this.data.name}</p>
+      <p class="item-description"><b>${i18next.t('description')}:</b><br>${this.data.description || 'N/A'}</p>
     `;
   }
 }
