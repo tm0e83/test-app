@@ -3,6 +3,7 @@ import { isLoggedIn } from '/core/functions.js';
 import Router from '/core/router.js';
 import de from '/i18n/de.js';
 import store from '/core/store.js';
+import Notifications from '/core/notifications.js';
 
 store.state = {
   user: {
@@ -14,6 +15,7 @@ store.state = {
 };
 
 window.router;
+window.notify = new Notifications();
 
 window.addEventListener('DOMContentLoaded', async () => {
   window.router = new Router();
@@ -79,9 +81,11 @@ class App extends Component {
     this.page = new Layout(this);
 
     this.element.innerHTML = '';
-    this.css`#app {
-      height: 100vh;
-    }`;
+    this.css`
+      #app {
+        height: 100vh;
+      }
+    `;
     this.element.appendChild(this.page.element);
   }
 }

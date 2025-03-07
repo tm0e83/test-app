@@ -135,3 +135,96 @@ a {
     display: none;
   }
 }
+
+.loading {
+  position: relative;
+}
+
+.loading::after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background-color: rgba(255,255,255,0.85);
+}
+
+
+.uic-notifications {
+	position: fixed;
+	z-index: 99999;
+	bottom: 0.25rem;
+	right: 5%;
+	width: 90%;
+	box-sizing: border-box;
+
+	.uic-message {
+		position: relative;
+		overflow: hidden;
+		line-height: 1.15rem;
+		width: 100%;
+		padding-top: 1rem;
+		padding-bottom: 1rem;
+		padding-left: 5%;
+		padding-right: 2rem;
+		color: #000;
+		background-color: rgba(255, 255, 255, 0.85);
+		border: 1px solid #000;
+		border-radius: 0.33rem;
+		margin-bottom: 0.75rem;
+		opacity: 0;
+		transform: translateY(0);
+		animation-name: showNotification;
+		animation-duration: 750ms;
+		animation-fill-mode: forwards;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.4);
+
+		&>div {
+			transition: opacity 300ms ease-in-out;
+		}
+
+		.uic-remove {
+			margin-left: 0.5rem;
+			display: inline-block;
+			cursor: pointer;
+			position: absolute;
+			right: 0.5rem;
+			top: 1.15rem;
+			display: inline-block;
+			line-height: 1rem;
+			text-align: center;
+			font-size: 1.25rem;
+			overflow: hidden;
+			cursor: pointer;
+			transition: opacity 100ms ease-in-out;
+		}
+
+		&.uic-fade {
+			&>div {
+				opacity: 0 !important;
+			}
+		}
+	}
+}
+
+@media (min-width:600px) {
+	.uic-notifications {
+		right: 1rem;
+		width: 100%;
+		max-width: 300px;
+	}
+}
+
+@keyframes showNotification {
+	from {
+		transform: translateY(-75px);
+		opacity: 0;
+	}
+
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}

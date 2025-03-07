@@ -6,7 +6,6 @@ export default class Main extends Component {
 
     this.element = element;
 
-    // window.router.addEventListener('routeChange', this.render.bind(this));
     this.render();
   }
 
@@ -30,7 +29,6 @@ export default class Main extends Component {
     `;
 
     const path = window.router.routeSegments.join('/');
-    console.log(window.router.route);
 
     const { default: Page } = await import(`/page/${path}.js`);
     this.element.appendChild((new Page(this)).element);

@@ -2,29 +2,32 @@ import Component from '/core/component.js';
 import store from '/core/store.js';
 
 export default class PageNotFound extends Component {
-  constructor(element) {
+  constructor() {
     super();
 
     this.element = document.createElement('div');
-    this.element.classList.add('settings');
+    this.element.classList.add('settings', 'loading');
 
     this.render();
+    this.load()
+      .then(_ => this.element.classList.remove('loading'))
+      .then(_ => this.render())
+  }
+
+  async load() {
+    return new Promise((resolve, reject) => {
+      setTimeout(_ => resolve(), 300)
+    })
   }
 
   addEvents() {
     this.saveButton.addEventListener('click', this.onSettingsSave.bind(this));
-    // this.languageSelect.addEventListener('change', this.onLanguageChange.bind(this));
   }
 
   onSettingsSave(e) {
     store.state.language = this.languageSelect.value;
     window.dispatchEvent(new CustomEvent('settingsChange'));
   }
-
-  // onLanguageChange(e) {
-  //   store.state.language = e.target.value;
-  //   window.dispatchEvent(new CustomEvent('languageChange'));
-  // }
 
   render() {
     this.element.innerHTML = this.template;

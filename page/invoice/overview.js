@@ -14,17 +14,23 @@ export default class Overview extends Component {
     this.itemPerPage = 10;
     this.invoiceData = [];
     this.element = document.createElement('div');
-    this.element.classList.add('invoice-overview');
+    this.element.classList.add('invoice-overview', 'loading');
 
     this.render();
+
     this.load()
       .then(response => response.json())
       .then(data => this.invoiceData = data)
+      .then(_ => this.element.classList.remove('loading'))
       .then(_ => this.render())
       .catch(error => console.error('Fehler beim Abrufen von JSON:', error));
   }
 
-  load() {
+  async load() {
+    await new Promise((resolve, reject) => {
+      setTimeout(_ => resolve(), 300)
+    })
+
     return fetch('/data/invoices.json');
   }
 

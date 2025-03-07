@@ -5,7 +5,8 @@ export default class Router extends EventTarget {
     { path: 'login', layout: 'empty'},
     { path: 'settings', layout: 'standard'},
     { path: 'invoice/overview', layout: 'standard'},
-    { path: 'invoice/details/:id', layout: 'standard' }
+    { path: 'invoice/details/:id', layout: 'standard' },
+    { path: 'invoice/edit/:id', layout: 'standard' }
   ];
 
   constructor() {

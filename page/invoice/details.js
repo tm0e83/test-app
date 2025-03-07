@@ -52,6 +52,7 @@ export default class Details extends Component {
       <p class="item-date"><b>${i18next.t('date')}:</b><br>${this.formatDate(this.data.date)}</p>
       <p class="item-name"><b>${i18next.t('title')}:</b><br>${this.data.name}</p>
       <p class="item-description"><b>${i18next.t('description')}:</b><br>${this.data.description || 'N/A'}</p>
+      <a class="btn btn-primary" href="/invoice/edit/${this.data.id}">Bearbeiten</a>
     `;
   }
 }
