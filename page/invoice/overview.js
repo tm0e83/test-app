@@ -11,6 +11,7 @@ export default class Overview extends Component {
     const params = getQueryParams();
 
     this.pageIndex = params.page ?? 0;
+    this.itemPerPage = 10;
     this.invoiceData = [];
     this.element = document.createElement('div');
     this.element.classList.add('invoice-overview');
@@ -58,7 +59,7 @@ export default class Overview extends Component {
 
   updateList() {
     const invoices = this.filteredItems;
-    this.pagination.update(invoices.length, 10, this.pageIndex);
+    this.pagination.update(invoices.length, this.itemPerPage, this.pageIndex);
     this.list.render(this.pagination.getVisibleItems(invoices));
   }
 
@@ -95,7 +96,7 @@ export default class Overview extends Component {
     this.pagination = new Pagination({
       targetContainer: this.element.querySelector('.invoice-footer'),
       totalEntriesAmount: filteredItems.length,
-      entriesPerPage: 10,
+      entriesPerPage: this.itemPerPage,
       currentPageIndex: this.pageIndex
     });
 
