@@ -19,9 +19,6 @@ window.notify = new Notifications();
 
 window.addEventListener('DOMContentLoaded', async () => {
   window.router = new Router();
-
-console.log('store', store);
-
   new App();
 });
 

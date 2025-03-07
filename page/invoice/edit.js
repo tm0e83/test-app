@@ -22,21 +22,28 @@ export default class Edit extends Component {
   }
 
   addEvents() {
-    this.form.addEventListener('submit', this.onFormSubmit.bind(this))
+    this.form.addEventListener('submit', this.onFormSubmit.bind(this));
+
+    this.backButton.addEventListener('click', e => {
+      history.back();
+    });
+
+    this.links.forEach(linkElement => {
+      linkElement.addEventListener('click', e => {
+        e.preventDefault();
+        if (e.target.href === '#') return;
+        window.router.goTo(e.target.href);
+      });
+    });
   }
 
   async onFormSubmit(e) {
     e.preventDefault();
-
     const formData = new FormData(this.form);
-
     this.element.classList.add('loading');
-
     await this.save(formData);
-
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
-
     window.notify.send(i18next.t('saved'), 'success');
   }
 
@@ -46,18 +53,12 @@ export default class Edit extends Component {
     });
   }
 
-  formatDate(dateStr, locale = 'de-DE') {
-    return new Intl.DateTimeFormat(locale, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).format(new Date(dateStr))
-  }
-
   render() {
     this.element.classList.add('invoice-details');
     this.element.innerHTML = this.template;
     this.form = this.element.querySelector('form');
+    this.backButton = this.element.querySelector('.btn-secondary');
+    this.links = this.element.querySelectorAll('[href]');
 
     this.css`
     `;
@@ -95,6 +96,7 @@ export default class Edit extends Component {
           class="form-control mb-4"
         >${this.data.description}</textarea>
 
+        <a class="btn btn-secondary">${i18next.t('Abbrechen')}</a>
         <button class="btn btn-primary">${i18next.t('Save')}</button>
       </form>
     `;

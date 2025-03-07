@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import { formatDate } from '/core/functions.js';
 
 export default class Invoice extends Component {
   constructor(args) {
@@ -16,19 +17,8 @@ export default class Invoice extends Component {
   }
 
   onEdit(e) {
-    window.router.goTo(e.target.href);
-  }
-
-  get languageISO() {
-    return 'de-DE';
-  }
-
-  formatDate(dateStr) {
-    return new Intl.DateTimeFormat(this.languageISO, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).format(new Date(dateStr))
+    e.preventDefault();
+    window.router.goTo(e.currentTarget.href);
   }
 
   render() {
@@ -59,7 +49,7 @@ export default class Invoice extends Component {
 
   get template() {
     return /*html*/ `
-      <div class="item-date">${this.formatDate(this.data.date)}</div>
+      <div class="item-date">${formatDate(this.data.date)}</div>
       <div class="item-name">${this.data.name}</div>
       <div class="item-type">Typ ${this.data.type}</div>
       <div class="item-menu">

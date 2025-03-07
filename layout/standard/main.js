@@ -28,7 +28,7 @@ export default class Main extends Component {
       }
     `;
 
-    const path = window.router.routeSegments.join('/');
+    const path = window.router.route.segments.join('/');
 
     const { default: Page } = await import(`/page/${path}.js`);
     this.element.appendChild((new Page(this)).element);

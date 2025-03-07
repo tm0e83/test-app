@@ -12,13 +12,13 @@ export default class Router extends EventTarget {
   constructor() {
     super();
 
-    // window.addEventListener("popstate", (event) => {
-    //   this.dispatchEvent(new CustomEvent('routeChange', { detail: window.mainRouter.routeSegments.join('/') }));
-    // });
+    window.addEventListener('popstate', (event) => {
+      this.dispatchEvent(new CustomEvent('routeChange', { detail: event.state.path }));
+    });
   }
 
   goTo(path) {
-    history.pushState({ path: this.routeSegments }, null, path);
+    history.pushState({ path }, null, path);
     this.dispatchEvent(new CustomEvent('routeChange', { detail: path }));
   }
 
@@ -64,19 +64,5 @@ export default class Router extends EventTarget {
     returnObj.params = Object.assign(returnObj.queryParams, returnObj.routeParams);
 
     return returnObj;
-  }
-
-  /**
-   * @returns {array}
-   */
-  get routeSegments() {
-    return this.route.segments;
-  }
-
-  /**
-   * @returns {object}
-   */
-  get routeConfig() {
-    return this.route.config;
   }
 }

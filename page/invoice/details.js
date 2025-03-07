@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import { formatDate } from '/core/functions.js';
 
 export default class Details extends Component {
   constructor(args) {
@@ -21,24 +22,23 @@ export default class Details extends Component {
   }
 
   addEvents() {
-
+    this.links.forEach(linkElement => {
+      linkElement.addEventListener('click', e => {
+        e.preventDefault();
+        if (e.target.href === '#') return;
+        window.router.goTo(e.target.href);
+      });
+    });
   }
 
   get languageISO() {
     return 'de-DE';
   }
 
-  formatDate(dateStr) {
-    return new Intl.DateTimeFormat(this.languageISO, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).format(new Date(dateStr))
-  }
-
   render() {
     this.element.classList.add('invoice-details');
     this.element.innerHTML = this.template;
+    this.links = this.element.querySelectorAll('[href]');
 
     this.css`
     `;
@@ -49,10 +49,10 @@ export default class Details extends Component {
   get template() {
     return /*html*/ `
       <h1>${i18next.t('invoice')} #${this.data.id}</h1>
-      <p class="item-date"><b>${i18next.t('date')}:</b><br>${this.formatDate(this.data.date)}</p>
+      <p class="item-date"><b>${i18next.t('date')}:</b><br>${formatDate(this.data.date)}</p>
       <p class="item-name"><b>${i18next.t('title')}:</b><br>${this.data.name}</p>
       <p class="item-description"><b>${i18next.t('description')}:</b><br>${this.data.description || 'N/A'}</p>
-      <a class="btn btn-primary" href="/invoice/edit/${this.data.id}">Bearbeiten</a>
+      <a class="btn btn-primary" href="/invoice/edit/${this.data.id}">${i18next.t('edit')}</a>
     `;
   }
 }
