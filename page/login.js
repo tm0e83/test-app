@@ -1,4 +1,5 @@
 import Component from '../core/component.js';
+import store from '/core/store.js';
 
 export default class Login extends Component {
   constructor() {
@@ -32,7 +33,7 @@ export default class Login extends Component {
           detail: json
         }));
 
-        window.state.token = json.token;
+        store.state.token = json.token;
         localStorage.setItem('token', json.token);
         window.router.goTo('/invoice/overview?page=0');
       }

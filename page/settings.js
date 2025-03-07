@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import store from '/core/store.js';
 
 export default class PageNotFound extends Component {
   constructor(element) {
@@ -16,12 +17,12 @@ export default class PageNotFound extends Component {
   }
 
   onSettingsSave(e) {
-    window.state.language = this.languageSelect.value;
+    store.state.language = this.languageSelect.value;
     window.dispatchEvent(new CustomEvent('settingsChange'));
   }
 
   // onLanguageChange(e) {
-  //   window.state.language = e.target.value;
+  //   store.state.language = e.target.value;
   //   window.dispatchEvent(new CustomEvent('languageChange'));
   // }
 
@@ -43,10 +44,10 @@ export default class PageNotFound extends Component {
       <h1>${i18next.t('settings')}</h1>
       <label for="language">${i18next.t('language')}</label>
       <select id="language" class="form-control mb-4">
-        <option value="de" ${window.state.language == 'de' ? 'selected' : ''}>
+        <option value="de" ${store.state.language == 'de' ? 'selected' : ''}>
           ${i18next.t('german')}
         </option>
-        <option value="en" ${window.state.language == 'en' ? 'selected' : ''}>
+        <option value="en" ${store.state.language == 'en' ? 'selected' : ''}>
           ${i18next.t('english')}
         </option>
       </select>

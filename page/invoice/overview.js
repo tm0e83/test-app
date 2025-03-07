@@ -58,7 +58,7 @@ export default class Overview extends Component {
 
   updateList() {
     const invoices = this.filteredItems;
-    this.pagination.update(invoices.length);
+    this.pagination.update(invoices.length, 10, this.pageIndex);
     this.list.render(this.pagination.getVisibleItems(invoices));
   }
 
@@ -95,7 +95,7 @@ export default class Overview extends Component {
     this.pagination = new Pagination({
       targetContainer: this.element.querySelector('.invoice-footer'),
       totalEntriesAmount: filteredItems.length,
-      entriesPerPage: 2,
+      entriesPerPage: 10,
       currentPageIndex: this.pageIndex
     });
 
@@ -110,7 +110,7 @@ export default class Overview extends Component {
 
   get template() {
     return /*html*/ `
-      <h1>${i18next.t('settings')}</h1>
+      <h1>${i18next.t('invoices')}</h1>
       <div class="filters"></div>
       <div class="invoice-head"></div>
       <div class="invoice-list"></div>

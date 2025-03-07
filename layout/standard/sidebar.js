@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import store from '/core/store.js';
 
 export default class Sidebar extends Component {
   constructor(parent, element) {
@@ -11,7 +12,7 @@ export default class Sidebar extends Component {
   addEvents() {
     this.logoutButton.addEventListener('click', (e) => {
       e.preventDefault();
-      window.state.token = '';
+      store.state.token = '';
       localStorage.setItem('token', '');
       window.router.goTo('/');
     });

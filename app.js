@@ -2,8 +2,9 @@ import Component from '/core/component.js';
 import { isLoggedIn } from '/core/functions.js';
 import Router from '/core/router.js';
 import de from '/i18n/de.js';
+import store from '/core/store.js';
 
-window.state = {
+store.state = {
   user: {
     name: '',
   },
@@ -16,6 +17,9 @@ window.router;
 
 window.addEventListener('DOMContentLoaded', async () => {
   window.router = new Router();
+
+console.log('store', store);
+
   new App();
 });
 
@@ -50,17 +54,17 @@ class App extends Component {
   }
 
   async onLanguageChange() {
-    const {default: lang} = await import(`/i18n/${window.state.language}.js`);
+    const {default: lang} = await import(`/i18n/${store.state.language}.js`);
 
     Object.entries(lang).map(([namespace, translations]) => {
       i18next.addResourceBundle(
-        window.state.language,
+        store.state.language,
         namespace,
         translations
       )
     });
 
-    i18next.changeLanguage(window.state.language);
+    i18next.changeLanguage(store.state.language);
     this.render();
   }
 
