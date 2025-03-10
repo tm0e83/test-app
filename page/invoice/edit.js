@@ -44,6 +44,7 @@ export default class Edit extends Component {
     await this.save(formData);
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
+    window.router.goTo('/invoice/details/' + this.id);
     window.notify.send(i18next.t('saved'), 'success');
   }
 

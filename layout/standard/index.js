@@ -12,7 +12,7 @@ export default class LayoutStandard extends Component {
   }
 
   addEvents() {
-    this.header.addEventListener('toggleMenu', _ => this.sidebar.render())
+    this.header.addEventListener('toggleMenu', _ => this.sidebar.render());
   }
 
   render() {
