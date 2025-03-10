@@ -54,7 +54,7 @@ export default class Login extends Component {
     return /*html*/ `
       <div class="container pt-4">
         <div class="row justify-content-center">
-          <div class="col-4">
+          <div class="col-12 col-md-6 col-lg-4">
             <div class="card p-4">
               <h2 class="mb-4">Login</h2>
               <form>

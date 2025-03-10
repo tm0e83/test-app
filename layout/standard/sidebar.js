@@ -82,6 +82,10 @@ export default class Sidebar extends Component {
           box-shadow: none;
           width: 200px;
 
+          .menu-head {
+            display: none;
+          }
+
           &.closed {
             width: 50px;
 
