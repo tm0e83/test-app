@@ -12,11 +12,18 @@ export default class Router extends EventTarget {
   constructor() {
     super();
 
+    this.addEvents();
+  }
+
+  addEvents() {
     window.addEventListener('popstate', (event) => {
       this.dispatchEvent(new CustomEvent('routeChange', { detail: event.state.path }));
     });
   }
 
+  /**
+   * @param {string} path
+   */
   goTo(path) {
     history.pushState({ path }, null, path);
     this.dispatchEvent(new CustomEvent('routeChange', { detail: path }));
