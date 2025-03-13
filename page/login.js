@@ -35,7 +35,7 @@ export default class Login extends Component {
 
         store.state.token = json.token;
         localStorage.setItem('token', json.token);
-        window.router.goTo('/invoice/overview?page=0');
+        window.router.goTo('/dashboard');
       }
       catch (e) {
         alert(e);
@@ -43,7 +43,7 @@ export default class Login extends Component {
     });
   }
 
-  async render() {
+  render() {
     this.element = document.createElement('div');
     this.element.innerHTML = this.template;
 

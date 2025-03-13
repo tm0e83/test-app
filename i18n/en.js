@@ -10,8 +10,11 @@ export default {
     "menu": "Menu",
     "invoice": "Invoice",
     "invoices": "Invoices",
+    "client": "Client",
+    "clients": "Clients",
     "date": "Date",
     "title": "Title",
     "description": "Description",
+    "dashboard": "Dashboard",
   }
 }

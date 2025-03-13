@@ -4,6 +4,8 @@ import Router from '/core/router.js';
 import de from '/i18n/de.js';
 import store from '/core/store.js';
 import Notifications from '/core/notifications.js';
+import css from './app.css' with { type: 'css' };
+import router from '/core/router2.js';
 
 store.state = {
   user: {
@@ -30,6 +32,7 @@ class App extends Component {
 
   async init() {
     this.element = document.querySelector('#app');
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
     try {
       await i18next
@@ -49,6 +52,7 @@ class App extends Component {
 
   addEvents() {
     window.router.addEventListener('routeChange', this.render.bind(this));
+    router.addEventListener('routeChange', this.render.bind(this));
     window.addEventListener('settingsChange', this.onLanguageChange.bind(this));
   }
 
@@ -71,7 +75,7 @@ class App extends Component {
     const layoutName = window?.router?.route?.config?.layout ?? 'empty';
 
     if (!window.router.route.config && isLoggedIn()) {
-      return window.router.goTo('/invoice/overview?page=0');
+      return window.router.goTo('/dashboard');
     }
 
     const { default: Layout } = await import(`./layout/${layoutName}/index.js`);
@@ -79,9 +83,7 @@ class App extends Component {
 
     this.element.innerHTML = '';
     this.css`
-      #app {
-        height: 100vh;
-      }
+
     `;
     this.element.appendChild(this.page.element);
   }

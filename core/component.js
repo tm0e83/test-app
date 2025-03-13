@@ -4,7 +4,7 @@ export default class Component extends EventTarget {
 
   constructor(parent) {
     super();
-    parent?.registerChildComponents(this);
+    // parent?.registerChildComponents(this);
   }
 
   css() {

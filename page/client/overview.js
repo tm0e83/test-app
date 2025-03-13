@@ -13,16 +13,16 @@ export default class Overview extends Component {
 
     this.pageIndex = params.page ?? 0;
     this.itemPerPage = 10;
-    this.invoiceData = [];
+    this.clientData = [];
     this.element = document.createElement('div');
-    this.element.classList.add('invoice-overview', 'loading');
+    this.element.classList.add('client-overview', 'loading');
     document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
     this.render();
 
     this.load()
       .then(response => response.json())
-      .then(data => this.invoiceData = data)
+      .then(data => this.clientData = data)
       .then(_ => this.element.classList.remove('loading'))
       .then(_ => this.render())
       .catch(error => console.error('Fehler beim Abrufen von JSON:', error));
@@ -33,7 +33,7 @@ export default class Overview extends Component {
       setTimeout(_ => resolve(), 300)
     })
 
-    return fetch('/data/invoices.json');
+    return fetch('/data/clients.json');
   }
 
   toQueryString(obj) {
@@ -66,16 +66,16 @@ export default class Overview extends Component {
   }
 
   updateList() {
-    const invoices = this.filteredItems;
-    this.pagination.update(invoices.length, this.itemPerPage, this.pageIndex);
-    this.list.render(this.pagination.getVisibleItems(invoices));
+    const client = this.filteredItems;
+    this.pagination.update(client.length, this.itemPerPage, this.pageIndex);
+    this.list.render(this.pagination.getVisibleItems(client));
   }
 
   get filteredItems() {
     const searchVal = this.filters.values.search ?? '';
     const regex = searchVal.trim().length ? new RegExp(`${searchVal}`, 'gi') : new RegExp(/^.*$/);
 
-    return this.invoiceData.reduce((items, item) => {
+    return this.clientData.reduce((items, item) => {
       if (item.name.match(regex) === null) return items;
       if (this.filters.values.type && item.type != this.filters.values.type) return items;
       items.push(item);
@@ -113,7 +113,7 @@ export default class Overview extends Component {
 
   get template() {
     return /*html*/ `
-      <h1>${i18next.t('invoices')}</h1>
+      <h1>${i18next.t('clients')}</h1>
       <div class="filters"></div>
       <div class="invoice-head"></div>
       <div class="invoice-list"></div>
@@ -147,7 +147,7 @@ export default class Overview extends Component {
 
     modalElement.querySelector('.btn-danger').addEventListener('click', e => {
       e.preventDefault();
-      this.invoiceData = this.invoiceData.filter(invoice => invoice.id !== id);
+      this.clientData = this.clientData.filter(invoice => invoice.id !== id);
       this.updateList();
       modal.hide();
     });

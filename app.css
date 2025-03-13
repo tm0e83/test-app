@@ -151,7 +151,6 @@ a {
   background-color: rgba(255,255,255,0.85);
 }
 
-
 .uic-notifications {
 	position: fixed;
 	z-index: 99999;
@@ -227,4 +226,8 @@ a {
 		transform: translateY(0);
 		opacity: 1;
 	}
+}
+
+#app {
+  height: 100vh;
 }

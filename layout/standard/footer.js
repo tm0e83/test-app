@@ -1,10 +1,13 @@
 import Component from '/core/component.js';
+import css from './footer.css' with { type: 'css' };
 
 export default class Footer extends Component {
   constructor(element) {
     super(parent, element);
 
     this.element = element;
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
+
     this.render();
   }
 
@@ -13,15 +16,6 @@ export default class Footer extends Component {
 
   render() {
     this.element.innerHTML = this.template;
-    this.css`
-      footer {
-        padding: 1rem;
-        height: 60px;
-        border-top: 1px solid #c4c4c4;
-        text-align: right;
-      }
-    `
-
     this.addEvents();
   }
 

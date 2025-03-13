@@ -1,8 +1,7 @@
 import Component from '/core/component.js';
-import { formatDate } from '/core/functions.js';
-import css from './invoice.css' with { type: 'css' };
+import css from './client.css' with { type: 'css' };
 
-export default class Invoice extends Component {
+export default class Client extends Component {
   constructor(args) {
     super();
 
@@ -36,7 +35,7 @@ export default class Invoice extends Component {
   }
 
   render() {
-    this.element.classList.add('invoice');
+    this.element.classList.add('client');
     this.element.innerHTML = this.template;
     this.editButton = this.element.querySelector('.button-edit');
     this.deleteButton = this.element.querySelector('.button-delete');
@@ -49,15 +48,14 @@ export default class Invoice extends Component {
    */
   get template() {
     return /*html*/ `
-      <div class="item-date">${formatDate(this.data.date)}</div>
+      <div class="item-id">${this.data.id}</div>
       <div class="item-name">${this.data.name}</div>
-      <div class="item-type">Typ ${this.data.type}</div>
       <div class="item-menu">
         <div class="dropdown">
           <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item button-edit" href="/invoice/details/${this.data.id}">Bearbeiten</a></li>
+            <li><a class="dropdown-item button-edit" href="/client/details/${this.data.id}">Bearbeiten</a></li>
             <li><a class="dropdown-item button-delete" href="#">Löschen</a></li>
           </ul>
         </div>

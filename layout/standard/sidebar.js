@@ -1,116 +1,71 @@
 import Component from '/core/component.js';
 import store from '/core/store.js';
+import css from './sidebar.css' with { type: 'css' };
+import router from '/core/router2.js';
 
 export default class Sidebar extends Component {
   constructor(parent, element) {
     super(parent, element);
 
     this.element = element;
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
+
     this.render();
   }
 
   addEvents() {
-    this.logoutButton.addEventListener('click', (e) => {
+    this.toggleMenuButton.addEventListener('click', e => {
+      e.preventDefault();
+
+      if (window.innerWidth < 800) {
+        localStorage.setItem('menu-open', this.isOpen == 1 ? 0 : 1);
+        this.render();
+      }
+    });
+
+    this.logoutButton.addEventListener('click', e => {
       e.preventDefault();
       store.state.token = '';
       localStorage.setItem('token', '');
       window.router.goTo('/');
     });
 
-    this.links.forEach(linkElement => {
-      linkElement.addEventListener('click', e => {
-        e.preventDefault();
-        if (e.target.href === '#') return;
-        window.router.goTo(e.target.href);
+    console.log('router.route', router.route);
 
-        if (window.innerWidth < 800) {
-          localStorage.setItem('menu-open', 0);
-          this.render();
-        }
-      });
-    });
+    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   render() {
-    this.element.classList.add(localStorage.getItem('menu-open') != 0 ? 'open' : 'closed');
-    this.element.classList.remove(localStorage.getItem('menu-open') != 0 ? 'closed' : 'open');
-
+    this.isOpen ? this.close() : this.open();
     this.element.innerHTML = this.template;
-
-    this.css`
-      aside {
-        background-color: #fff;
-        padding: 1rem 0;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
-        border-right: 1px solid #ccc;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 3;
-        box-shadow: 2px 0 3px 0px rgba(0, 0, 0, 0.15);
-
-        .menu-head {
-          padding: 0 1rem 1rem;
-          margin-bottom: 0.5rem;
-          border-bottom: 1px solid #ccc;
-        }
-
-        .menu-body {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          flex: 1;
-        }
-
-        &.closed {
-          display: none;
-        }
-
-        strong {
-          display: block;
-          padding: 0 1rem 0;
-          margin-bottom: 0.5rem;
-        }
-      }
-
-      @media (min-width: 800px) {
-        aside {
-          position: relative;
-          box-shadow: none;
-          width: 200px;
-
-          .menu-head {
-            display: none;
-          }
-
-          &.closed {
-            width: 50px;
-
-            .inner {
-              display: none;
-            }
-          }
-        }
-      }
-    `
+    this.toggleMenuButton = this.element.querySelector('.button-toggle-menu');
     this.logoutButton = this.element.querySelector('.button-logout');
-    this.links = this.element.querySelectorAll('[href]');
 
     this.addEvents();
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  get isOpen() {
+    return localStorage.getItem('menu-open') == 1;
+  }
+
+  open() {
+    this.element.classList.remove('closed');
+    this.element.classList.add('open');
+  }
+
+  close() {
+    this.element.classList.remove('open');
+    this.element.classList.add('closed');
   }
 
   get template() {
     return /*html*/ `
       <div class="menu-head">
-        <a href="#" class="button-toggle-menu">
-          ${localStorage.getItem('menu-open') == 1 ? `
-            <i class="fa-solid fa-times"></i>
-          ` : `
-            <i class="fa-solid fa-bars"></i>
-          `}
+        <a class="button-toggle-menu">
+          <i class="fa-solid fa-${this.isOpen ? 'times' : 'bars'}"></i>
         </a>
       </div>
       <div class="menu-body">
@@ -118,7 +73,10 @@ export default class Sidebar extends Component {
           <strong>${i18next.t('menu')}</strong>
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" href="/invoice/overview">${i18next.t('invoices')}</a>
+              <a class="nav-link active" href="/dashboard">${i18next.t('Dashboard')}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/client/overview">${i18next.t('clients')}</a>
             </li>
           </ul>
         </div>

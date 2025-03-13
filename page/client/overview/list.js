@@ -1,5 +1,5 @@
 import Component from '/core/component.js';
-import Invoice from './invoice.js';
+import Client from './client.js';
 
 export default class Overview extends Component {
   constructor(parent, element, data) {
@@ -16,14 +16,14 @@ export default class Overview extends Component {
     this.data = data;
     this.element.innerHTML = this.template;
 
-    this.data.map(invoiceData => {
-      const invoiceElement = document.createElement('div');
-      this.element.appendChild(invoiceElement);
+    this.data.map(clientData => {
+      const clientElement = document.createElement('div');
+      this.element.appendChild(clientElement);
 
-      new Invoice({
+      new Client({
         parent: this,
-        data: invoiceData,
-        element: invoiceElement
+        data: clientData,
+        element: clientElement
       });
     });
   }
