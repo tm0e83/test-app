@@ -48,7 +48,7 @@ export default class Filters extends Component {
       <div>
         <input
           type="text"
-          placeholder="Suche"
+          placeholder="${i18next.t('search')}"
           class="form-control mb-4"
           value="${router.route.params.search ?? ''}"
         >

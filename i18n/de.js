@@ -12,6 +12,7 @@ export default {
     "invoices": "Rechnungen",
     "client": "Auftraggeber",
     "clients": "Auftraggeber",
+    "details": "Details",
     "date": "Datum",
     "title": "Titel",
     "description": "Beschreibung",

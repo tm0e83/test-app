@@ -2,19 +2,19 @@ import { getQueryParams } from '/core/functions.js';
 
 class Router extends EventTarget {
   routes = [
-    { path: 'login', layout: 'empty', title: "Login" },
-    { path: 'settings', layout: 'standard', title: "Einstellungen" },
+    { path: 'login', layout: 'empty', title: "login" },
+    { path: 'settings', layout: 'standard', title: "settings" },
 
-    { path: 'invoice/overview', layout: 'standard', title: "Dashboard" , title: "Rechnungen" },
-    { path: 'invoice/details/:id', layout: 'standard', parent: 'invoice/overview', title: "Details" },
-    { path: 'invoice/edit/:id', layout: 'standard', parent: 'invoice/details/:id', title: "Bearbeiten" },
+    { path: 'invoice/overview', layout: 'standard', title: "Dashboard" , title: "invoices" },
+    { path: 'invoice/details/:id', layout: 'standard', parent: 'invoice/overview', title: "details" },
+    { path: 'invoice/edit/:id', layout: 'standard', parent: 'invoice/details/:id', title: "edit" },
 
-    { path: 'client/overview', layout: 'standard', title: "Auftraggeber" },
-    { path: 'client/create', layout: 'standard', parent: 'client/overview', title: "Erstellen" },
-    { path: 'client/details/:id', layout: 'standard', parent: 'client/overview', title: "Details" },
-    { path: 'client/edit/:id', layout: 'standard', parent: 'client/details/:id', title: "Bearbeiten" },
+    { path: 'client/overview', layout: 'standard', title: "clients" },
+    { path: 'client/create', layout: 'standard', parent: 'client/overview', title: "create" },
+    { path: 'client/details/:id', layout: 'standard', parent: 'client/overview', title: "details" },
+    { path: 'client/edit/:id', layout: 'standard', parent: 'client/details/:id', title: "edit" },
 
-    { path: 'dashboard', layout: 'standard', title: "Dashboard" },
+    { path: 'dashboard', layout: 'standard', title: "dashboard" },
   ];
 
   constructor() {

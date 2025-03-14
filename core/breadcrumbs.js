@@ -33,7 +33,7 @@ export default class Breadcrumbs extends Component {
           ${
             this.breadcrumbItems.map(item => `
               <li class="breadcrumb-item">
-                ${item.path === router.route.config.path ? item.title : /*html*/ `<a href="/${item.fullpath}">${item.title}</a>`}
+                ${item.path === router.route.config.path ? item.title : /*html*/ `<a href="/${item.fullpath}">${i18next.t(item.title)}</a>`}
               </li>
             `).join('')
           }
