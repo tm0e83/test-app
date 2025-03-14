@@ -16,5 +16,14 @@ export default {
     "title": "Title",
     "description": "Description",
     "dashboard": "Dashboard",
+    "login": "Login",
+    "logout": "Logout",
+    "type": "Type",
+    "search": "Search",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "reallyDeleteInvoice": "Do you really want to delete the invoice?",
+    "reallyDeleteClient": "Do you really want to delete the client?",
   }
 }

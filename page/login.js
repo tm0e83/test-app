@@ -1,4 +1,5 @@
 import Component from '../core/component.js';
+import router from '/core/router.js';
 import store from '/core/store.js';
 
 export default class Login extends Component {
@@ -9,38 +10,40 @@ export default class Login extends Component {
   }
 
   addEvents() {
-    this.element.querySelector('form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    this.element.querySelector('form').addEventListener('submit', this.onFormSubmit.bind(this));
+  }
 
-      const username = this.element.querySelector('input[name="username"]').value;
-      const password = this.element.querySelector('input[name="password"]').value;
+  async onFormSubmit(e) {
+    e.preventDefault();
 
-      try {
-        const response = await new Promise((resolve, reject) => {
-          setTimeout(() => {
-            if (username === 'admin' && password === 'pw') {
-              resolve(
-                new Response(JSON.stringify({ token: '123456789' }))
-              );
-            } else {
-              reject('Invalid credentials');
-            }
-          }, 500);
-        });
+    const username = this.element.querySelector('input[name="username"]').value;
+    const password = this.element.querySelector('input[name="password"]').value;
 
-        const json = await response.json();
-        window.router.dispatchEvent(new CustomEvent('login', {
-          detail: json
-        }));
+    try {
+      const response = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (username === 'admin' && password === 'pw') {
+            resolve(
+              new Response(JSON.stringify({ token: '123456789' }))
+            );
+          } else {
+            reject('Invalid credentials');
+          }
+        }, 500);
+      });
 
-        store.state.token = json.token;
-        localStorage.setItem('token', json.token);
-        window.router.goTo('/dashboard');
-      }
-      catch (e) {
-        alert(e);
-      }
-    });
+      const json = await response.json();
+      router.dispatchEvent(new CustomEvent('login', {
+        detail: json
+      }));
+
+      store.state.token = json.token;
+      localStorage.setItem('token', json.token);
+      router.goTo('/dashboard');
+    }
+    catch (e) {
+      alert('ALARM!!!', e);
+    }
   }
 
   render() {
@@ -56,11 +59,25 @@ export default class Login extends Component {
         <div class="row justify-content-center">
           <div class="col-12 col-md-6 col-lg-4">
             <div class="card p-4">
-              <h2 class="mb-4">Login</h2>
+              <h2 class="mb-4">${i18next.t('login')}</h2>
               <form>
-                <input type="text" name="username" placeholder="Username" class="form-control mb-4" value="admin">
-                <input type="password" name="password" placeholder="Password" class="form-control mb-4" value="pw">
-                <button class="btn btn-primary" type="submit">Login</button>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Username"
+                  autocomplete="username"
+                  class="form-control mb-4"
+                  value="admin"
+                >
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  autocomplete="current-password"
+                  class="form-control mb-4"
+                  value="pw"
+                >
+                <button class="btn btn-primary" type="submit">${i18next.t('login')}</button>
               </form>
             </div>
           </div>

@@ -128,14 +128,14 @@ export default class Overview extends Component {
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title">Löschen?</h5>
+              <h5 class="modal-title">${i18next.t('delete')}?</h5>
           </div>
           <div class="modal-body">
-            <p>Soll die Rechnung wirklich gelöscht werden?</p>
+            <p>${i18next.t('reallyDeleteInvoice')}</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-            <button type="button" class="btn btn-danger">Löschen</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${i18next.t('cancel')}</button>
+            <button type="button" class="btn btn-danger">${i18next.t('delete')}</button>
           </div>
         </div>
       </div>

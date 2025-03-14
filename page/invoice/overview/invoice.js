@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 import { formatDate } from '/core/functions.js';
 import css from './invoice.css' with { type: 'css' };
 
@@ -24,7 +25,7 @@ export default class Invoice extends Component {
    */
   onEdit(e) {
     e.preventDefault();
-    window.router.goTo(e.currentTarget.href);
+    router.goTo(e.currentTarget.href);
   }
 
   /**
@@ -51,14 +52,14 @@ export default class Invoice extends Component {
     return /*html*/ `
       <div class="item-date">${formatDate(this.data.date)}</div>
       <div class="item-name">${this.data.name}</div>
-      <div class="item-type">Typ ${this.data.type}</div>
+      <div class="item-type">${i18next.t('type')} ${this.data.type}</div>
       <div class="item-menu">
         <div class="dropdown">
           <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item button-edit" href="/invoice/details/${this.data.id}">Bearbeiten</a></li>
-            <li><a class="dropdown-item button-delete" href="#">Löschen</a></li>
+            <li><a class="dropdown-item button-edit" href="/invoice/details/${this.data.id}">${i18next.t('edit')}</a></li>
+            <li><a class="dropdown-item button-delete" href="#">${i18next.t('delete')}</a></li>
           </ul>
         </div>
       </div>

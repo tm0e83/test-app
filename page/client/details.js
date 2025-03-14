@@ -1,11 +1,11 @@
 import Component from '/core/component.js';
-import { formatDate } from '/core/functions.js';
+import router from '/core/router.js';
 
 export default class Details extends Component {
   constructor(args) {
     super();
 
-    this.id = window.router.route.routeParams.id;
+    this.id = router.route.routeParams.id;
     this.element = document.createElement('div');
     this.element.classList.add('client-details');
 
@@ -22,7 +22,7 @@ export default class Details extends Component {
   }
 
   addEvents() {
-    window.router.addLinkEvents(this.element.querySelectorAll('[href]'));
+    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   get languageISO() {

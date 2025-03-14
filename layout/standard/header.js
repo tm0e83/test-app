@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 import css from './header.css' with { type: 'css' };
 
 export default class Header extends Component {
@@ -19,7 +20,7 @@ export default class Header extends Component {
       this.render();
     });
 
-    window.router.addLinkEvents(this.element.querySelectorAll('[href]'));
+    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   render() {

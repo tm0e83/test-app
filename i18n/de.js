@@ -16,5 +16,14 @@ export default {
     "title": "Titel",
     "description": "Beschreibung",
     "dashboard": "Dashboard",
+    "login": "Login",
+    "logout": "Logout",
+    "type": "Typ",
+    "search": "Suche",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "cancel": "Abbrechen",
+    "reallyDeleteInvoice": "Soll die Rechnung wirklich gelöscht werden?",
+    "reallyDeleteClient": "Soll der Auftraggeber wirklich gelöscht werden?",
   }
 }

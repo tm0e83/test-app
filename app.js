@@ -1,11 +1,10 @@
 import Component from '/core/component.js';
 import { isLoggedIn } from '/core/functions.js';
-import Router from '/core/router.js';
 import de from '/i18n/de.js';
 import store from '/core/store.js';
 import Notifications from '/core/notifications.js';
 import css from './app.css' with { type: 'css' };
-import router from '/core/router2.js';
+import router from '/core/router.js';
 
 store.state = {
   user: {
@@ -16,11 +15,10 @@ store.state = {
   language: 'de',
 };
 
-window.router;
+// window.router = router;
 window.notify = new Notifications();
 
 window.addEventListener('DOMContentLoaded', async () => {
-  window.router = new Router();
   new App();
 });
 
@@ -51,7 +49,6 @@ class App extends Component {
   }
 
   addEvents() {
-    window.router.addEventListener('routeChange', this.render.bind(this));
     router.addEventListener('routeChange', this.render.bind(this));
     window.addEventListener('settingsChange', this.onLanguageChange.bind(this));
   }
@@ -72,19 +69,16 @@ class App extends Component {
   }
 
   async render() {
-    const layoutName = window?.router?.route?.config?.layout ?? 'empty';
+    const layoutName = router?.route?.config?.layout ?? 'empty';
 
-    if (!window.router.route.config && isLoggedIn()) {
-      return window.router.goTo('/dashboard');
+    if (!router.route.config && isLoggedIn()) {
+      return router.goTo('/dashboard');
     }
 
     const { default: Layout } = await import(`./layout/${layoutName}/index.js`);
     this.page = new Layout(this);
 
     this.element.innerHTML = '';
-    this.css`
-
-    `;
     this.element.appendChild(this.page.element);
   }
 }

@@ -1,11 +1,12 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 import { formatDate } from '/core/functions.js';
 
 export default class Details extends Component {
   constructor(args) {
     super();
 
-    this.id = window.router.route.routeParams.id;
+    this.id = router.route.routeParams.id;
     this.element = document.createElement('div');
     this.element.classList.add('invoice-details');
 
@@ -26,7 +27,7 @@ export default class Details extends Component {
       linkElement.addEventListener('click', e => {
         e.preventDefault();
         if (e.target.href === '#') return;
-        window.router.goTo(e.target.href);
+        router.goTo(e.target.href);
       });
     });
   }

@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 
 export default class Filters extends Component {
   constructor(parent, element) {
@@ -55,14 +56,14 @@ export default class Filters extends Component {
           type="text"
           placeholder="Suche"
           class="form-control mb-4"
-          value="${window.router.route.params.search ?? ''}"
+          value="${router.route.params.search ?? ''}"
         >
       </div>
       <div>
         <select class="form-control mb-4">
-          <option value="">Typ</option>
-          <option value="1" ${window.router.route.params.type == 1 ? 'selected' : ''}>Typ 1</option>
-          <option value="2" ${window.router.route.params.type == 2 ? 'selected' : ''}>Typ 2</option>
+          <option value="">${i18next.t('type')}</option>
+          <option value="1" ${router.route.params.type == 1 ? 'selected' : ''}>${i18next.t('type')} 1</option>
+          <option value="2" ${router.route.params.type == 2 ? 'selected' : ''}>${i18next.t('type')} 2</option>
         </select>
       </div>
     `;

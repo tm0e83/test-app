@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 
 export default class Filters extends Component {
   constructor(parent, element) {
@@ -11,7 +12,6 @@ export default class Filters extends Component {
 
   addEvents() {
     this.searchInput.addEventListener('input', this.onFilterChange.bind(this));
-    this.typeSelect.addEventListener('change', this.onFilterChange.bind(this));
   }
 
   onFilterChange(e) {
@@ -25,10 +25,6 @@ export default class Filters extends Component {
       values.search = this.searchInput.value;
     }
 
-    if (this.typeSelect.value) {
-      values.type = this.typeSelect.value;
-    }
-
     return values;
   }
 
@@ -36,7 +32,6 @@ export default class Filters extends Component {
     this.element.innerHTML = this.template;
     this.element.classList.add('filters');
     this.searchInput = this.element.querySelector('input');
-    this.typeSelect = this.element.querySelector('select');
 
     this.css`
       .filters {
@@ -55,15 +50,8 @@ export default class Filters extends Component {
           type="text"
           placeholder="Suche"
           class="form-control mb-4"
-          value="${window.router.route.params.search ?? ''}"
+          value="${router.route.params.search ?? ''}"
         >
-      </div>
-      <div>
-        <select class="form-control mb-4">
-          <option value="">Typ</option>
-          <option value="1" ${window.router.route.params.type == 1 ? 'selected' : ''}>Typ 1</option>
-          <option value="2" ${window.router.route.params.type == 2 ? 'selected' : ''}>Typ 2</option>
-        </select>
       </div>
     `;
   }

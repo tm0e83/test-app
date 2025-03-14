@@ -1,20 +1,20 @@
 import { getQueryParams } from '/core/functions.js';
 
-export default class Router extends EventTarget {
+class Router extends EventTarget {
   routes = [
-    { path: 'login', layout: 'empty'},
-    { path: 'settings', layout: 'standard'},
+    { path: 'login', layout: 'empty', title: "Login" },
+    { path: 'settings', layout: 'standard', title: "Einstellungen" },
 
-    { path: 'invoice/overview', layout: 'standard'},
-    { path: 'invoice/details/:id', layout: 'standard' },
-    { path: 'invoice/edit/:id', layout: 'standard' },
+    { path: 'invoice/overview', layout: 'standard', title: "Dashboard" , title: "Rechnungen" },
+    { path: 'invoice/details/:id', layout: 'standard', parent: 'invoice/overview', title: "Details" },
+    { path: 'invoice/edit/:id', layout: 'standard', parent: 'invoice/details/:id', title: "Bearbeiten" },
 
-    { path: 'client/overview', layout: 'standard'},
-    { path: 'client/create', layout: 'standard' },
-    { path: 'client/details/:id', layout: 'standard' },
-    { path: 'client/edit/:id', layout: 'standard' },
+    { path: 'client/overview', layout: 'standard', title: "Auftraggeber" },
+    { path: 'client/create', layout: 'standard', parent: 'client/overview', title: "Erstellen" },
+    { path: 'client/details/:id', layout: 'standard', parent: 'client/overview', title: "Details" },
+    { path: 'client/edit/:id', layout: 'standard', parent: 'client/details/:id', title: "Bearbeiten" },
 
-    { path: 'dashboard', layout: 'standard'},
+    { path: 'dashboard', layout: 'standard', title: "Dashboard" },
   ];
 
   constructor() {
@@ -45,9 +45,35 @@ export default class Router extends EventTarget {
       linkElement.addEventListener('click', e => {
         e.preventDefault();
         if (!e.currentTarget.href || e.currentTarget.href === '#') return;
-        window.router.goTo(e.currentTarget.href);
+        this.goTo(e.currentTarget.href);
       });
     });
+  }
+
+  get routeHierarchy() {
+    const path = this.route.config.path;
+
+    function findObjectHierarchy(objects, startPath) {
+      const result = [];
+      const pathToObjectMap = new Map();
+
+      // Erstelle eine Map für schnelleren Zugriff auf Objekte per "path"
+      objects.forEach(obj => pathToObjectMap.set(obj.path, obj));
+
+      let currentPath = startPath;
+
+      while (currentPath) {
+          const obj = pathToObjectMap.get(currentPath);
+          if (!obj) break; // Beende, falls kein weiteres Objekt gefunden wird
+
+          result.unshift(obj);
+          currentPath = obj.parent || null; // Nächstes Objekt anhand "parent" suchen
+      }
+
+      return result;
+    }
+
+    return findObjectHierarchy(this.routes, path);
   }
 
   get route() {
@@ -94,3 +120,7 @@ export default class Router extends EventTarget {
     return returnObj;
   }
 }
+
+const router = new Router();
+
+export default router;

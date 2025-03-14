@@ -1,10 +1,11 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 
 export default class Edit extends Component {
   constructor(args) {
     super();
 
-    this.id = window.router.route.routeParams.id;
+    this.id = router.route.routeParams.id;
     this.element = document.createElement('div');
     this.element.classList.add('invoice-edit', 'loading');
 
@@ -32,7 +33,7 @@ export default class Edit extends Component {
       linkElement.addEventListener('click', e => {
         e.preventDefault();
         if (e.target.href === '#') return;
-        window.router.goTo(e.target.href);
+        router.goTo(e.target.href);
       });
     });
   }
@@ -44,7 +45,7 @@ export default class Edit extends Component {
     await this.save(formData);
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
-    window.router.goTo('/invoice/details/' + this.id);
+    router.goTo('/invoice/details/' + this.id);
     window.notify.send(i18next.t('saved'), 'success');
   }
 

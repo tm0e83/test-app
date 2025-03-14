@@ -1,10 +1,11 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 
 export default class Edit extends Component {
   constructor(args) {
     super();
 
-    this.id = window.router.route.routeParams.id;
+    this.id = router.route.routeParams.id;
     this.element = document.createElement('div');
     this.element.classList.add('client-edit', 'loading');
 
@@ -24,7 +25,7 @@ export default class Edit extends Component {
   addEvents() {
     this.form.addEventListener('submit', this.onFormSubmit.bind(this));
     this.backButton.addEventListener('click', e => history.back());
-    window.router.addLinkEvents(this.element.querySelectorAll('[href]'));
+    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   async onFormSubmit(e) {
@@ -34,7 +35,7 @@ export default class Edit extends Component {
     await this.save(formData);
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
-    window.router.goTo('/client/details/' + this.id);
+    router.goTo('/client/details/' + this.id);
     window.notify.send(i18next.t('saved'), 'success');
   }
 

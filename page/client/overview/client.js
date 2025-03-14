@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 import css from './client.css' with { type: 'css' };
 
 export default class Client extends Component {
@@ -23,7 +24,7 @@ export default class Client extends Component {
    */
   onEdit(e) {
     e.preventDefault();
-    window.router.goTo(e.currentTarget.href);
+    router.goTo(e.currentTarget.href);
   }
 
   /**
@@ -55,8 +56,8 @@ export default class Client extends Component {
           <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item button-edit" href="/client/details/${this.data.id}">Bearbeiten</a></li>
-            <li><a class="dropdown-item button-delete" href="#">Löschen</a></li>
+            <li><a class="dropdown-item button-edit" href="/client/details/${this.data.id}">${i18next.t('edit')}</a></li>
+            <li><a class="dropdown-item button-delete" href="#">${i18next.t('delete')}</a></li>
           </ul>
         </div>
       </div>

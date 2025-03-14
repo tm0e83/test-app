@@ -1,10 +1,11 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 
 export default class Create extends Component {
   constructor(args) {
     super();
 
-    this.id = window.router.route.routeParams.id;
+    this.id = router.route.routeParams.id;
     this.element = document.createElement('div');
     this.element.classList.add('client-create', 'loading');
 
@@ -14,7 +15,7 @@ export default class Create extends Component {
   addEvents() {
     this.form.addEventListener('submit', this.onFormSubmit.bind(this));
     this.backButton.addEventListener('click', e => history.back());
-    window.router.addLinkEvents(this.element.querySelectorAll('[href]'));
+    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   async onFormSubmit(e) {
@@ -24,7 +25,7 @@ export default class Create extends Component {
     await this.save(formData);
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
-    window.router.goTo('/client/overview');
+    router.goTo('/client/overview');
     window.notify.send(i18next.t('saved'), 'success');
   }
 

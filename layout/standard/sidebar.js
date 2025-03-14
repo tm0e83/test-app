@@ -1,7 +1,7 @@
 import Component from '/core/component.js';
 import store from '/core/store.js';
 import css from './sidebar.css' with { type: 'css' };
-import router from '/core/router2.js';
+import router from '/core/router.js';
 
 export default class Sidebar extends Component {
   constructor(parent, element) {
@@ -27,10 +27,8 @@ export default class Sidebar extends Component {
       e.preventDefault();
       store.state.token = '';
       localStorage.setItem('token', '');
-      window.router.goTo('/');
+      router.goTo('/');
     });
-
-    console.log('router.route', router.route);
 
     router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
@@ -78,6 +76,9 @@ export default class Sidebar extends Component {
             <li class="nav-item">
               <a class="nav-link active" href="/client/overview">${i18next.t('clients')}</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/invoice/overview">${i18next.t('invoices')}</a>
+            </li>
           </ul>
         </div>
         <div class="inner">
@@ -87,7 +88,7 @@ export default class Sidebar extends Component {
               <a class="nav-link active" href="/settings">${i18next.t('settings')}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link button-logout" href="/"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+              <a class="nav-link button-logout" href="/"><i class="fa-solid fa-arrow-right-from-bracket"></i> ${i18next.t('logout')}</a>
             </li>
           </ul>
         </div>

@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import router from '/core/router.js';
 
 export default class Dashboard extends Component {
   constructor(element) {
@@ -11,7 +12,7 @@ export default class Dashboard extends Component {
   }
 
   addEvents() {
-    window.router.addLinkEvents(this.element.querySelectorAll('[href]'));
+    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   render() {
@@ -23,37 +24,49 @@ export default class Dashboard extends Component {
     return /*html*/ `
       <h1>Dashboard</h1>
       <div class="row">
-        <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="col-12 col-md-6 col-lg-3 mb-4">
           <div class="card">
             <div class="card-body">
-              <h2>abc</h2>
-              <p>abc</p>
+              <h2>lirum</h2>
+              <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+              <a class="btn btn-primary btn-sm" href="/client/overview">
+                ${i18next.t('clients')}
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h2>larum</h2>
+              <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
               <a class="btn btn-primary btn-sm" href="/invoice/overview">
-                Rechnungen
+                ${i18next.t('invoices')}
                 <i class="fa-solid fa-arrow-right"></i>
               </a>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="col-12 col-md-6 col-lg-3 mb-4">
           <div class="card">
             <div class="card-body">
-              <h2>abc</h2>
-              <p>abc</p>
+              <h2>löffel</h2>
+              <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
               <a class="btn btn-primary btn-sm" href="/settings">
-                Einstellungen
+                ${i18next.t('settings')}
                 <i class="fa-solid fa-arrow-right"></i>
               </a>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="col-12 col-md-6 col-lg-3 mb-4">
           <div class="card">
             <div class="card-body">
-              <h2>abc</h2>
-              <p>abc</p>
-              <a class="btn btn-primary btn-sm" href="/dashboard">
-                Blub
+              <h2>stiel</h2>
+              <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+              <a class="btn btn-primary btn-sm" href="/settings">
+                ${i18next.t('settings')}
                 <i class="fa-solid fa-arrow-right"></i>
               </a>
             </div>
