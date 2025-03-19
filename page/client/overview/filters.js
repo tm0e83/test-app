@@ -2,12 +2,14 @@ import Component from '/core/component.js';
 import router from '/core/router.js';
 
 export default class Filters extends Component {
+  stylesheet = '/page/client/overview/filters.css';
+
   constructor(parent, element) {
     super(parent, element);
 
     this.element = element;
 
-    this.render();
+    this.addCSS().then(_ => this.render());
   }
 
   addEvents() {
@@ -19,9 +21,11 @@ export default class Filters extends Component {
   }
 
   get values() {
-    const values = {};
+    const values = {
+      search: ''
+    };
 
-    if (this.searchInput.value) {
+    if (this.searchInput?.value) {
       values.search = this.searchInput.value;
     }
 
@@ -32,13 +36,6 @@ export default class Filters extends Component {
     this.element.innerHTML = this.template;
     this.element.classList.add('filters');
     this.searchInput = this.element.querySelector('input');
-
-    this.css`
-      .filters {
-        display: flex;
-        gap: 1rem;
-      }
-    `;
 
     this.addEvents();
   }

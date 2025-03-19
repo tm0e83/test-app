@@ -2,16 +2,20 @@ import Component from '/core/component.js';
 import router from '/core/router.js';
 import { isLoggedIn } from '/core/functions.js';
 
-export default class LayoutEmpty extends Component {
+export default class LayoutBlank extends Component {
+  stylesheet = '/layout/blank/index.css';
+
   constructor() {
     super();
 
-    this.render();
+    this.addCSS()
+      .then(_ => this.render())
+      .then(_ => this.dispatchEvent(new CustomEvent('loaded')));
   }
 
   async render() {
     this.element = document.createElement('div');
-    this.element.classList.add('layout', 'layout-empty');
+    this.element.classList.add('layout', 'layout-blank');
     this.element.innerHTML = this.template;
 
     try {

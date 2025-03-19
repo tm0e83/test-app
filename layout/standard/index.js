@@ -2,25 +2,28 @@ import Component from '/core/component.js';
 import Sidebar from './sidebar.js';
 import Header from './header.js';
 import Main from './main.js';
-import css from './index.css' with { type: 'css' };
 // import Footer from './standard/footer.js';
 
 export default class LayoutStandard extends Component {
+  /** @type {string} */
+  stylesheet = '/layout/standard/index.css';
+
   constructor(parent, element) {
     super(parent, element);
 
-    this.render();
+    this.addCSS()
+      .then(_ => this.render())
+      .then(_ => this.dispatchEvent(new CustomEvent('loaded')));
   }
 
   addEvents() {
-    this.header.addEventListener('toggleMenu', _ => this.sidebar.render());
+    this.header.addEventListener('toggleMenu', _ => this.sidebar.toggle());
   }
 
   render() {
     this.element = document.createElement('div');
     this.element.classList.add('layout', 'layout-standard');
     this.element.innerHTML = this.template;
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
     this.sidebar = new Sidebar(this, this.element.querySelector('aside'));
     this.header = new Header(this, this.element.querySelector('header'));

@@ -1,17 +1,16 @@
 import Component from '/core/component.js';
 import router from '/core/router.js';
-import css from './client.css' with { type: 'css' };
 
 export default class Client extends Component {
+  stylesheet = '/page/client/overview/client.css';
   constructor(args) {
     super();
 
     this.parent = args.parent;
     this.data = args.data;
     this.element = args.element;
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
-    this.render();
+    this.addCSS().then(_ => this.render());
   }
 
   addEvents() {

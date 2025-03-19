@@ -1,4 +1,4 @@
-export default class Notifications {
+class Notifications {
 	constructor(options) {
 		this.setConfig(options);
 
@@ -133,3 +133,7 @@ class NotificationMessage {
 		`
 	}
 }
+
+const notify = new Notifications();
+
+export default notify;

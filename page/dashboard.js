@@ -2,13 +2,15 @@ import Component from '/core/component.js';
 import router from '/core/router.js';
 
 export default class Dashboard extends Component {
+  stylesheet = '/page/dashboard.css';
+
   constructor(element) {
     super();
 
     this.element = document.createElement('div');
     this.element.classList.add('dashboard');
 
-    this.render();
+    this.addCSS().then(_ => this.render());
   }
 
   addEvents() {

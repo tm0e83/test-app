@@ -1,16 +1,16 @@
 import Component from '/core/component.js';
 import Breadcrumbs from '/core/breadcrumbs.js';
 import router from '/core/router.js';
-import css from './main.css' with { type: 'css' };
 
 export default class Main extends Component {
+  stylesheet = '/layout/standard/main.css';
+
   constructor(parent, element) {
     super(parent, element);
 
     this.element = element;
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
-    this.render();
+    this.addCSS().then(_ => this.render());
   }
 
   addEvents() {

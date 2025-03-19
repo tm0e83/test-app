@@ -1,26 +1,35 @@
 import Component from '/core/component.js';
 import store from '/core/store.js';
-import css from './sidebar.css' with { type: 'css' };
 import router from '/core/router.js';
+import LayoutStandard from '.';
 
 export default class Sidebar extends Component {
+  /** @type {string} */
+  stylesheet = '/layout/standard/sidebar.css';
+
+  /** @type {boolean} */
+  #isOpen = false;
+
+  /**
+   * @param {LayoutStandard} parent
+   * @param {HTMLElement} element
+   */
   constructor(parent, element) {
     super(parent, element);
 
+    /** @type {HTMLElement} */
     this.element = element;
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
-    this.render();
+    this.addCSS().then(_ => this.render());
   }
 
   addEvents() {
+    window.removeEventListener('resize', this.onResize);
+    window.addEventListener('resize', this.onResize.bind(this));
+
     this.toggleMenuButton.addEventListener('click', e => {
       e.preventDefault();
-
-      if (window.innerWidth < 800) {
-        localStorage.setItem('menu-open', this.isOpen == 1 ? 0 : 1);
-        this.render();
-      }
+      this.toggle();
     });
 
     this.logoutButton.addEventListener('click', e => {
@@ -31,10 +40,40 @@ export default class Sidebar extends Component {
     });
 
     router.addLinkEvents(this.element.querySelectorAll('[href]'));
+
+    this.element.querySelectorAll('[href]').forEach(element => {
+      element.addEventListener('click', e => {
+        if (this.isMobile) {
+          this.toggle();
+        }
+      });
+    });
+  }
+
+  wait() {
+    if (this.waitTimeout) clearTimeout(this.waitTimeout);
+    return new Promise((resolve, reject) => {
+      this.waitTimeout = setTimeout(_ => resolve(), 100);
+    });
+  }
+
+  async onResize() {
+    await this.wait();
+    this.render();
+  }
+
+  toggle() {
+    if (!this.isMobile) {
+      localStorage.setItem('menu-open', localStorage.getItem('menu-open') == 1 ? 0 : 1);
+    } else {
+      this.#isOpen = !this.#isOpen;
+    }
+
+    this.render();
   }
 
   render() {
-    this.isOpen ? this.close() : this.open();
+    this.isOpen ? this.open() : this.close();
     this.element.innerHTML = this.template;
     this.toggleMenuButton = this.element.querySelector('.button-toggle-menu');
     this.logoutButton = this.element.querySelector('.button-logout');
@@ -45,8 +84,15 @@ export default class Sidebar extends Component {
   /**
    * @returns {boolean}
    */
+  get isMobile() {
+    return window.innerWidth < 800;
+  }
+
+  /**
+   * @returns {boolean}
+   */
   get isOpen() {
-    return localStorage.getItem('menu-open') == 1;
+    return this.isMobile ? this.#isOpen : localStorage.getItem('menu-open') == 1;
   }
 
   open() {
@@ -59,6 +105,9 @@ export default class Sidebar extends Component {
     this.element.classList.add('closed');
   }
 
+  /**
+   * @returns {string}
+   */
   get template() {
     return /*html*/ `
       <div class="menu-head">

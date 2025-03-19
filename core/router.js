@@ -2,7 +2,7 @@ import { getQueryParams } from '/core/functions.js';
 
 class Router extends EventTarget {
   routes = [
-    { path: 'login', layout: 'empty', title: "login" },
+    { path: 'login', layout: 'blank', title: "login" },
     { path: 'settings', layout: 'standard', title: "settings" },
 
     { path: 'invoice/overview', layout: 'standard', title: "Dashboard" , title: "invoices" },

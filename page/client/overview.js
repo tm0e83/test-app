@@ -3,9 +3,10 @@ import Pagination from '/core/pagination.js';
 import Filters from './overview/filters.js';
 import List from './overview/list.js';
 import { getQueryParams } from '/core/functions.js';
-import css from './overview.css' with { type: 'css' };
 
 export default class Overview extends Component {
+  stylesheet = '/page/client/overview.css';
+
   constructor() {
     super();
 
@@ -16,11 +17,10 @@ export default class Overview extends Component {
     this.clientData = [];
     this.element = document.createElement('div');
     this.element.classList.add('client-overview', 'loading');
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
-    this.render();
-
-    this.load()
+    this.addCSS()
+      .then(_ => this.render())
+      .then(_ => this.load())
       .then(response => response.json())
       .then(data => this.clientData = data)
       .then(_ => this.element.classList.remove('loading'))
@@ -83,7 +83,7 @@ export default class Overview extends Component {
     }, []);
   }
 
-  render() {
+  async render() {
     this.element.innerHTML = this.template;
     this.invoiceList = this.element.querySelector('.invoice-list');
     this.list = this.element.querySelector('.invoice-list');

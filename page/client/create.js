@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import notify from '/core/notification.js';
 import router from '/core/router.js';
 
 export default class Create extends Component {
@@ -26,7 +27,7 @@ export default class Create extends Component {
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
     router.goTo('/client/overview');
-    window.notify.send(i18next.t('saved'), 'success');
+    notify.send(i18next.t('saved'), 'success');
   }
 
   save(formData) {

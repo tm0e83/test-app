@@ -2,12 +2,14 @@ import Component from '/core/component.js';
 import router from '/core/router.js';
 
 export default class Filters extends Component {
+  stylesheet = '/page/invoice/overview/filters.css';
+
   constructor(parent, element) {
     super(parent, element);
 
     this.element = element;
 
-    this.render();
+    this.addCSS().then(_ => this.render());
   }
 
   addEvents() {
@@ -20,13 +22,16 @@ export default class Filters extends Component {
   }
 
   get values() {
-    const values = {};
+    const values = {
+      search: '',
+      type: ''
+    };
 
-    if (this.searchInput.value) {
+    if (this.searchInput?.value) {
       values.search = this.searchInput.value;
     }
 
-    if (this.typeSelect.value) {
+    if (this.typeSelect?.value) {
       values.type = this.typeSelect.value;
     }
 
@@ -38,13 +43,6 @@ export default class Filters extends Component {
     this.element.classList.add('filters');
     this.searchInput = this.element.querySelector('input');
     this.typeSelect = this.element.querySelector('select');
-
-    this.css`
-      .filters {
-        display: flex;
-        gap: 1rem;
-      }
-    `;
 
     this.addEvents();
   }

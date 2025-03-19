@@ -34,11 +34,6 @@ export default class PageNotFound extends Component {
     this.saveButton = this.element.querySelector('button');
     this.languageSelect = this.element.querySelector('select');
 
-    this.css`
-      .settings {
-      }
-    `;
-
     this.addEvents();
   }
 

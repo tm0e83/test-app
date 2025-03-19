@@ -2,8 +2,6 @@ import Component from '/core/component.js';
 import { isLoggedIn } from '/core/functions.js';
 import de from '/i18n/de.js';
 import store from '/core/store.js';
-import Notifications from '/core/notifications.js';
-import css from './app.css' with { type: 'css' };
 import router from '/core/router.js';
 
 store.state = {
@@ -14,9 +12,6 @@ store.state = {
   layout: '',
   language: 'de',
 };
-
-// window.router = router;
-window.notify = new Notifications();
 
 window.addEventListener('DOMContentLoaded', async () => {
   new App();
@@ -30,7 +25,6 @@ class App extends Component {
 
   async init() {
     this.element = document.querySelector('#app');
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
     try {
       await i18next
@@ -69,7 +63,7 @@ class App extends Component {
   }
 
   async render() {
-    const layoutName = router?.route?.config?.layout ?? 'empty';
+    const layoutName = router?.route?.config?.layout ?? 'blank';
 
     if (!router.route.config && isLoggedIn()) {
       return router.goTo('/dashboard');
@@ -78,7 +72,9 @@ class App extends Component {
     const { default: Layout } = await import(`./layout/${layoutName}/index.js`);
     this.page = new Layout(this);
 
-    this.element.innerHTML = '';
-    this.element.appendChild(this.page.element);
+    this.page.addEventListener('loaded', _ => {
+      this.element.innerHTML = '';
+      this.element.appendChild(this.page.element);
+    });
   }
 }

@@ -1,26 +1,50 @@
+import LayoutStandard from '.';
 import Component from '/core/component.js';
 import router from '/core/router.js';
-import css from './header.css' with { type: 'css' };
 
 export default class Header extends Component {
+  /** @type {string} */
+  stylesheet = '/layout/standard/header.css';
+
+  /** @type {boolean} */
+  #isMenuOpen = false;
+
+  /**
+   * @param {LayoutStandard} parent
+   * @param {HTMLElement} element
+   */
   constructor(parent, element) {
     super(parent, element);
 
+    /** @type {HTMLElement} */
     this.element = element;
-    document.adoptedStyleSheets = [...document.adoptedStyleSheets, css];
 
-    this.render();
+    this.addCSS().then(_ => this.render());
   }
 
   addEvents() {
+    window.removeEventListener('resize', this.onResize);
+    window.addEventListener('resize', this.onResize.bind(this));
+
     this.toggleMenuButton.addEventListener('click', e => {
       e.preventDefault();
-      localStorage.setItem('menu-open', this.isOpen ? 0 : 1);
       this.dispatchEvent(new CustomEvent('toggleMenu'));
       this.render();
     });
 
     router.addLinkEvents(this.element.querySelectorAll('[href]'));
+  }
+
+  wait() {
+    if (this.waitTimeout) clearTimeout(this.waitTimeout);
+    return new Promise((resolve, reject) => {
+      this.waitTimeout = setTimeout(_ => resolve(), 100);
+    });
+  }
+
+  async onResize() {
+    await this.wait();
+    this.render();
   }
 
   render() {
@@ -33,10 +57,20 @@ export default class Header extends Component {
   /**
    * @returns {boolean}
    */
-  get isOpen() {
-    return localStorage.getItem('menu-open') == 1;
+  get isMobile() {
+    return window.innerWidth < 800;
   }
 
+  /**
+   * @returns {boolean}
+   */
+  get isOpen() {
+    return this.isMobile ? this.#isMenuOpen : localStorage.getItem('menu-open') == 1;
+  }
+
+  /**
+   * @returns {string}
+   */
   get template() {
     return /*html*/ `
       <div class="header-menu">
