@@ -1,4 +1,3 @@
-import LayoutStandard from '.';
 import Component from '/core/component.js';
 import router from '/core/router.js';
 
@@ -19,7 +18,9 @@ export default class Header extends Component {
     /** @type {HTMLElement} */
     this.element = element;
 
-    this.addCSS().then(_ => this.render());
+    this.addCSS()
+      .then(_ => this.render())
+      .catch(err => console.log(err));
   }
 
   addEvents() {

@@ -1,5 +1,5 @@
 import Component from '/core/component.js';
-import notify from '/core/notification.js';
+import notify from '/core/notifications.js';
 import router from '/core/router.js';
 
 export default class Create extends Component {

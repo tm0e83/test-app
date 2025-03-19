@@ -13,7 +13,8 @@ export default class LayoutStandard extends Component {
 
     this.addCSS()
       .then(_ => this.render())
-      .then(_ => this.dispatchEvent(new CustomEvent('loaded')));
+      .then(_ => this.dispatchEvent(new CustomEvent('loaded')))
+      .catch(err => console.log(err));
   }
 
   addEvents() {

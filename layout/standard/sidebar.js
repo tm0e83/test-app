@@ -1,7 +1,6 @@
 import Component from '/core/component.js';
 import store from '/core/store.js';
 import router from '/core/router.js';
-import LayoutStandard from '.';
 
 export default class Sidebar extends Component {
   /** @type {string} */
