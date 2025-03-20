@@ -10,7 +10,16 @@ export default class LayoutBlank extends Component {
 
     this.addCSS()
       .then(_ => this.render())
+      .then(_ => this.addStaticEvents())
       .then(_ => this.dispatchEvent(new CustomEvent('loaded')));
+  }
+
+  addStaticEvents() {
+    router.removeEventListener('routeChange', this.render);
+    router.addEventListener('routeChange', this.render.bind(this));
+  }
+
+  addEvents() {
   }
 
   async render() {
@@ -21,9 +30,11 @@ export default class LayoutBlank extends Component {
     try {
       const { default: Page } = await import(`/page/${router.route.segments[0]}.js`);
       this.element.appendChild((new Page()).element);
+      this.addEvents();
     } catch(error) {
       const { default: Page } = await import(`/page/${isLoggedIn() ? '404' : 'login'}.js`);
       this.element.appendChild((new Page()).element);
+      this.addEvents();
     }
   }
 

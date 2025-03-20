@@ -1,4 +1,7 @@
 export default class Component extends EventTarget {
+  /** @type {number} */
+  static _numInstances = 0;
+
   /** @type {Component[]} */
   #children = [];
 
@@ -8,6 +11,7 @@ export default class Component extends EventTarget {
   constructor(parent) {
     super();
 
+    this.constructor._numInstances++;
     parent?.registerChildComponents(this);
   }
 
@@ -44,10 +48,10 @@ export default class Component extends EventTarget {
    * ! Should be overwritten in concrete component implementation if component has any state subscriptions.
    */
   destroy() {
-    this.dispatchEvent('beforeDestroy');
-    this.#children.forEach((c) => c.destroy());
+    this.#children.forEach(childComponent => childComponent.destroy());
+    this.constructor._numInstances--;
 
-    if (this.constructor._stylesheet) {
+    if (this.constructor._stylesheet && !this.constructor._numInstances) {
       this.constructor._stylesheet.parentElement.removeChild(this.constructor._stylesheet);
       this.constructor._stylesheet = null;
     }

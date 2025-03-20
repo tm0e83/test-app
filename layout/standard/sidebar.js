@@ -35,7 +35,7 @@ export default class Sidebar extends Component {
       e.preventDefault();
       store.state.token = '';
       localStorage.setItem('token', '');
-      router.goTo('/');
+      router.goTo('/login');
     });
 
     router.addLinkEvents(this.element.querySelectorAll('[href]'));

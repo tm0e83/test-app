@@ -10,7 +10,14 @@ export default class Main extends Component {
 
     this.element = element;
 
-    this.addCSS().then(_ => this.render());
+    this.addCSS()
+      .then(_ => this.render())
+      .then(_ => this.addStaticEvents());
+  }
+
+  addStaticEvents() {
+    router.removeEventListener('routeChange', this.render);
+    router.addEventListener('routeChange', this.render.bind(this));
   }
 
   addEvents() {

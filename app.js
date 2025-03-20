@@ -63,18 +63,25 @@ class App extends Component {
   }
 
   async render() {
-    const layoutName = router?.route?.config?.layout ?? 'blank';
+    const nextLayout = router?.route?.config?.layout ?? 'blank';
+    const layoutChanged = nextLayout !== store.state.layout;
+
+    if (!layoutChanged) {
+      return;
+    }
+
+    store.state.layout = nextLayout;
 
     if (!router.route.config && isLoggedIn()) {
       return router.goTo('/dashboard');
     }
 
-    const { default: Layout } = await import(`./layout/${layoutName}/index.js`);
-    this.page = new Layout(this);
+    const { default: Layout } = await import(`./layout/${store.state.layout}/index.js`);
+    this.layout = new Layout(this);
 
-    this.page.addEventListener('loaded', _ => {
+    this.layout.addEventListener('loaded', _ => {
       this.element.innerHTML = '';
-      this.element.appendChild(this.page.element);
+      this.element.appendChild(this.layout.element);
     });
   }
 }
