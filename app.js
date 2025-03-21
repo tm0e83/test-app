@@ -4,15 +4,6 @@ import de from '/i18n/de.js';
 import store from '/core/store.js';
 import router from '/core/router.js';
 
-store.state = {
-  user: {
-    name: '',
-  },
-  token: '',
-  layout: '',
-  language: 'de',
-};
-
 window.addEventListener('DOMContentLoaded', async () => {
   new App();
 });
@@ -20,6 +11,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 class App extends Component {
   constructor() {
     super();
+
     this.init();
   }
 
@@ -59,18 +51,23 @@ class App extends Component {
     });
 
     i18next.changeLanguage(store.state.language);
-    this.render();
+    this.render(true);
   }
 
-  async render() {
-    const nextLayout = router?.route?.config?.layout ?? 'blank';
-    const layoutChanged = nextLayout !== store.state.layout;
+  /**
+   * @param {Boolean} [forceRender=false]
+   */
+  async render(forceRender = false) {
+    if (!forceRender) {
+      const nextLayout = router?.route?.config?.layout ?? 'blank';
+      const layoutChanged = nextLayout !== store.state.layout;
 
-    if (!layoutChanged) {
-      return;
+      if (!layoutChanged) {
+        return;
+      }
+
+      store.state.layout = nextLayout;
     }
-
-    store.state.layout = nextLayout;
 
     if (!router.route.config && isLoggedIn()) {
       return router.goTo('/dashboard');

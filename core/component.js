@@ -45,7 +45,6 @@ export default class Component extends EventTarget {
 
   /**
    * Destroys all child component and then removes the components root element from DOM.
-   * ! Should be overwritten in concrete component implementation if component has any state subscriptions.
    */
   destroy() {
     this.#children.forEach(childComponent => childComponent.destroy());
@@ -55,5 +54,7 @@ export default class Component extends EventTarget {
       this.constructor._stylesheet.parentElement.removeChild(this.constructor._stylesheet);
       this.constructor._stylesheet = null;
     }
+
+    this.dispatchEvent(new CustomEvent('onAfterDestroy'));
   }
 }

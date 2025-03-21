@@ -5,7 +5,7 @@ class Router extends EventTarget {
     { path: 'login', layout: 'blank', title: "login" },
     { path: 'settings', layout: 'standard', title: "settings" },
 
-    { path: 'invoice/overview', layout: 'standard', title: "Dashboard" , title: "invoices" },
+    { path: 'invoice/overview', layout: 'standard', title: "invoices" },
     { path: 'invoice/details/:id', layout: 'standard', parent: 'invoice/overview', title: "details" },
     { path: 'invoice/edit/:id', layout: 'standard', parent: 'invoice/details/:id', title: "edit" },
 

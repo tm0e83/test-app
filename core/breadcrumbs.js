@@ -10,8 +10,11 @@ export default class Breadcrumbs extends Component {
     this.render();
   }
 
-  render() {
-    this.breadcrumbItems = router.routeHierarchy.reduce((items, item) => {
+  /**
+   * @returns {array}
+   */
+  get breadcrumbItems() {
+    return router.routeHierarchy.reduce((items, item) => {
       item.fullpath = item.path;
       Object.entries(router.route.queryParams).map(([paramName, paramValue]) => {
         item.fullpath = item.path.replace(`:${paramName}`, paramValue);
@@ -19,26 +22,45 @@ export default class Breadcrumbs extends Component {
       });
       items.push(item);
       return items;
-    }, [])
+    }, []);
+  }
 
+  render() {
+    this.element.innerHTML = '';
+    const breadcrumbItems = this.breadcrumbItems;
+    if (breadcrumbItems.length < 2) return;
+    this.element.innerHTML = this.template;
+    const list = this.element.querySelector('ol')
+    breadcrumbItems.map(item => list.appendChild((new BreadcrumbItem(item)).element));
+  }
+
+  get template() {
+    return /*html*/ `
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb"></ol>
+      </nav>
+    `;
+  }
+}
+
+class BreadcrumbItem {
+  constructor(data) {
+    this.data = data;
+
+    this.render();
+  }
+
+  render() {
+    this.element = document.createElement('li');
+    this.element.classList.add('breadcrumb-item');
     this.element.innerHTML = this.template;
   }
 
   get template() {
-    if (this.breadcrumbItems.length <= 1) return '';
+    if (this.data.path === router.route.config.path) {
+      return i18next.t(this.data.title);
+    }
 
-    return /*html*/ `
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          ${
-            this.breadcrumbItems.map(item => `
-              <li class="breadcrumb-item">
-                ${item.path === router.route.config.path ? item.title : /*html*/ `<a href="/${item.fullpath}">${i18next.t(item.title)}</a>`}
-              </li>
-            `).join('')
-          }
-        </ol>
-      </nav>
-    `;
+    return /*html*/ `<a href="/${this.data.fullpath}">${i18next.t(this.data.title)}</a>`;
   }
 }

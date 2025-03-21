@@ -41,9 +41,6 @@ export default class Details extends Component {
     this.element.innerHTML = this.template;
     this.links = this.element.querySelectorAll('[href]');
 
-    this.css`
-    `;
-
     this.addEvents();
   }
 
