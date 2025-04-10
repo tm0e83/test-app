@@ -8,6 +8,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   new App();
 });
 
+window.addEventListener('error', (error) => {
+  console.log('ERROR', error );
+});
+
 class App extends Component {
   constructor() {
     super();
@@ -35,8 +39,12 @@ class App extends Component {
   }
 
   addEvents() {
-    router.addEventListener('routeChange', this.render.bind(this));
+    router.addEventListener('routeChange', this.onRouteChange.bind(this));
     window.addEventListener('settingsChange', this.onLanguageChange.bind(this));
+  }
+
+  onRouteChange() {
+    this.render();
   }
 
   async onLanguageChange() {
@@ -51,34 +59,27 @@ class App extends Component {
     });
 
     i18next.changeLanguage(store.state.language);
-    this.render(true);
+    this.layout.render();
   }
 
-  /**
-   * @param {Boolean} [forceRender=false]
-   */
-  async render(forceRender = false) {
-    if (!forceRender) {
-      const nextLayout = router?.route?.config?.layout ?? 'blank';
-      const layoutChanged = nextLayout !== store.state.layout;
+  async render() {
+    const nextLayout = router?.route?.config?.layout ?? 'blank';
+    const layoutChanged = nextLayout !== store.state.layout;
 
-      if (!layoutChanged) {
-        return;
-      }
-
-      store.state.layout = nextLayout;
+    if (!layoutChanged) {
+      return;
     }
 
+    store.state.layout = nextLayout;
+
     if (!router.route.config && isLoggedIn()) {
-      return router.goTo('/dashboard');
+      return router.navigate('/dashboard');
     }
 
     const { default: Layout } = await import(`./layout/${store.state.layout}/index.js`);
+    if (this.layout) this.layout.destroy();
     this.layout = new Layout(this);
-
-    this.layout.addEventListener('loaded', _ => {
-      this.element.innerHTML = '';
-      this.element.appendChild(this.layout.element);
-    });
+    this.element.innerHTML = '';
+    this.element.appendChild(this.layout.element);
   }
 }

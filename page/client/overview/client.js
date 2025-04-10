@@ -2,28 +2,20 @@ import Component from '/core/component.js';
 import router from '/core/router.js';
 
 export default class Client extends Component {
-  stylesheet = '/page/client/overview/client.css';
-  constructor(args) {
-    super();
+  constructor(parent, data) {
+    super(parent);
 
-    this.parent = args.parent;
-    this.data = args.data;
-    this.element = args.element;
+    this.data = data;
 
-    this.addCSS().then(_ => this.render());
+    this.addCSS('/page/client/overview/client.css');
+    this.element = document.createElement('div');
+    this.element.classList.add('client');
+    this.render = this.render.bind(this);
+    this.render();
   }
 
   addEvents() {
-    this.editButton.addEventListener('click', this.onEdit.bind(this));
     this.deleteButton.addEventListener('click', this.onDelete.bind(this));
-  }
-
-  /**
-   * @param {Event} e
-   */
-  onEdit(e) {
-    e.preventDefault();
-    router.goTo(e.currentTarget.href);
   }
 
   /**
@@ -35,9 +27,7 @@ export default class Client extends Component {
   }
 
   render() {
-    this.element.classList.add('client');
     this.element.innerHTML = this.template;
-    this.editButton = this.element.querySelector('.button-edit');
     this.deleteButton = this.element.querySelector('.button-delete');
 
     this.addEvents();
@@ -55,7 +45,7 @@ export default class Client extends Component {
           <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item button-edit" href="/client/details/${this.data.id}">${i18next.t('edit')}</a></li>
+            <li><a class="dropdown-item button-edit" href="/client/details/${this.data.id}" data-link>${i18next.t('edit')}</a></li>
             <li><a class="dropdown-item button-delete" href="#">${i18next.t('delete')}</a></li>
           </ul>
         </div>

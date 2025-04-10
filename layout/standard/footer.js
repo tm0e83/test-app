@@ -1,14 +1,13 @@
 import Component from '/core/component.js';
 
 export default class Footer extends Component {
-  stylesheet = '/layout/standard/footer.css';
-
   constructor(element) {
-    super(parent, element);
+    super(parent);
 
-    this.element = element;
-
-    this.addCSS().then(_ => this.render());
+    this.addCSS('/layout/standard/footer.css');
+    this.render = this.render.bind(this);
+    this.element = document.createElement('footer');
+    this.render();
   }
 
   addEvents() {

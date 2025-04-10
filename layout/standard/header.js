@@ -1,26 +1,22 @@
+//@ts-check
+
 import Component from '/core/component.js';
-import router from '/core/router.js';
+import LayoutStandard from '/layout/standard/index.js';
 
 export default class Header extends Component {
-  /** @type {string} */
-  stylesheet = '/layout/standard/header.css';
-
   /** @type {boolean} */
-  #isMenuOpen = false;
+  isMenuOpen = false;
 
   /**
    * @param {LayoutStandard} parent
-   * @param {HTMLElement} element
    */
-  constructor(parent, element) {
-    super(parent, element);
+  constructor(parent) {
+    super(parent);
 
-    /** @type {HTMLElement} */
-    this.element = element;
-
-    this.addCSS()
-      .then(_ => this.render())
-      .catch(err => console.log(err));
+    this.addCSS('/layout/standard/header.css');
+    this.render = this.render.bind(this);
+    this.element = document.createElement('header');
+    this.render();
   }
 
   addEvents() {
@@ -32,8 +28,6 @@ export default class Header extends Component {
       this.dispatchEvent(new CustomEvent('toggleMenu'));
       this.render();
     });
-
-    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   wait() {
@@ -66,7 +60,7 @@ export default class Header extends Component {
    * @returns {boolean}
    */
   get isOpen() {
-    return this.isMobile ? this.#isMenuOpen : localStorage.getItem('menu-open') == 1;
+    return this.isMobile ? this.isMenuOpen : localStorage.getItem('menu-open') == '1';
   }
 
   /**
@@ -78,10 +72,10 @@ export default class Header extends Component {
         <a class="button-toggle-menu">
           <i class="fa-solid fa-${this.isOpen ? 'times' : 'bars'}"></i>
         </a>
-        <a href="/dashboard"><i class="fa-solid fa-house"></i></a>
+        <a href="/dashboard" data-link><i class="fa-solid fa-house"></i></a>
         <a class="button-toggle-notifications"><i class="fa-solid fa-bell"></i></a>
       </div>
-      <a href="/dashboard">Logo</a>
+      <a href="/dashboard" data-link>Logo</a>
     `;
   }
 }

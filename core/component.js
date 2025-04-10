@@ -1,3 +1,5 @@
+//@ts-check
+
 export default class Component extends EventTarget {
   /** @type {number} */
   static _numInstances = 0;
@@ -11,29 +13,33 @@ export default class Component extends EventTarget {
   constructor(parent) {
     super();
 
-    this.constructor._numInstances++;
-    parent?.registerChildComponents(this);
+    this.parent = parent;
+
+    /** @type {typeof Component} */
+    (this.constructor)._numInstances++;
+
+    this.parent?.registerChildComponents(this);
   }
 
-  addCSS() {
-    return new Promise((resolve, reject) => {
-      if (this.stylesheet && !this.constructor._stylesheet) {
-        this.constructor._stylesheet = document.createElement('link');
-        this.constructor._stylesheet.setAttribute('rel', 'stylesheet')
-        this.constructor._stylesheet.setAttribute('href', this.stylesheet);
-        document.head.appendChild(this.constructor._stylesheet);
-        this.constructor._stylesheet.addEventListener('load', _ => resolve());
-      } else {
-        resolve();
-      }
-    });
-  }
+  /**
+   * @method addCSS
+   * @param {*} filePath
+   * @returns
+   */
+  addCSS(filePath) {
+    if (!filePath) {
+      return console.error('missing or empty filePath');
+    }
 
-  // css() {
-  //   const style = document.createElement('style');
-  //   style.textContent = [...arguments].flat().join('');
-  //   this.element.appendChild(style);
-  // }
+    const ctor = /** @type {typeof Component} */ (this.constructor);
+
+    if (!ctor._stylesheet) {
+      ctor._stylesheet = document.createElement('link');
+      ctor._stylesheet.setAttribute('rel', 'stylesheet')
+      ctor._stylesheet.setAttribute('href', filePath);
+      document.head.appendChild(ctor._stylesheet);
+    }
+  }
 
   /**
    * Registers one or multiple components as children of this component.
@@ -48,13 +54,15 @@ export default class Component extends EventTarget {
    */
   destroy() {
     this.#children.forEach(childComponent => childComponent.destroy());
-    this.constructor._numInstances--;
 
-    if (this.constructor._stylesheet && !this.constructor._numInstances) {
-      this.constructor._stylesheet.parentElement.removeChild(this.constructor._stylesheet);
-      this.constructor._stylesheet = null;
+    const ctor = /** @type {typeof Component} */ (this.constructor);
+    ctor._numInstances--;
+
+    if (ctor._stylesheet && !ctor._numInstances) {
+      ctor._stylesheet.parentElement.removeChild(ctor._stylesheet);
+      ctor._stylesheet = null;
     }
 
-    this.dispatchEvent(new CustomEvent('onAfterDestroy'));
+    this.dispatchEvent(new CustomEvent('onDestroy'));
   }
 }

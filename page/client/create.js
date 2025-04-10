@@ -16,7 +16,6 @@ export default class Create extends Component {
   addEvents() {
     this.form.addEventListener('submit', this.onFormSubmit.bind(this));
     this.backButton.addEventListener('click', e => history.back());
-    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   async onFormSubmit(e) {
@@ -26,7 +25,7 @@ export default class Create extends Component {
     await this.save(formData);
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
-    router.goTo('/client/overview');
+    router.navigate('/client/overview');
     notify.send(i18next.t('saved'), 'success');
   }
 

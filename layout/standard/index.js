@@ -5,16 +5,14 @@ import Main from './main.js';
 // import Footer from './standard/footer.js';
 
 export default class LayoutStandard extends Component {
-  /** @type {string} */
-  stylesheet = '/layout/standard/index.css';
+  constructor(parent) {
+    super(parent);
 
-  constructor(parent, element) {
-    super(parent, element);
-
-    this.addCSS()
-      .then(_ => this.render())
-      .then(_ => this.dispatchEvent(new CustomEvent('loaded')))
-      .catch(err => console.log(err));
+    this.addCSS('/layout/standard/index.css');
+    this.element = document.createElement('div');
+    this.element.classList.add('layout', 'layout-standard');
+    this.render = this.render.bind(this);
+    this.render();
   }
 
   addEvents() {
@@ -22,16 +20,19 @@ export default class LayoutStandard extends Component {
   }
 
   render() {
-    this.element = document.createElement('div');
-    this.element.classList.add('layout', 'layout-standard');
     this.element.innerHTML = this.template;
 
-    this.sidebar = new Sidebar(this, this.element.querySelector('aside'));
-    this.header = new Header(this, this.element.querySelector('header'));
-    this.main = new Main(this, this.element.querySelector('main'));
+    this.header = new Header(this);
+    this.element.querySelector('header').replaceWith(this.header.element);
 
-    // this.registerChildComponents([this.main]);
-    // new Footer(this, this.element.querySelector('footer'));
+    this.sidebar = new Sidebar(this);
+    this.element.querySelector('aside').replaceWith(this.sidebar.element);
+
+    this.main = new Main(this);
+    this.element.querySelector('main').replaceWith(this.main.element);
+
+    // this.footer = new Footer(this);
+    // this.element.querySelector('footer').replaceWith(this.footer.element);
 
     this.addEvents();
   }

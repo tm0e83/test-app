@@ -3,19 +3,20 @@ import notify from '/core/notifications.js';
 import router from '/core/router.js';
 
 export default class Edit extends Component {
-  constructor(args) {
-    super();
+  constructor(parent) {
+    super(parent);
 
     this.id = router.route.routeParams.id;
     this.element = document.createElement('div');
     this.element.classList.add('invoice-edit', 'loading');
+    this.render = this.render.bind(this);
 
-    // this.render();
+    this.render();
     this.load()
       .then(response => response.json())
       .then(data => this.data = data)
-      .then(_ => this.element.classList.remove('loading'))
       .then(_ => this.render())
+      .then(_ => this.element.classList.remove('loading'))
       .catch(error => console.error('Fehler beim Abrufen von JSON:', error));
   }
 
@@ -29,14 +30,6 @@ export default class Edit extends Component {
     this.backButton.addEventListener('click', e => {
       history.back();
     });
-
-    this.links.forEach(linkElement => {
-      linkElement.addEventListener('click', e => {
-        e.preventDefault();
-        if (e.target.href === '#') return;
-        router.goTo(e.target.href);
-      });
-    });
   }
 
   async onFormSubmit(e) {
@@ -46,7 +39,7 @@ export default class Edit extends Component {
     await this.save(formData);
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
-    router.goTo('/invoice/details/' + this.id);
+    router.navigate('/invoice/details/' + this.id);
     notify.send(i18next.t('saved'), 'success');
   }
 
@@ -57,14 +50,9 @@ export default class Edit extends Component {
   }
 
   render() {
-    this.element.classList.add('invoice-details');
     this.element.innerHTML = this.template;
     this.form = this.element.querySelector('form');
     this.backButton = this.element.querySelector('.btn-secondary');
-    this.links = this.element.querySelectorAll('[href]');
-
-    this.css`
-    `;
 
     this.addEvents();
   }

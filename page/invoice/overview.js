@@ -1,30 +1,28 @@
 import Component from '/core/component.js';
+import ModalConfirm from '/core/modal-confirm.js';
 import Pagination from '/core/pagination.js';
 import Filters from './overview/filters.js';
 import List from './overview/list.js';
 import { getQueryParams } from '/core/functions.js';
 
 export default class Overview extends Component {
-  stylesheet = '/page/invoice/overview.css';
+  constructor(parent) {
+    super(parent);
 
-  constructor() {
-    super();
-
-    const params = getQueryParams();
-
-    this.pageIndex = params.page ?? 0;
+    this.pageIndex = getQueryParams().page ?? 0;
     this.itemPerPage = 10;
     this.invoiceData = [];
     this.element = document.createElement('div');
     this.element.classList.add('invoice-overview', 'loading');
+    this.render = this.render.bind(this);
 
-    this.addCSS()
-      .then(_ => this.render())
+    this.render();
+    this.addCSS('/page/invoice/overview.css')
       .then(_ => this.load())
       .then(response => response.json())
       .then(data => this.invoiceData = data)
-      .then(_ => this.element.classList.remove('loading'))
       .then(_ => this.render())
+      .then(_ => this.element.classList.remove('loading'))
       .catch(error => console.error('Fehler beim Abrufen von JSON:', error));
   }
 
@@ -88,10 +86,8 @@ export default class Overview extends Component {
     this.invoiceList = this.element.querySelector('.invoice-list');
     this.list = this.element.querySelector('.invoice-list');
 
-    this.filters = new Filters(
-      this,
-      this.element.querySelector('.filters'),
-    );
+    this.filters = new Filters(this);
+    this.element.querySelector('.filters').replaceWith(this.filters.element);
 
     const filteredItems = this.filteredItems;
 
@@ -102,11 +98,8 @@ export default class Overview extends Component {
       currentPageIndex: this.pageIndex
     });
 
-    this.list = new List(
-      this,
-      this.element.querySelector('.invoice-list'),
-      this.pagination.getVisibleItems(filteredItems)
-    );
+    this.list = new List(this, this.pagination.getVisibleItems(filteredItems));
+    this.element.querySelector('.invoice-list').replaceWith(this.list.element);
 
     this.addEvents();
   }
@@ -122,38 +115,15 @@ export default class Overview extends Component {
   }
 
   onDelete(id) {
-    const modalElement = document.createElement('div');
-    modalElement.classList.add('modal', 'fade');
-    modalElement.innerHTML = /*html*/`
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title">${i18next.t('delete')}?</h5>
-          </div>
-          <div class="modal-body">
-            <p>${i18next.t('reallyDeleteInvoice')}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${i18next.t('cancel')}</button>
-            <button type="button" class="btn btn-danger">${i18next.t('delete')}</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    this.element.appendChild(modalElement);
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
-
-    modalElement.querySelector('.btn-danger').addEventListener('click', e => {
-      e.preventDefault();
-      this.invoiceData = this.invoiceData.filter(invoice => invoice.id !== id);
-      this.updateList();
-      modal.hide();
-    });
-
-    modalElement.addEventListener('hidden.bs.modal', _ => {
-      modal.dispose();
+    ModalConfirm.show({
+      title: i18next.t('delete'),
+      message: i18next.t('reallyDeleteInvoice'),
+      onConfirm: e => {
+        e.preventDefault();
+        this.invoiceData = this.invoiceData.filter(invoice => invoice.id !== id);
+        this.updateList();
+        ModalConfirm.hide();
+      }
     });
   }
 }

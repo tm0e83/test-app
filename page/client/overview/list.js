@@ -2,12 +2,13 @@ import Component from '/core/component.js';
 import Client from './client.js';
 
 export default class Overview extends Component {
-  constructor(parent, element, data) {
-    super(parent, element, data);
+  constructor(parent, data) {
+    super(parent, data);
 
-    this.parent = parent;
     this.data = data;
-    this.element = element;
+    this.element = document.createElement('div');
+    this.element.classList.add('client-list');
+    this.render = this.render.bind(this);
 
     this.render(this.data);
   }
@@ -17,22 +18,15 @@ export default class Overview extends Component {
     this.element.innerHTML = this.template;
 
     this.data.map(clientData => {
-      const clientElement = document.createElement('div');
-      this.element.appendChild(clientElement);
-
-      new Client({
-        parent: this,
-        data: clientData,
-        element: clientElement
-      });
+      this.element.appendChild((new Client(this, clientData)).element);
     });
-  }
-
-  onDelete(id) {
-    this.parent.onDelete(id);
   }
 
   get template() {
     return /*html*/ `${this.data.length ? '': i18next.t('noResults')}`;
+  }
+
+  onDelete(id) {
+    this.parent.onDelete(id);
   }
 }

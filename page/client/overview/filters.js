@@ -2,14 +2,16 @@ import Component from '/core/component.js';
 import router from '/core/router.js';
 
 export default class Filters extends Component {
-  stylesheet = '/page/client/overview/filters.css';
+  constructor(parent) {
+    super(parent);
 
-  constructor(parent, element) {
-    super(parent, element);
+    this.addCSS('/page/client/overview/filters.css');
 
-    this.element = element;
+    this.element = document.createElement('div');
+    this.element.classList.add('filters');
+    this.render = this.render.bind(this);
 
-    this.addCSS().then(_ => this.render());
+    this.render();
   }
 
   addEvents() {
@@ -34,7 +36,6 @@ export default class Filters extends Component {
 
   render() {
     this.element.innerHTML = this.template;
-    this.element.classList.add('filters');
     this.searchInput = this.element.querySelector('input');
 
     this.addEvents();

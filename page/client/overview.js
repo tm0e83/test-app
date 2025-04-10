@@ -1,38 +1,45 @@
+//@ts-check
+
 import Component from '/core/component.js';
+import ModalConfirm from '/core/modal-confirm.js';
 import Pagination from '/core/pagination.js';
 import Filters from './overview/filters.js';
 import List from './overview/list.js';
 import { getQueryParams } from '/core/functions.js';
 
 export default class Overview extends Component {
-  stylesheet = '/page/client/overview.css';
-
   constructor() {
     super();
 
+    this.addCSS('/page/client/overview.css');
+
+    /** @type {object} */
     const params = getQueryParams();
 
+    /** @type {number} */
     this.pageIndex = params.page ?? 0;
+
+    /** @type {number} */
     this.itemPerPage = 10;
+
+    /** @type {array} */
     this.clientData = [];
+
     this.element = document.createElement('div');
     this.element.classList.add('client-overview', 'loading');
 
-    this.addCSS()
-      .then(_ => this.render())
-      .then(_ => this.load())
+    this.render = this.render.bind(this);
+    this.render();
+
+    this.load()
       .then(response => response.json())
       .then(data => this.clientData = data)
-      .then(_ => this.element.classList.remove('loading'))
       .then(_ => this.render())
+      .then(_ => this.element.classList.remove('loading'))
       .catch(error => console.error('Fehler beim Abrufen von JSON:', error));
   }
 
   async load() {
-    await new Promise((resolve, reject) => {
-      setTimeout(_ => resolve(), 300)
-    })
-
     return fetch('/data/clients.json');
   }
 
@@ -44,7 +51,7 @@ export default class Overview extends Component {
 
   addEvents() {
     this.pagination.addEventListener('pageChange', e => {
-      this.pageIndex = e.detail;
+      this.pageIndex = /** @type {CustomEvent} */ (e).detail;
       this.updatePath();
       this.updateList();
     });
@@ -57,11 +64,8 @@ export default class Overview extends Component {
   }
 
   updatePath() {
-    const queryParams = this.toQueryString(
-      Object.assign({ page: this.pageIndex }, this.filters.values)
-    );
-
-    var path = window.location.pathname + `?${queryParams}`;
+    const queryParams = this.toQueryString(Object.assign({ page: this.pageIndex }, this.filters.values));
+    const path = window.location.pathname + `?${queryParams}`;
     history.pushState({ path: window.location.pathname }, null, path);
   }
 
@@ -71,6 +75,10 @@ export default class Overview extends Component {
     this.list.render(this.pagination.getVisibleItems(client));
   }
 
+  /**
+   * Filter items based on the search value and type.
+   * @returns {Array} Filtered items.
+   */
   get filteredItems() {
     const searchVal = this.filters.values.search ?? '';
     const regex = searchVal.trim().length ? new RegExp(`${searchVal}`, 'gi') : new RegExp(/^.*$/);
@@ -83,30 +91,24 @@ export default class Overview extends Component {
     }, []);
   }
 
-  async render() {
+  render() {
     this.element.innerHTML = this.template;
-    this.invoiceList = this.element.querySelector('.invoice-list');
-    this.list = this.element.querySelector('.invoice-list');
+    this.clientList = this.element.querySelector('.client-list');
 
-    this.filters = new Filters(
-      this,
-      this.element.querySelector('.filters'),
-    );
+    this.filters = new Filters(this);
+    this.element.querySelector('client-filters').replaceWith(this.filters.element);
 
     const filteredItems = this.filteredItems;
 
     this.pagination = new Pagination({
-      targetContainer: this.element.querySelector('.invoice-footer'),
+      targetContainer: this.element.querySelector('client-footer'),
       totalEntriesAmount: filteredItems.length,
       entriesPerPage: this.itemPerPage,
       currentPageIndex: this.pageIndex
     });
 
-    this.list = new List(
-      this,
-      this.element.querySelector('.invoice-list'),
-      this.pagination.getVisibleItems(filteredItems)
-    );
+    this.list = new List(this, this.pagination.getVisibleItems(filteredItems));
+    this.element.querySelector('client-list').replaceWith(this.list.element);
 
     this.addEvents();
   }
@@ -114,46 +116,26 @@ export default class Overview extends Component {
   get template() {
     return /*html*/ `
       <h1>${i18next.t('clients')}</h1>
-      <div class="filters"></div>
-      <div class="invoice-head"></div>
-      <div class="invoice-list"></div>
-      <div class="invoice-footer"></div>
+      <client-filters></client-filters>
+      <client-list></client-list>
+      <client-footer></client-footer>
     `;
   }
 
+  /**
+   * display a modal confirm dialog to delete a client
+   * @param {Number} id
+   */
   onDelete(id) {
-    const modalElement = document.createElement('div');
-    modalElement.classList.add('modal', 'fade');
-    modalElement.innerHTML = /*html*/`
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title">${i18next.t('delete')}?</h5>
-          </div>
-          <div class="modal-body">
-            <p>${i18next.t('reallyDeleteClient')}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">${i18next.t('cancel')}</button>
-            <button type="button" class="btn btn-danger">${i18next.t('delete')}</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    this.element.appendChild(modalElement);
-    const modal = new bootstrap.Modal(modalElement);
-    modal.show();
-
-    modalElement.querySelector('.btn-danger').addEventListener('click', e => {
-      e.preventDefault();
-      this.clientData = this.clientData.filter(invoice => invoice.id !== id);
-      this.updateList();
-      modal.hide();
-    });
-
-    modalElement.addEventListener('hidden.bs.modal', _ => {
-      modal.dispose();
+    ModalConfirm.show({
+      title: i18next.t('delete'),
+      message: i18next.t('reallyDeleteClient'),
+      onConfirm: e => {
+        e.preventDefault();
+        this.clientData = this.clientData.filter(invoice => invoice.id !== id);
+        this.updateList();
+        ModalConfirm.hide();
+      }
     });
   }
 }

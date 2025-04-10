@@ -26,7 +26,7 @@ export const getQueryParams = (url = location.href) => {
  * @param {string} languageISO
  * @returns {string}
  */
-export const formatDate = (dateStr, languageISO) => {
+export const formatDate = (dateStr, languageISO = 'de-DE') => {
   return new Intl.DateTimeFormat(languageISO, {
     day: '2-digit',
     month: '2-digit',

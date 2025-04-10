@@ -2,12 +2,13 @@ import Component from '/core/component.js';
 import Invoice from './invoice.js';
 
 export default class Overview extends Component {
-  constructor(parent, element, data) {
-    super(parent, element, data);
+  constructor(parent, data) {
+    super(parent, data);
 
-    this.parent = parent;
     this.data = data;
-    this.element = element;
+    this.element = document.createElement('div');
+    this.element.classList.add('invoice-list');
+    this.render = this.render.bind(this);
 
     this.render(this.data);
   }
@@ -17,22 +18,15 @@ export default class Overview extends Component {
     this.element.innerHTML = this.template;
 
     this.data.map(invoiceData => {
-      const invoiceElement = document.createElement('div');
-      this.element.appendChild(invoiceElement);
-
-      new Invoice({
-        parent: this,
-        data: invoiceData,
-        element: invoiceElement
-      });
+      this.element.appendChild((new Invoice(this, invoiceData)).element);
     });
-  }
-
-  onDelete(id) {
-    this.parent.onDelete(id);
   }
 
   get template() {
     return /*html*/ `${this.data.length ? '': i18next.t('noResults')}`;
+  }
+
+  onDelete(id) {
+    this.parent.onDelete(id);
   }
 }

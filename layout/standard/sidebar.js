@@ -1,52 +1,57 @@
+//@ts-check
+
 import Component from '/core/component.js';
 import store from '/core/store.js';
 import router from '/core/router.js';
+import LayoutStandard from '/layout/standard/index.js';
 
 export default class Sidebar extends Component {
-  /** @type {string} */
-  stylesheet = '/layout/standard/sidebar.css';
-
   /** @type {boolean} */
-  #isOpen = false;
+  _isOpen = false;
 
   /**
    * @param {LayoutStandard} parent
-   * @param {HTMLElement} element
    */
-  constructor(parent, element) {
-    super(parent, element);
+  constructor(parent) {
+    super(parent);
 
-    /** @type {HTMLElement} */
-    this.element = element;
+    this.addCSS('/layout/standard/sidebar.css');
+    this.render = this.render.bind(this);
+    this.element = document.createElement('aside');
+    this.render();
+  }
 
-    this.addCSS().then(_ => this.render());
+  onDestroy() {
+    window.removeEventListener('resize', this.onResize);
   }
 
   addEvents() {
     window.removeEventListener('resize', this.onResize);
     window.addEventListener('resize', this.onResize.bind(this));
 
+    this.addEventListener('onDestroy', this.onDestroy.bind(this));
+
     this.toggleMenuButton.addEventListener('click', e => {
       e.preventDefault();
       this.toggle();
     });
 
-    this.logoutButton.addEventListener('click', e => {
-      e.preventDefault();
-      store.state.token = '';
-      localStorage.setItem('token', '');
-      router.goTo('/login');
-    });
+    this.logoutButton.addEventListener('click', this.onLogoutButtonClick.bind(this));
 
-    router.addLinkEvents(this.element.querySelectorAll('[href]'));
-
-    this.element.querySelectorAll('[href]').forEach(element => {
+    this.element.querySelectorAll('[data-link]').forEach(element => {
       element.addEventListener('click', e => {
         if (this.isMobile) {
-          this.toggle();
+          this.close();
         }
       });
     });
+  }
+
+  onLogoutButtonClick(e) {
+    e.preventDefault();
+    store.state.token = '';
+    localStorage.setItem('token', '');
+    router.navigate('/login');
   }
 
   wait() {
@@ -63,9 +68,9 @@ export default class Sidebar extends Component {
 
   toggle() {
     if (!this.isMobile) {
-      localStorage.setItem('menu-open', localStorage.getItem('menu-open') == 1 ? 0 : 1);
+      localStorage.setItem('menu-open', localStorage.getItem('menu-open') == '1' ? '0' : '1');
     } else {
-      this.#isOpen = !this.#isOpen;
+      this._isOpen = !this._isOpen;
     }
 
     this.render();
@@ -91,7 +96,7 @@ export default class Sidebar extends Component {
    * @returns {boolean}
    */
   get isOpen() {
-    return this.isMobile ? this.#isOpen : localStorage.getItem('menu-open') == 1;
+    return this.isMobile ? this._isOpen : localStorage.getItem('menu-open') == '1';
   }
 
   open() {
@@ -119,24 +124,27 @@ export default class Sidebar extends Component {
           <strong>${i18next.t('menu')}</strong>
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" href="/dashboard">${i18next.t('Dashboard')}</a>
+              <a class="nav-link active" href="/dashboard" data-link>${i18next.t('Dashboard')}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="/client/overview">${i18next.t('clients')}</a>
+              <a class="nav-link active" href="/client/overview" data-link>${i18next.t('clients')}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="/invoice/overview">${i18next.t('invoices')}</a>
+              <a class="nav-link active" href="/invoice/overview" data-link>${i18next.t('invoices')}</a>
             </li>
           </ul>
         </div>
         <div class="inner">
-            <hr>
+          <hr>
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" href="/settings">${i18next.t('settings')}</a>
+              <a class="nav-link active" href="/settings" data-link>${i18next.t('settings')}</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link button-logout" href="/"><i class="fa-solid fa-arrow-right-from-bracket"></i> ${i18next.t('logout')}</a>
+              <a class="nav-link button-logout" href="/" data-link>
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                ${i18next.t('logout')}
+              </a>
             </li>
           </ul>
         </div>

@@ -16,11 +16,6 @@ export default class PageNotFound extends Component {
   render() {
     this.element.innerHTML = this.template;
 
-    this.css`
-      .file-not-found {
-      }
-    `;
-
     this.addEvents();
   }
 

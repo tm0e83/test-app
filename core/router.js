@@ -2,6 +2,7 @@ import { getQueryParams } from '/core/functions.js';
 
 class Router extends EventTarget {
   routes = [
+    // { path: '', layout: 'blank' },
     { path: 'login', layout: 'blank', title: "login" },
     { path: 'settings', layout: 'standard', title: "settings" },
 
@@ -27,31 +28,26 @@ class Router extends EventTarget {
     window.addEventListener('popstate', (event) => {
       this.dispatchEvent(new CustomEvent('routeChange', { detail: event.state.path }));
     });
+
+    document.addEventListener('click', event => {
+      if (event.target.matches('[data-link]')) {
+        event.preventDefault();
+        if (!event.target.href || event.target.href === '#') return;
+        this.navigate(event.target.href);
+      }
+    });
   }
 
   /**
    * @param {string} path
    */
-  goTo(path) {
+  navigate(path) {
     history.pushState({ path }, null, path);
     this.dispatchEvent(new CustomEvent('routeChange', { detail: path }));
   }
 
-  /**
-   * @param {HTMLAnchorElement[]} links
-   */
-  addLinkEvents(links) {
-    links.forEach(linkElement => {
-      linkElement.addEventListener('click', e => {
-        e.preventDefault();
-        if (!e.currentTarget.href || e.currentTarget.href === '#') return;
-        this.goTo(e.currentTarget.href);
-      });
-    });
-  }
-
   get routeHierarchy() {
-    const path = this.route.config.path;
+    const path = this.route?.config?.path ?? '';
 
     function findObjectHierarchy(objects, startPath) {
       const result = [];

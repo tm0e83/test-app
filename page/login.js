@@ -39,7 +39,7 @@ export default class Login extends Component {
 
       store.state.token = json.token;
       localStorage.setItem('token', json.token);
-      router.goTo('/dashboard');
+      router.navigate('/dashboard');
     }
     catch (e) {
       alert('ALARM!!!', e);

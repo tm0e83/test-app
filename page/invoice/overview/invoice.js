@@ -1,31 +1,23 @@
+//@ts-check
+
 import Component from '/core/component.js';
-import router from '/core/router.js';
 import { formatDate } from '/core/functions.js';
 
 export default class Invoice extends Component {
-  stylesheet = '/page/invoice/overview/invoice.css';
+  constructor(parent, data) {
+    super(parent);
 
-  constructor(args) {
-    super();
+    this.data = data;
 
-    this.parent = args.parent;
-    this.data = args.data;
-    this.element = args.element;
-
-    this.addCSS().then(_ => this.render());
+    this.addCSS('/page/invoice/overview/invoice.css');
+    this.element = document.createElement('div');
+    this.element.classList.add('invoice');
+    this.render = this.render.bind(this);
+    this.render();
   }
 
   addEvents() {
-    this.editButton.addEventListener('click', this.onEdit.bind(this));
     this.deleteButton.addEventListener('click', this.onDelete.bind(this));
-  }
-
-  /**
-   * @param {Event} e
-   */
-  onEdit(e) {
-    e.preventDefault();
-    router.goTo(e.currentTarget.href);
   }
 
   /**
@@ -37,9 +29,7 @@ export default class Invoice extends Component {
   }
 
   render() {
-    this.element.classList.add('invoice');
     this.element.innerHTML = this.template;
-    this.editButton = this.element.querySelector('.button-edit');
     this.deleteButton = this.element.querySelector('.button-delete');
 
     this.addEvents();
@@ -58,7 +48,7 @@ export default class Invoice extends Component {
           <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item button-edit" href="/invoice/details/${this.data.id}">${i18next.t('edit')}</a></li>
+            <li><a class="dropdown-item button-edit" href="/invoice/details/${this.data.id}" data-link>${i18next.t('edit')}</a></li>
             <li><a class="dropdown-item button-delete" href="#">${i18next.t('delete')}</a></li>
           </ul>
         </div>

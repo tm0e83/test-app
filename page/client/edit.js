@@ -26,7 +26,6 @@ export default class Edit extends Component {
   addEvents() {
     this.form.addEventListener('submit', this.onFormSubmit.bind(this));
     this.backButton.addEventListener('click', e => history.back());
-    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   async onFormSubmit(e) {
@@ -36,7 +35,7 @@ export default class Edit extends Component {
     await this.save(formData);
     // Object.fromEntries(formData);
     this.element.classList.remove('loading');
-    router.goTo('/client/details/' + this.id);
+    router.navigate('/client/details/' + this.id);
     notify.send(i18next.t('saved'), 'success');
   }
 
@@ -51,7 +50,6 @@ export default class Edit extends Component {
     this.element.innerHTML = this.template;
     this.form = this.element.querySelector('form');
     this.backButton = this.element.querySelector('.btn-secondary');
-    this.links = this.element.querySelectorAll('[href]');
 
     this.addEvents();
   }

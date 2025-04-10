@@ -7,13 +7,14 @@ export default class Details extends Component {
 
     this.id = router.route.routeParams.id;
     this.element = document.createElement('div');
-    this.element.classList.add('client-details');
+    this.element.classList.add('client-details', 'loading');
+    this.render = this.render.bind(this);
 
-    // this.render();
     this.load()
       .then(response => response.json())
       .then(data => this.data = data)
       .then(_ => this.render())
+      .then(_ => this.element.classList.remove('loading'))
       .catch(error => console.error('Fehler beim Abrufen von JSON:', error));
   }
 
@@ -22,7 +23,6 @@ export default class Details extends Component {
   }
 
   addEvents() {
-    router.addLinkEvents(this.element.querySelectorAll('[href]'));
   }
 
   get languageISO() {
@@ -30,16 +30,14 @@ export default class Details extends Component {
   }
 
   render() {
-    this.element.classList.add('client-details');
     this.element.innerHTML = this.template;
-
     this.addEvents();
   }
 
   get template() {
     return /*html*/ `
       <h1>${i18next.t('client')} #${this.data.id}</h1>
-      <a class="btn btn-primary" href="/client/edit/${this.data.id}">${i18next.t('edit')}</a>
+      <a class="btn btn-primary" href="/client/edit/${this.data.id}" data-link>${i18next.t('edit')}</a>
     `;
   }
 }
