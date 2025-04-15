@@ -8,7 +8,8 @@ export default class Dashboard extends Component {
     this.element = document.createElement('div');
     this.element.classList.add('dashboard');
 
-    this.addCSS('/page/dashboard.css').then(_ => this.render());
+    this.addCSS('/page/dashboard.css');
+    this.render();
   }
 
   addEvents() {

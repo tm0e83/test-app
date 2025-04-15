@@ -18,7 +18,8 @@ export default class Overview extends Component {
 
     this.render();
     this.addCSS('/page/invoice/overview.css')
-      .then(_ => this.load())
+
+    this.load()
       .then(response => response.json())
       .then(data => this.invoiceData = data)
       .then(_ => this.render())
