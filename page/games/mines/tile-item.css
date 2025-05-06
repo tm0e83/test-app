@@ -1,12 +1,32 @@
 tile-item {
+  @keyframes shrink {
+
+  }
+
+  @keyframes expand {
+
+  }
+
   text-align: center;
   line-height: 5rem;
   aspect-ratio: 1 / 1 ;
-  background-color: var(--blue-001);
   border-radius: var(--bs-border-radius);
   cursor: pointer;
   transition: all 100ms ease-in-out;
   position: relative;
+  z-index: 1;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-color: var(--blue-001);
+  }
 
   &:hover {
     background-color: var(--blue-005);

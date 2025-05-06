@@ -1,6 +1,6 @@
 import Component from '/core/component.js';
 import store from '/core/store.js';
-import { roundTo2Decimals } from '/core/functions.js';
+import { roundTo2Decimals, shuffle } from '/core/functions.js';
 import './games/mines/tile-item.js';
 
 export default class MinesGame extends Component {
@@ -58,6 +58,7 @@ export default class MinesGame extends Component {
         this.#gameEnded = false;
         this.#winAmount = 0;
         this.#tileItemsData = this.newTileItemsData;
+        store.dispatch('updateBalance', store.state.user.balance - this.#stake);
         this.render();
       });
     }
@@ -91,7 +92,6 @@ export default class MinesGame extends Component {
 
         if (isMine) {
           this.reveal();
-          store.dispatch('updateBalance', store.state.user.balance - this.#stake);
           this.#gameStarted = false;
           this.#gameEnded = true;
         }
@@ -139,7 +139,12 @@ export default class MinesGame extends Component {
 
   isMine() {
     const random = Math.random();
-    const percentage = parseInt(this.minesInput.value || 0) / (this.#tileItems.length - this.numSelectedTiles)
+    const numRevealedTileItems = this.#tileItemsData.filter(tileItem => !!tileItem.type).length;
+    const numRevealedMines = this.#tileItemsData.filter(tileItem => tileItem.type === 'mine').length;
+    const percentage = (parseInt(this.minesInput.value || 0) - numRevealedMines) / (this.#tileItems.length - (numRevealedTileItems === this.#tileItems.length ? 0 : numRevealedTileItems))
+
+    console.log(numRevealedTileItems, percentage);
+
     return random <= percentage;
   }
 
