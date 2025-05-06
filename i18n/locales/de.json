@@ -1,0 +1,17 @@
+{
+  "app": {
+    "dashboard": "Dashboard",
+    "english": "Englisch",
+    "german": "Deutsch",
+    "language": "Sprache",
+    "limbo": "Limbo",
+    "login": "Login",
+    "logout": "Logout",
+    "menu": "Menü",
+    "mines": "Mines",
+    "play": "Spielen",
+    "save": "Speichern",
+    "settings": "Einstellungen",
+    "title": "Titel"
+  }
+}

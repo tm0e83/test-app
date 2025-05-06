@@ -3,19 +3,21 @@ import { getQueryParams } from '/core/functions.js';
 class Router extends EventTarget {
   routes = [
     // { path: '', layout: 'blank' },
-    { path: 'login', layout: 'blank', title: "login" },
-    { path: 'settings', layout: 'standard', title: "settings" },
+    { path: 'dashboard', layout: 'standard', title: "dashboard", component: '/page/dashboard-component' },
+    { path: 'login', layout: 'blank', title: "login", component: '/page/login-component' },
+    { path: 'settings', layout: 'standard', title: "settings", component: '/page/settings-component' },
+    { path: 'games/limbo', layout: 'standard', title: "Limbo", component: '/page/limbo-game' },
+    { path: 'games/mines', layout: 'standard', title: "Mines", component: '/page/mines-game' },
 
-    { path: 'invoice/overview', layout: 'standard', title: "invoices" },
-    { path: 'invoice/details/:id', layout: 'standard', parent: 'invoice/overview', title: "details" },
-    { path: 'invoice/edit/:id', layout: 'standard', parent: 'invoice/details/:id', title: "edit" },
+    // { path: 'invoice/overview', layout: 'standard', title: "invoices", component: '/page/invoice-overview-component' },
+    // { path: 'invoice/details/:id', layout: 'standard', parent: 'invoice/overview', title: "details", component: '/page/invoice-details-component' },
+    // { path: 'invoice/edit/:id', layout: 'standard', parent: 'invoice/details/:id', title: "edit", component: '/page/edit-invoice-component' },
 
-    { path: 'client/overview', layout: 'standard', title: "clients" },
-    { path: 'client/create', layout: 'standard', parent: 'client/overview', title: "create" },
-    { path: 'client/details/:id', layout: 'standard', parent: 'client/overview', title: "details" },
-    { path: 'client/edit/:id', layout: 'standard', parent: 'client/details/:id', title: "edit" },
+    // { path: 'client/overview', layout: 'standard', title: "clients", component: '/page/client-overview-component' },
+    // { path: 'client/create', layout: 'standard', parent: 'client/overview', title: "create", component: '/page/create-client-component' },
+    // { path: 'client/details/:id', layout: 'standard', parent: 'client/overview', title: "details", component: '/page/client-details-component' },
+    // { path: 'client/edit/:id', layout: 'standard', parent: 'client/details/:id', title: "edit", component: '/page/edit-client-component' },
 
-    { path: 'dashboard', layout: 'standard', title: "dashboard" },
   ];
 
   constructor() {

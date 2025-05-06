@@ -3,14 +3,10 @@ import router from '/core/router.js';
 import { isLoggedIn } from '/core/functions.js';
 
 export default class LayoutBlank extends Component {
-  constructor() {
-    super(parent);
+  cssFilePath = '/layout/blank/index.css';
 
-    this.addCSS('/layout/blank/index.css');
-    this.element = document.createElement('div');
-    this.element.classList.add('layout', 'layout-blank');
-    this.render = this.render.bind(this);
-    this.render();
+  constructor() {
+    super();
   }
 
   onDestroy() {
@@ -24,14 +20,16 @@ export default class LayoutBlank extends Component {
   }
 
   async render() {
-    this.element.innerHTML = this.template;
+    super.render();
 
     try {
-      const { default: Page } = await import(`/page/${router.route.segments[0]}.js`);
-      this.element.appendChild((new Page()).element);
+      const { default: Page } = await import(`/page/${router.route?.config?.component}.js`);
+      console.log(444);
+      this.appendChild((new Page()));
     } catch(error) {
-      const { default: Page } = await import(`/page/${isLoggedIn() ? '404' : 'login'}.js`);
-      this.element.appendChild((new Page()).element);
+      console.log(`/page/${isLoggedIn() ? '404' : 'login'}-component.js`);
+      const { default: Page } = await import(`/page/${isLoggedIn() ? '404' : 'login'}-component.js`);
+      this.appendChild((new Page()));
     }
 
     this.addEvents();
@@ -41,3 +39,5 @@ export default class LayoutBlank extends Component {
     return /*html*/ ``;
   }
 }
+
+customElements.define('layout-blank', LayoutBlank);

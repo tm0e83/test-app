@@ -1,13 +1,9 @@
 import Component from '/core/component.js';
 import router from '/core/router.js';
 
-export default class Breadcrumbs extends Component {
-  constructor(parent) {
+export default class BreadcrumbsComponent extends Component {
+  constructor() {
     super();
-
-    this.element = document.createElement('div');
-
-    this.render();
   }
 
   /**
@@ -26,11 +22,11 @@ export default class Breadcrumbs extends Component {
   }
 
   render() {
-    this.element.innerHTML = '';
+    this.innerHTML = '';
     const breadcrumbItems = this.breadcrumbItems;
     if (breadcrumbItems.length < 2) return;
-    this.element.innerHTML = this.template;
-    const list = this.element.querySelector('ol')
+    this.innerHTML = this.template;
+    const list = this.querySelector('ol')
     breadcrumbItems.map(item => list.appendChild((new BreadcrumbItem(item)).element));
   }
 
@@ -42,6 +38,8 @@ export default class Breadcrumbs extends Component {
     `;
   }
 }
+
+customElements.define('breadcrumbs-component', BreadcrumbsComponent);
 
 class BreadcrumbItem {
   constructor(data) {

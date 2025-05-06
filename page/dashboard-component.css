@@ -1,0 +1,9 @@
+dashboard-component {
+  .card {
+    background-color: rgb(58, 75, 90);
+    /* border-color: white; */
+  }
+  .card-body {
+    color: white;
+  }
+}

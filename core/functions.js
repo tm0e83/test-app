@@ -33,3 +33,25 @@ export const formatDate = (dateStr, languageISO = 'de-DE') => {
     year: 'numeric'
   }).format(new Date(dateStr));
 }
+
+/**
+ * @param {number} value
+ * @param {string} languageISO
+ * @returns {string}
+ */
+export const formatCurrency = (value, languageISO = 'de-DE') => {
+  return new Intl.NumberFormat(languageISO, {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
+/**
+ * @param {number} number
+ * @returns {number}
+ */
+export const roundTo2Decimals = num => {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+}

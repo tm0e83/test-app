@@ -1,60 +1,45 @@
 //@ts-check
 
-export default class Component extends EventTarget {
+import { i18n } from '/i18n/i18n.js';
+
+/**
+ * Base class for building Web Components without Shadow DOM.
+ * Handles lifecycle callbacks and rendering via a simple `render()` method.
+ */
+export default class Component extends HTMLElement {
   /** @type {number} */
   static _numInstances = 0;
-
-  /** @type {Component[]} */
-  #children = [];
 
   /** @type {HTMLLinkElement} */
   static _stylesheet;
 
-  constructor(parent) {
-    super();
+  /** @type {string} */
+  cssFilePath = null;
 
-    this.parent = parent;
+  constructor() {
+    super();
 
     /** @type {typeof Component} */
     (this.constructor)._numInstances++;
 
-    this.parent?.registerChildComponents(this);
+    this.render = this.render.bind(this);
   }
 
   /**
-   * @method addCSS
-   * @param {*} filePath
-   * @returns
+   * Lifecycle callback of Web Components / Custom Elements API: Called when the element is inserted into the DOM.
+   * Triggers the initial render.
+   * Subclasses may override this method to perform additional setup.
    */
-  addCSS(filePath) {
-    if (!filePath) {
-      return console.error('missing or empty filePath');
-    }
-
-    const ctor = /** @type {typeof Component} */ (this.constructor);
-
-    if (!ctor._stylesheet) {
-      ctor._stylesheet = document.createElement('link');
-      ctor._stylesheet.setAttribute('rel', 'stylesheet')
-      ctor._stylesheet.setAttribute('href', filePath);
-      document.head.appendChild(ctor._stylesheet);
-    }
+  connectedCallback() {
+    this.addCSS();
+    this.render();
   }
 
   /**
-   * Registers one or multiple components as children of this component.
-   * @param  {...Component} components
+   * Lifecycle callback of Web Components / Custom Elements API: Called when the elemeted is removed from the DOM.
+   * Subclasses may override this method to perform cleanup.
    */
-  registerChildComponents(...components) {
-    this.#children.push(...components);
-  }
-
-  /**
-   * Destroys all child component and then removes the components root element from DOM.
-   */
-  destroy() {
-    this.#children.forEach(childComponent => childComponent.destroy());
-
+  disconnectedCallback() {
     const ctor = /** @type {typeof Component} */ (this.constructor);
     ctor._numInstances--;
 
@@ -62,7 +47,50 @@ export default class Component extends EventTarget {
       ctor._stylesheet.parentElement.removeChild(ctor._stylesheet);
       ctor._stylesheet = null;
     }
+  }
 
-    this.dispatchEvent(new CustomEvent('onDestroy'));
+  /**
+   * Lifecycle callback of Web Components / Custom Elements API: Called when one of the element's observed attributes is changed.
+   * Subclasses should define `static get observedAttributes()` to use this.
+   * @param {string} name - The name of the attribute.
+   * @param {string|null} oldValue - The old value of the attribute.
+   * @param {string|null} newValue - The new value of the attribute.
+   */
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue) {
+      this.render();
+    }
+  }
+
+  /**
+   * @method addCSS
+   * @returns
+   */
+  addCSS() {
+    if (!this.cssFilePath) return;
+
+    const ctor = /** @type {typeof Component} */ (this.constructor);
+
+    if (!ctor._stylesheet) {
+      ctor._stylesheet = document.createElement('link');
+      ctor._stylesheet.setAttribute('rel', 'stylesheet')
+      ctor._stylesheet.setAttribute('href', this.cssFilePath);
+      document.head.appendChild(ctor._stylesheet);
+    }
+  }
+
+  /**
+   * Render the component's content. Subclasses may override this method.
+   */
+  render() {
+    this.innerHTML = this.template;
+  }
+
+  /**
+   * The HTML template of this component. Subclasses must override this method.
+   * @returns {string}
+   */
+  get template() {
+    throw new Error('This must be implemented by subclasses of BaseComponent!');
   }
 }

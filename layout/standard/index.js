@@ -1,50 +1,41 @@
 import Component from '/core/component.js';
-import Sidebar from './sidebar.js';
-import Header from './header.js';
-import Main from './main.js';
+import './layout-sidebar.js';
+import './layout-header.js';
+import './layout-main.js';
 // import Footer from './standard/footer.js';
 
 export default class LayoutStandard extends Component {
-  constructor(parent) {
-    super(parent);
+  cssFilePath = '/layout/standard/index.css';
 
-    this.addCSS('/layout/standard/index.css');
-    this.element = document.createElement('div');
-    this.element.classList.add('layout', 'layout-standard');
-    this.render = this.render.bind(this);
-    this.render();
+  constructor() {
+    super();
   }
 
   addEvents() {
-    this.header.addEventListener('toggleMenu', _ => this.sidebar.toggle());
+    // this.header.addEventListener('toggleMenu', _ => this.sidebar.toggle());
   }
 
   render() {
-    this.element.innerHTML = this.template;
+    this.innerHTML = this.template;
 
-    this.header = new Header(this);
-    this.element.querySelector('header').replaceWith(this.header.element);
-
-    this.sidebar = new Sidebar(this);
-    this.element.querySelector('aside').replaceWith(this.sidebar.element);
-
-    this.main = new Main(this);
-    this.element.querySelector('main').replaceWith(this.main.element);
-
-    // this.footer = new Footer(this);
-    // this.element.querySelector('footer').replaceWith(this.footer.element);
+    this.header = this.querySelector('layout-header');
+    this.sidebar = this.querySelector('layout-sidebar');
+    this.main = this.querySelector('layout-main')
+    // this.footer = this.querySelector('layout-footer');
 
     this.addEvents();
   }
 
   get template() {
     return /*html*/ `
-      <header></header>
+      <layout-sidebar></layout-sidebar>
       <div>
-        <aside></aside>
-        <main></main>
+        <layout-header></layout-header>
+        <layout-main></layout-main>
       </div>
     `;
     // <footer></footer>
   }
 }
+
+customElements.define('layout-standard', LayoutStandard);
