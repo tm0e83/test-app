@@ -1,11 +1,26 @@
+@keyframes expandTileItemIcon {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes hideTileItemBackground {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
 tile-item {
-  @keyframes shrink {
-
-  }
-
-  @keyframes expand {
-
-  }
 
   text-align: center;
   line-height: 5rem;
@@ -69,5 +84,32 @@ tile-item {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  &[selected="true"]:not([animate]) {
+    &::after {
+      opacity: 0;
+    }
+  }
+
+  &[animate] {
+    &::after {
+      transform-origin: center center;
+      animation-name: hideTileItemBackground;
+      animation-duration: 150ms;
+      animation-fill-mode: forwards;
+      animation-play-state: running;
+    }
+
+    i {
+      transform: translate(-50%, -50%) scale(0);
+      transform-origin: center center;
+      animation-name: expandTileItemIcon;
+      animation-duration: 150ms;
+      animation-fill-mode: forwards;
+      animation-play-state: running;
+      animation-delay: 75ms;
+
+    }
   }
 }

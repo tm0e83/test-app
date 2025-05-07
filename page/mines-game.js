@@ -20,7 +20,7 @@ export default class MinesGame extends Component {
   }
 
   get newTileItemsData() {
-    return Array.from({ length: 25 }, () => ({ selected: false, type: null }));
+    return Array.from({ length: 25 }, () => ({ selected: false, type: null, current: false }));
   }
 
   addEvents() {
@@ -30,19 +30,25 @@ export default class MinesGame extends Component {
     });
 
     this.halveButton.addEventListener('click', e => {
-      this.stakeInput.value = roundTo2Decimals(parseFloat(this.stakeInput.value) / 2);
+      const stake = roundTo2Decimals(parseFloat(this.stakeInput.value) / 2);
+      this.stakeInput.value = stake;
+      this.#stake = stake;
       this.setMaxBetAmount();
       this.togglePlayButton();
     });
 
     this.doubleButton.addEventListener('click', e => {
-      this.stakeInput.value = parseFloat(this.stakeInput.value) * 2;
+      const stake = parseFloat(this.stakeInput.value) * 2;
+      this.stakeInput.value = stake;
+      this.#stake = stake;
       this.setMaxBetAmount();
       this.togglePlayButton();
     });
 
     this.maxButton.addEventListener('click', e => {
-      this.stakeInput.value = parseFloat(store.state.user.balance);
+      const stake = parseFloat(store.state.user.balance);
+      this.stakeInput.value = stake;
+      this.#stake = stake;
       this.setMaxBetAmount();
       this.togglePlayButton();
     });
@@ -86,9 +92,12 @@ export default class MinesGame extends Component {
       tileItem.addEventListener('selectionChange', e => {
         const tileItemIndex = this.#tileItems.indexOf(e.target);
 
+        this.#tileItemsData.forEach(tileItem => tileItem.current = false);
+
         this.#tileItemsData[tileItemIndex].selected = true;
         const isMine = this.isMine();
         this.#tileItemsData[tileItemIndex].type = isMine ? 'mine' : 'gem';
+        this.#tileItemsData[tileItemIndex].current = true;
 
         if (isMine) {
           this.reveal();
@@ -206,6 +215,7 @@ export default class MinesGame extends Component {
             ${this.#tileItemsData.map((itemData, index) => `
               <tile-item selected="${itemData.selected}"
                          type="${itemData.type ? itemData.type : ''}"
+                         ${itemData.current ? 'animate' : ''}
                          ${this.#gameStarted && !this.#gameEnded ? '' : 'disabled'}></tile-item>
             `).join('')}
           </div>

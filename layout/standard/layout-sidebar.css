@@ -7,11 +7,9 @@ layout-sidebar {
   min-height: 100%;
   position: fixed;
   position: relative;
-
   top: 0;
   left: 0;
   z-index: 3;
-  /* box-shadow: 1px 0 2px 1px rgba(0,0,0,0.2); */
 
   .button-toggle-menu {
     cursor: pointer;
