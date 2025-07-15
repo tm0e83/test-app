@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": true,
+    "baseUrl": "./public",
+    "module": "esnext",
+    "target": "esnext",
+    "paths": {
+      "/core/*": ["core/*"],
+      "/i18n/*": ["i18n/*"],
+      "/components/*": ["components/*"],
+    }
+  },
+  "include": ["**/*.js"]
+}

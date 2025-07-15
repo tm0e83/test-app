@@ -1,0 +1,27 @@
+layout-blank-header {
+  header {
+    padding: 1rem;
+    text-align: right;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+
+    svg {
+      height: 40px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+}

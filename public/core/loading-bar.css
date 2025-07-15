@@ -1,0 +1,93 @@
+loading-bar {
+  display: block;
+  position: fixed;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  overflow-x: hidden;
+  opacity: 0;
+  visibility: hidden;
+  animation-name: fadeIn;
+  animation-duration: 200ms;
+  animation-fill-mode: forwards;
+  animation-play-state: paused;
+  z-index: 101;
+
+  .line {
+    position: absolute;
+    opacity: 0.4;
+    background: var(--color-03);
+    opacity: 0.7;
+    width: 150%;
+    height: 2px;
+  }
+
+  .subline {
+    position: absolute;
+    background: var(--color-04);
+    height: 2px;
+  }
+
+  &[visible] {
+    animation-play-state: running;
+    visibility: visible;
+
+    .inc {
+      animation: increase 2s infinite;
+    }
+
+    .dec {
+      animation: decrease 2s 0.5s infinite;
+    }
+  }
+
+  &[cover] {
+    &::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+      opacity: 0.5;
+      z-index: -1;
+    }
+  }
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes increase {
+  from {
+    left: -5%;
+    width: 5%;
+  }
+
+  to {
+    left: 130%;
+    width: 100%;
+  }
+}
+
+@keyframes decrease {
+  from {
+    left: -80%;
+    width: 80%;
+  }
+
+  to {
+    left: 110%;
+    width: 10%;
+  }
+}

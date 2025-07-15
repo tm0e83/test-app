@@ -1,0 +1,51 @@
+layout-standard-header {
+  header {
+    background-color: var(--color-01);
+    /* border-bottom: 1px solid var(--blue-002); */
+    padding: 1rem;
+    text-align: right;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+
+    icon-playspot {
+      height: 40px !important;
+    }
+
+    /* .header-menu {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+    } */
+
+    /* .button-toggle-menu {
+      cursor: pointer;
+    } */
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .header-center {
+      padding: 5px 8px;
+      border: 1px solid var(--color-03);
+      border-radius: var(--border-radius);
+    }
+
+    .fa-gem {
+      color: var(--color-03);
+      margin-right: 0.25rem;
+    }
+
+    @media (min-width: 768px) {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+}

@@ -1,0 +1,7 @@
+page-styleguide {
+  display: block;
+
+  section {
+    margin: 2.5rem 0;
+  }
+}

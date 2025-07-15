@@ -1,0 +1,25 @@
+page-dashboard {
+  .teaser-container {
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (min-width: 980px) {
+      flex-direction: row;
+      align-items: initial;
+    }
+
+    .dashboard-teaser {
+      max-width: 600px;
+
+      .card {
+        height: 100%;
+      }
+
+      @media (min-width: 980px) {
+        flex: 1;
+        max-width: 400px;
+      }
+    }
+  }
+}

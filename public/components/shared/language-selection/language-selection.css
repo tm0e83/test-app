@@ -1,0 +1,11 @@
+language-selection {
+  display: inline-block;
+
+  a.trigger {
+    text-decoration: none;
+  }
+
+  .icon {
+    width: 1em;
+  }
+}

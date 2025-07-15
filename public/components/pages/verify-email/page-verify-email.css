@@ -1,0 +1,16 @@
+page-verify-email {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+
+  &>div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+    flex: 1;
+    width: 100%;
+  }
+}
