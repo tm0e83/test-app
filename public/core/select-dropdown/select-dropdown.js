@@ -46,6 +46,9 @@ export default class SelectDropdown extends Component {
     document.body?.removeEventListener('click', this.onClickOutside);
     this.trigger?.removeEventListener('click', this.onToggle);
     this.searchInput?.removeEventListener('input', this.onSearch);
+    this.querySelectorAll('.dropdown-content > a').forEach(item => {
+      item.removeEventListener('click', this.onItemClick);
+    });
   }
 
   /**
@@ -119,11 +122,6 @@ export default class SelectDropdown extends Component {
   get isOpen() {
     return this.hasAttribute('open');
   }
-
-  // onSettingsSave(e) {
-  //   store.state.language = this.languageSelect.value;
-  //   store.dispatch('UPDATE_BALANCE', parseFloat(this.balanceInput.value));
-  // }
 
   get template() {
     return /*html*/ `

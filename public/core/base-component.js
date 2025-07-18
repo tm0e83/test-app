@@ -25,7 +25,7 @@ export default class BaseComponent extends HTMLElement {
    */
   connectedCallback() {
     /** @type {typeof BaseComponent} */
-    (this.constructor)._numInstances++;
+    // (this.constructor)._numInstances++;
     this.addCSS().then(() => this.render());
   }
 
@@ -35,12 +35,12 @@ export default class BaseComponent extends HTMLElement {
    */
   disconnectedCallback() {
     const ctor = /** @type {typeof BaseComponent} */ (this.constructor);
-    ctor._numInstances--;
+    // ctor._numInstances--;
 
-    // if (ctor._stylesheet && !ctor._numInstances) {
-    //   ctor._stylesheet?.parentElement?.removeChild(ctor._stylesheet);
-    //   ctor._stylesheet = null;
-    // }
+    if (ctor._stylesheet && !ctor._numInstances) {
+      // ctor._stylesheet?.parentElement?.removeChild(ctor._stylesheet);
+      // ctor._stylesheet = null;
+    }
   }
 
   /**

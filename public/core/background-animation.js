@@ -12,6 +12,11 @@ export default class BackgroundAnimation extends Component {
     this.startAnimation = this.startAnimation.bind(this);
   }
 
+  disconnectedCallback() {
+    this.removeEvents();
+    super.disconnectedCallback();
+  }
+
   addEvents() {
     window.addEventListener('resize', this.startAnimation);
   }

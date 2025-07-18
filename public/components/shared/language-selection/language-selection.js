@@ -15,6 +15,11 @@ export default class LanguageSelection extends Component {
     this.onSelect = this.onSelect.bind(this);
   }
 
+  disconnectedCallback() {
+    this.removeEvents();
+    super.disconnectedCallback();
+  }
+
   render() {
     super.render();
     this.dropdown = /** @type {SelectDropdown} */ (this.querySelector('select-dropdown'));
@@ -25,12 +30,15 @@ export default class LanguageSelection extends Component {
     this.dropdown?.addEventListener('select', this.onSelect);
   }
 
+  removeEvents() {
+    this.dropdown?.removeEventListener('select', this.onSelect);
+  }
+
   /**
    * @param {Event} event
    */
   onSelect(event) {
     const customEvent = /** @type {CustomEvent} */ (event);
-    console.log(customEvent.detail.value);
     store.dispatch('SET_LANGUAGE', customEvent.detail.value);
   }
 
@@ -42,7 +50,6 @@ export default class LanguageSelection extends Component {
           <span>${store.state.language.toUpperCase()}</span>
         </a>
         <div class="dropdown">
-          <!--<div class="search"><input placeholder="${i18n.t('search')}"></div>-->
           <div class="dropdown-content">
             <div class="no-results" style="display: none;">${i18n.t('no-results')}</div>
             <a data-value="de" ${store.state.language === 'de' ? 'class="selected"' : ''}>

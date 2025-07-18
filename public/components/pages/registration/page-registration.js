@@ -15,10 +15,20 @@ export default class PageRegistration extends Component {
 
   constructor() {
     super();
+
+    this.onFormSubmit = this.onFormSubmit.bind(this);
+  }
+
+  disconnectedCallback() {
+    this.removeEvents();
   }
 
   addEvents() {
-    this.querySelector('form')?.addEventListener('submit', this.onFormSubmit.bind(this));
+    this.querySelector('form')?.addEventListener('submit', this.onFormSubmit);
+  }
+
+  removeEvents() {
+    this.querySelector('form')?.removeEventListener('submit', this.onFormSubmit);
   }
 
   /**

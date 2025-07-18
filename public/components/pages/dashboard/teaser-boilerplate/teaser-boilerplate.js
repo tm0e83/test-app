@@ -2,10 +2,6 @@ import Component from '/core/component.js';
 import { i18n } from '/i18n/i18n.js';
 
 export default class TeaserBoilerplate extends Component {
-  constructor() {
-    super();
-  }
-
   get template() {
     return /*html*/ `
       <div class="card">

@@ -22,6 +22,11 @@ class CasinoComponent extends Component {
     this.onAuthStateChanged = this.onAuthStateChanged.bind(this);
   }
 
+  disconnectedCallback() {
+    this.removeEvents();
+    super.disconnectedCallback();
+  }
+
   connectedCallback() {
     this.init();
   }
@@ -38,10 +43,11 @@ class CasinoComponent extends Component {
     getAuth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
-  // removeEvents() {
-  //   router.removeEventListener('routeChange', this.render);
-  //   store.unsubscribe('SET_LANGUAGE', 'languageSelection');
-  // }
+  removeEvents() {
+    router.removeEventListener('routeChange', this.render);
+    store.unsubscribe('SET_LANGUAGE', 'languageSelection');
+    getAuth().onAuthStateChanged(this.onAuthStateChanged);
+  }
 
   /**
    * Handles authentication state changes.

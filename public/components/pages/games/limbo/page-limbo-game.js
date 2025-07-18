@@ -23,12 +23,9 @@ export default class PageLimboGame extends Component {
     this.onBetButtonClick = this.onBetButtonClick.bind(this);
   }
 
-  onDisconnectedCallback() {
-    this.stakeInput?.removeEventListener('input', this.onStakeInput);
-    this.halveButton?.removeEventListener('click', this.onHalveButtonClick);
-    this.doubleButton?.removeEventListener('click', this.onDoubleButtonClick);
-    this.maxButton?.removeEventListener('click', this.onMaxButtonClick);
-    this.betButton?.removeEventListener('click', this.onBetButtonClick);
+  disconnectedCallback() {
+    this.removeEvents();
+    super.disconnectedCallback();
   }
 
   addEvents() {
@@ -37,6 +34,14 @@ export default class PageLimboGame extends Component {
     this.doubleButton?.addEventListener('click', this.onDoubleButtonClick);
     this.maxButton?.addEventListener('click', this.onMaxButtonClick);
     this.betButton?.addEventListener('click', this.onBetButtonClick);
+  }
+
+  removeEvents() {
+    this.stakeInput?.removeEventListener('input', this.onStakeInput);
+    this.halveButton?.removeEventListener('click', this.onHalveButtonClick);
+    this.doubleButton?.removeEventListener('click', this.onDoubleButtonClick);
+    this.maxButton?.removeEventListener('click', this.onMaxButtonClick);
+    this.betButton?.removeEventListener('click', this.onBetButtonClick);
   }
 
   /**
