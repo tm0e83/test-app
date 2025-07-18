@@ -12,6 +12,8 @@ export default class BaseComponent extends HTMLElement {
   /** @type {string} */
   cssFilePath = '';
 
+  #animationElements = [];
+
   constructor() {
     super();
 
@@ -41,6 +43,12 @@ export default class BaseComponent extends HTMLElement {
       // ctor._stylesheet?.parentElement?.removeChild(ctor._stylesheet);
       // ctor._stylesheet = null;
     }
+
+    // Clean up any animation elements
+    this.#animationElements.forEach(element => {
+      element.endElement?.();
+    });
+    this.#animationElements = [];
   }
 
   /**
@@ -91,6 +99,7 @@ export default class BaseComponent extends HTMLElement {
    */
   render() {
     this.innerHTML = this.template;
+    this.#animationElements = this.querySelectorAll('animate, animateTransform');
   }
 
   /**

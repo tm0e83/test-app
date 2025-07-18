@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "serve": "http-server -c-1 --port 8080 -P http://localhost:8080?"
+    "serve": "http-server -c-1 --port 8080 -P http://localhost:8080?",
+    "deploy": "firebase deploy --only hosting"
   },
   "dependencies": {
     "http-server": "^14.1.1"
