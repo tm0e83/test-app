@@ -3,6 +3,10 @@ language-selection {
 
   a.trigger {
     text-decoration: none;
+
+    span {
+      line-height: 1;
+    }
   }
 
   .icon {

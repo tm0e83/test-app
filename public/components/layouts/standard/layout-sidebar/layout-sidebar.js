@@ -5,7 +5,7 @@ import router from '/core/router.js';
 
 // @ts-ignore
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-import { expireCookie } from '/core/functions.js';
+// import { expireCookie } from '/core/functions.js';
 
 export default class LayoutSidebar extends Component {
   /** @type {boolean} */
@@ -57,7 +57,7 @@ export default class LayoutSidebar extends Component {
     event.preventDefault();
     const auth = getAuth();
     signOut(auth);
-    expireCookie('idToken');
+    // expireCookie('idToken');
   }
 
   wait() {
@@ -123,6 +123,8 @@ export default class LayoutSidebar extends Component {
    * @returns {string}
    */
   get template() {
+    const routePath = router?.route?.config?.path;
+
     return /*html*/ `
       <div class="menu-head">
         <a class="button-toggle-menu">
@@ -133,19 +135,19 @@ export default class LayoutSidebar extends Component {
         <div class="inner">
           <ul class="nav flex-col">
             <li class="nav-item">
-              <a class="nav-link ${router.route.config.path === 'dashboard' ? 'active' : ''}" href="/dashboard" data-link>
+              <a class="nav-link ${routePath === 'dashboard' ? 'active' : ''}" href="/dashboard" data-link>
                 <i class="fa-solid fa-table-cells"></i>
                 <span>${i18n.t('dashboard')}</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link ${router.route.config.path === 'games/limbo' ? 'active' : ''}" href="/games/limbo" data-link>
+              <a class="nav-link ${routePath === 'games/limbo' ? 'active' : ''}" href="/games/limbo" data-link>
                 <i class="fa-solid fa-arrow-down-up-across-line"></i>
                 <span>${i18n.t('limbo')}</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link ${router.route.config.path === 'games/mines' ? 'active' : ''}" href="/games/mines" data-link>
+              <a class="nav-link ${routePath === 'games/mines' ? 'active' : ''}" href="/games/mines" data-link>
                 <i class="fa-solid fa-land-mine-on"></i>
                 <span>${i18n.t('mines')}</span>
               </a>
@@ -157,14 +159,14 @@ export default class LayoutSidebar extends Component {
           <ul class="nav flex-column">
             ${store.state.user.role === 'admin' ? /*html*/ `
               <li class="nav-item">
-                <a class="nav-link ${router.route.config.path === 'styleguide' ? 'active' : ''}" href="/styleguide" data-link>
+                <a class="nav-link ${routePath === 'styleguide' ? 'active' : ''}" href="/styleguide" data-link>
                   <i class="fa-solid fa-code"></i>
                   <span>${i18n.t('Styleguide')}</span>
                 </a>
               </li>
             ` : ''}
             <li class="nav-item">
-              <a class="nav-link ${router.route.config.path === 'settings' ? 'active' : ''}" href="/settings" data-link>
+              <a class="nav-link ${routePath === 'settings' ? 'active' : ''}" href="/settings" data-link>
                 <i class="fa-solid fa-gear"></i>
                 <span>${i18n.t('settings')}</span>
               </a>

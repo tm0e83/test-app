@@ -29,18 +29,22 @@ select-dropdown {
     a,
     .no-results {
       display: block;
-      padding: 0.75rem 0.5rem;
+      padding: 0.75rem 1rem;
       order: 2;
     }
 
     a {
       text-decoration: none;
-      background-color: var(--blue-002);
+      background-color: var(--color-07);
       margin-top: 1px;
       opacity: 0.75;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+
+      &:hover {
+        opacity: 1;
+      }
 
       &:first-of-type {
         margin-top: 0;
@@ -54,11 +58,7 @@ select-dropdown {
         order: 1;
         opacity: 1;
         pointer-events: none;
-        background-color: var(--blue-002);
-
-        &:hover {
-          opacity: 1;
-        }
+        background-color: var(--color-07);
       }
     }
   }

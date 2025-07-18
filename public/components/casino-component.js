@@ -28,7 +28,7 @@ class CasinoComponent extends Component {
 
   async init() {
     await initializeI18nAsync();
-    this.render();
+    // this.render();
     this.addEvents();
   }
 
@@ -38,10 +38,10 @@ class CasinoComponent extends Component {
     getAuth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
-  removeEvents() {
-    router.removeEventListener('routeChange', this.render);
-    store.unsubscribe('SET_LANGUAGE', 'languageSelection');
-  }
+  // removeEvents() {
+  //   router.removeEventListener('routeChange', this.render);
+  //   store.unsubscribe('SET_LANGUAGE', 'languageSelection');
+  // }
 
   /**
    * Handles authentication state changes.
@@ -50,12 +50,16 @@ class CasinoComponent extends Component {
    * @returns
    */
   async onAuthStateChanged(user) {
-    store.dispatch('SET_USER', {
-      uid: user.uid,
-      email: user.email,
-      name: user.displayName,
-      emailVerified: user.emailVerified,
-    });
+    if (!user) {
+      store.dispatch('SET_USER', null);
+    } else {
+      store.dispatch('SET_USER', {
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName,
+        emailVerified: user.emailVerified,
+      });
+    }
 
     if (!isLoggedIn()) {
       return router.navigate('/login');
@@ -80,15 +84,18 @@ class CasinoComponent extends Component {
         // this.render();
       }
 
-console.log(store.state.user);
-
-      if (routeConfig?.path === 'login' || routeConfig?.path === 'register') {
+      if (routeConfig?.path === 'login'
+        || routeConfig?.path === 'register'
+        || routeConfig?.path === 'reset-password'
+        || routeConfig?.path === 'verify-email') {
         return router.navigate('/dashboard');
       }
 
       if (location.pathname && !routeConfig?.path) {
         return router.navigate(location.pathname);
       }
+
+      return router.navigate(routeConfig?.path);
     }
   }
 
@@ -120,6 +127,11 @@ console.log(store.state.user);
 
     if (!layoutChanged) {
       return;
+    }
+
+    if (!isLoggedIn() && routeConfig?.path !== 'login') {
+      console.log('User not logged in, redirecting to login page');
+      return router.navigate('/login');
     }
 
     store.state.layout = nextLayout;

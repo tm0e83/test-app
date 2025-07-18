@@ -56,7 +56,7 @@ page-mines-game {
   .game-canvas {
     position: relative;
     flex: 1;
-    background-color: var(--color-01);
+    background-color: var(--color-02);
     margin-left: 1px;
     padding: 1rem;
   }
@@ -77,12 +77,12 @@ page-mines-game {
     transform: translate(-50%, -50%);
     z-index: 2;
     padding: 0.5rem 1.5rem;
-    border: 1px solid var(--green-001);
-    color: var(--green-001);
+    border: 1px solid var(--color-03);
+    color: var(--color-03);
     text-align: center;
     border-radius: var(--border-radius);
     line-height: 1.25;
-    background-color: var(--blue-002);
+    background-color: rgba(0, 0, 0, 0.85);
 
     strong {
       display: block;

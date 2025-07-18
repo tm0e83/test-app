@@ -25,7 +25,7 @@ loading-bar {
 
   .subline {
     position: absolute;
-    background: var(--color-04);
+    background: var(--color-03);
     height: 2px;
   }
 

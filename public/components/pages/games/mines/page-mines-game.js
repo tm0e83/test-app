@@ -2,18 +2,45 @@ import Component from '/core/component.js';
 import store from '/core/store.js';
 import { roundTo2Decimals } from '/core/functions.js';
 import './tile-item.js';
+// @ts-ignore
+import { getDatabase, ref, runTransaction } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+
+/**
+ * @typedef {Object} TileItemData
+ * @property {boolean} selected
+ * @property {string | null} type
+ * @property {boolean} current
+ */
+
+/**
+ * @typedef {(currentBalance: number|null|undefined) => number} TransactionHandler
+ */
 
 export default class PageMinesGame extends Component {
   cssFilePath = '/components/pages/games/mines/page-mines-game.css';
-  /** @type {HTMLElement[]} */
+
+  /** @type {Element[]} */
   #tileItems = [];
-  /** @type {{ selected: boolean, type: string | null, current: boolean }[]} */
+
+  /** @type {TileItemData[]} */
   #tileItemsData = [];
+
+  /** @type {boolean} */
   #gameStarted = false;
+
+  /** @type {boolean} */
   #gameEnded = false;
+
+  /** @type {number} */
   #stake = 0;
+
+  /** @type {number} */
   #numMines = 8;
+
+  /** @type {number} */
   #winAmount = 0;
+
+  /** @type {boolean} */
   #settingsEnabled = true;
 
   constructor() {
@@ -26,37 +53,59 @@ export default class PageMinesGame extends Component {
   }
 
   addEvents() {
-    this.stakeInput?.addEventListener('input', e => {
-      this.#stake = parseFloat(e.target.value);
+    this.stakeInput?.addEventListener('input', event => {
+      const eventTarget = /** @type {HTMLInputElement} */ (event.target);
+
+      if (eventTarget) {
+        // Preserve the cursor position
+        const selectionStart = eventTarget.selectionStart;
+        const selectionEnd = eventTarget.selectionEnd;
+
+        // Parse the input value as an integer
+        this.#stake = parseInt(eventTarget.value);
+
+        // Update the stake input value
+        eventTarget.value = this.#stake.toString();
+
+        // Restore the cursor position
+        eventTarget.setSelectionRange(selectionStart, selectionEnd);
+      }
+
       this.togglePlayButton();
     });
 
     this.halveButton?.addEventListener('click', e => {
-      const stake = roundTo2Decimals(parseFloat(this.stakeInput.value) / 2);
-      this.stakeInput.value = stake;
-      this.#stake = stake;
-      this.setMaxBetAmount();
-      this.togglePlayButton();
+      if (this.stakeInput) {
+        const stake = roundTo2Decimals(parseInt(this.stakeInput.value) / 2);
+        this.stakeInput.value = stake.toString();
+        this.#stake = stake;
+        this.setMaxBetAmount();
+        this.togglePlayButton();
+      }
     });
 
     this.doubleButton?.addEventListener('click', e => {
-      const stake = parseFloat(this.stakeInput.value) * 2;
-      this.stakeInput.value = stake.toString();
-      this.#stake = stake;
-      this.setMaxBetAmount();
-      this.togglePlayButton();
+      if (this.stakeInput) {
+        const stake = parseInt(this.stakeInput.value) * 2;
+        this.stakeInput.value = stake.toString();
+        this.#stake = stake;
+        this.setMaxBetAmount();
+        this.togglePlayButton();
+      }
     });
 
     this.maxButton?.addEventListener('click', e => {
-      const stake = parseFloat(store.state.user.balance);
-      this.stakeInput.value = stake;
-      this.#stake = stake;
-      this.setMaxBetAmount();
-      this.togglePlayButton();
+      if (this.stakeInput) {
+        const stake = store.state.user.balance;
+        this.stakeInput.value = stake.toString();
+        this.#stake = stake;
+        this.setMaxBetAmount();
+        this.togglePlayButton();
+      }
     });
 
     this.minesInput?.addEventListener('input', e => {
-      this.#numMines = parseInt(e.target.value);
+      this.#numMines = parseInt((/** @type {HTMLInputElement} */(e.target)).value);
       this.togglePlayButton();
     });
 
@@ -68,6 +117,16 @@ export default class PageMinesGame extends Component {
         this.#tileItemsData = this.newTileItemsData;
         this.#settingsEnabled = false;
         store.dispatch('UPDATE_BALANCE', store.state.user.balance - this.#stake);
+
+        const db = getDatabase();
+        const balanceRef = ref(db, `users/${store.state.user.uid}/balance`);
+
+        runTransaction(
+          balanceRef,
+          /** @type {TransactionHandler} */
+          (currentBalance) => (currentBalance ?? 0) - this.#stake
+        );
+
         this.render();
       });
     }
@@ -83,6 +142,15 @@ export default class PageMinesGame extends Component {
         this.#winAmount = roundTo2Decimals(totalWinAmount - this.#stake);
         store.dispatch('UPDATE_BALANCE', store.state.user.balance + totalWinAmount);
 
+        const db = getDatabase();
+        const balanceRef = ref(db, `users/${store.state.user.uid}/balance`);
+
+        runTransaction(
+          balanceRef,
+          /** @type {TransactionHandler} */
+          (currentBalance) => (currentBalance ?? 0) + totalWinAmount
+        );
+
         this.#gameStarted = false;
         this.#gameEnded = true;
         this.#settingsEnabled = true;
@@ -93,7 +161,8 @@ export default class PageMinesGame extends Component {
 
     this.#tileItems.forEach(tileItem => {
       tileItem.addEventListener('selectionChange', e => {
-        const tileItemIndex = this.#tileItems.indexOf(e.target);
+        const eventTarget = /** @type {HTMLElement} */ (e.target);
+        const tileItemIndex = this.#tileItems.indexOf(eventTarget);
 
         this.#tileItemsData.forEach(tileItem => tileItem.current = false);
 
@@ -131,7 +200,7 @@ export default class PageMinesGame extends Component {
 
   get isValidBetAmount() {
     if (!this.stakeInput) return false;
-    return parseFloat(this.stakeInput.value) > 0 && parseFloat(this.stakeInput.value) <= store.state.user.balance;
+    return parseInt(this.stakeInput.value) > 0 && parseInt(this.stakeInput.value) <= store.state.user.balance;
   }
 
   render() {
@@ -155,8 +224,6 @@ export default class PageMinesGame extends Component {
     const numRevealedMines = this.#tileItemsData.filter(tileItem => tileItem.type === 'mine').length;
     const percentage = (parseInt(this.minesInput?.value || '') - numRevealedMines) / (this.#tileItems.length - (numRevealedTileItems === this.#tileItems.length ? 0 : numRevealedTileItems))
 
-    console.log(numRevealedTileItems, percentage);
-
     return random <= percentage;
   }
 
@@ -175,14 +242,13 @@ export default class PageMinesGame extends Component {
             <div class="flex-grow-1">
               <label for="stake-input">Einsatz</label>
               <div class="input-wrapper">
-                <input type="number"
-                      id="stake-input"
-                      class="form-control"
-                      value="${this.#stake}"
-                      min="0"
-                      max="${store.state.user.balance}"
-                      step="0.01"
-                      ${this.#settingsEnabled ? '' : 'disabled'}>
+                <input
+                  type="text"
+                  id="stake-input"
+                  class="form-control"
+                  value="${this.#stake}"
+                  ${this.#settingsEnabled ? '' : 'disabled'}
+                >
                 <button class="btn secondary button-halve" ${this.#settingsEnabled ? '' : 'disabled'}>&#189;</button>
                 <button class="btn secondary button-double" ${this.#settingsEnabled ? '' : 'disabled'}>2&times;</button>
                 <button class="btn secondary button-max" ${this.#settingsEnabled ? '' : 'disabled'}>Max</button>
@@ -197,6 +263,7 @@ export default class PageMinesGame extends Component {
                     min="1"
                     max="24"
                     step="1"
+                    inputmode="numeric"
                     ${this.#settingsEnabled ? '' : 'disabled'}>
             </div>
           </div>

@@ -1,7 +1,13 @@
 import { i18n } from '/i18n/i18n.js';
 import Component from '/core/component.js';
 import store from '/core/store.js';
-import { roundTo2Decimals } from '/core/functions.js';
+// import { roundTo2Decimals } from '/core/functions.js';
+// @ts-ignore
+import { getDatabase, ref, runTransaction } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+
+/**
+ * @typedef {(currentBalance: number|null|undefined) => number} TransactionHandler
+ */
 
 export default class PageLimboGame extends Component {
   cssFilePath = '/components/pages/games/limbo/page-limbo-game.css';
@@ -9,63 +15,130 @@ export default class PageLimboGame extends Component {
 
   constructor() {
     super();
+
+    this.onStakeInput = this.onStakeInput.bind(this);
+    this.onHalveButtonClick = this.onHalveButtonClick.bind(this);
+    this.onDoubleButtonClick = this.onDoubleButtonClick.bind(this);
+    this.onMaxButtonClick = this.onMaxButtonClick.bind(this);
+    this.onBetButtonClick = this.onBetButtonClick.bind(this);
+  }
+
+  onDisconnectedCallback() {
+    this.stakeInput?.removeEventListener('input', this.onStakeInput);
+    this.halveButton?.removeEventListener('click', this.onHalveButtonClick);
+    this.doubleButton?.removeEventListener('click', this.onDoubleButtonClick);
+    this.maxButton?.removeEventListener('click', this.onMaxButtonClick);
+    this.betButton?.removeEventListener('click', this.onBetButtonClick);
   }
 
   addEvents() {
-    this.stakeInput?.addEventListener('input', e => {
-      if (this.betButton) {
-        const eventTarget = /** @type {HTMLInputElement} */ (e.target);
-        this.betButton.disabled = !eventTarget.checkValidity();
-      }
-    });
+    this.stakeInput?.addEventListener('input', this.onStakeInput);
+    this.halveButton?.addEventListener('click', this.onHalveButtonClick);
+    this.doubleButton?.addEventListener('click', this.onDoubleButtonClick);
+    this.maxButton?.addEventListener('click', this.onMaxButtonClick);
+    this.betButton?.addEventListener('click', this.onBetButtonClick);
+  }
 
-    this.halveButton?.addEventListener('click', e => {
-      if (this.stakeInput) {
-        this.stakeInput.value = roundTo2Decimals(parseFloat(this.stakeInput.value) / 2).toString();
-      }
-      this.setMaxBetAmount();
-      this.toggleBetButton();
-    });
+  /**
+   * Handles the input event on the stake input field.
+   * @param {Event} event
+   */
+  onStakeInput(event) {
+    const eventTarget = /** @type {HTMLInputElement} */ (event.target);
 
-    this.doubleButton?.addEventListener('click', e => {
-      if (this.stakeInput) {
-        this.stakeInput.value = (parseFloat(this.stakeInput.value) * 2).toString();
-      }
-      this.setMaxBetAmount();
-      this.toggleBetButton();
-    });
+    if (eventTarget) {
+      // Preserve the cursor position
+      const selectionStart = eventTarget.selectionStart;
+      const selectionEnd = eventTarget.selectionEnd;
 
-    this.maxButton?.addEventListener('click', e => {
-      if (this.stakeInput) {
-        this.stakeInput.value = store.state.user.balance.toString();
-      }
-      this.setMaxBetAmount();
-      this.toggleBetButton();
-    });
+      // Parse the input value as an integer
+      const stake = parseInt(eventTarget.value);
 
-    this.betButton?.addEventListener('click', e => {
-      this.#currentValue = Math.random() * 100;
+      // Update the stake input value
+      eventTarget.value = stake.toString();
 
-      if (this.valueContainer) {
-        this.valueContainer.style.left = `${this.roundedValue}%`;
-        this.valueContainer.textContent = this.roundedValue;
-      }
+      // Restore the cursor position
+      eventTarget.setSelectionRange(selectionStart, selectionEnd);
+    }
 
-      const stake = parseFloat(this.stakeInput?.value ?? '0');
+    this.toggleBetButton();
+  }
 
-      if (this.#currentValue > 52) {
-        this.valueContainer?.classList.add('win');
-        this.valueContainer?.classList.remove('lose');
-        store.dispatch('UPDATE_BALANCE', store.state.user.balance + stake);
-      } else {
-        this.valueContainer?.classList.add('lose');
-        this.valueContainer?.classList.remove('win');
-        store.dispatch('UPDATE_BALANCE', store.state.user.balance - stake);
-      }
+  /**
+   * Handles the click event on the halve button.
+   * @param {Event} event
+   */
+  onHalveButtonClick(event) {
+    if (this.stakeInput) {
+      this.stakeInput.value = Math.round(parseInt(this.stakeInput.value) / 2).toString();
+    }
+    this.setMaxBetAmount();
+    this.toggleBetButton();
+  }
 
-      this.setMaxBetAmount();
-      this.toggleBetButton();
-    });
+  /**
+   * Handles the click event on the double button.
+   * @param {Event} event
+   */
+  onDoubleButtonClick(event) {
+    if (this.stakeInput) {
+      this.stakeInput.value = (parseInt(this.stakeInput.value) * 2).toString();
+    }
+    this.setMaxBetAmount();
+    this.toggleBetButton();
+  }
+
+  /**
+   * Handles the click event on the max button.
+   * @param {Event} event
+   */
+  onMaxButtonClick(event) {
+    if (this.stakeInput) {
+      this.stakeInput.value = store.state.user.balance.toString();
+    }
+    this.setMaxBetAmount();
+    this.toggleBetButton();
+  }
+
+  /**
+   * Handles the click event on the bet button.
+   * @param {Event} event
+   */
+  onBetButtonClick(event) {
+    this.#currentValue = Math.random() * 100;
+
+    if (this.valueContainer) {
+      this.valueContainer.style.left = `${this.roundedValue}%`;
+      this.valueContainer.textContent = this.roundedValue;
+    }
+
+    const stake = parseInt(this.stakeInput?.value ?? '0');
+
+    const db = getDatabase();
+    const balanceRef = ref(db, `users/${store.state.user.uid}/balance`);
+
+    if (this.#currentValue > 52) {
+      this.valueContainer?.classList.add('win');
+      this.valueContainer?.classList.remove('lose');
+      store.dispatch('UPDATE_BALANCE', store.state.user.balance + stake);
+      runTransaction(
+        balanceRef,
+        /** @type {TransactionHandler} */
+        (currentBalance) => (currentBalance ?? 0) + stake
+      );
+    } else {
+      this.valueContainer?.classList.add('lose');
+      this.valueContainer?.classList.remove('win');
+      store.dispatch('UPDATE_BALANCE', store.state.user.balance - stake);
+      runTransaction(
+        balanceRef,
+        /** @type {TransactionHandler} */
+        (currentBalance) => (currentBalance ?? 0) - stake
+      );
+    }
+
+    this.setMaxBetAmount();
+    this.toggleBetButton();
   }
 
   setMaxBetAmount() {
@@ -73,7 +146,7 @@ export default class PageLimboGame extends Component {
   }
 
   get isValidBetAmount() {
-    return parseFloat(this.stakeInput?.value ?? '0') > 0 && parseFloat(this.stakeInput?.value ?? '0') <= store.state.user.balance;
+    return parseInt(this.stakeInput?.value ?? '0') > 0 && parseInt(this.stakeInput?.value ?? '0') <= store.state.user.balance;
   }
 
   get roundedValue() {
@@ -107,18 +180,17 @@ export default class PageLimboGame extends Component {
         <div class="game-menu">
           <label for="stake-input">Einsatz</label>
           <div class="input-wrapper">
-            <input type="number"
-                  id="stake-input"
-                  class="form-control"
-                  value="0"
-                  min="0"
-                  max="${store.state.user.balance}"
-                  step="0.01">
+            <input
+              type="text"
+              id="stake-input"
+              class="form-control"
+              value="0"
+            >
             <button class="btn secondary button-halve">/2</button>
             <button class="btn secondary button-double">x2</button>
             <button class="btn secondary button-max">Max</button>
           </div>
-          <button class="btn primary button-bet" ${parseFloat(this.stakeInput?.value ?? '0') > 0 ? '' : 'disabled'}>${i18n.t('bet')}</button>
+          <button class="btn primary button-bet" ${parseInt(this.stakeInput?.value ?? '0') > 0 ? '' : 'disabled'}>${i18n.t('bet')}</button>
         </div>
         <div class="game-canvas">
           <div class="bar">

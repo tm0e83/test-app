@@ -2,28 +2,34 @@ import Component from '/core/component.js';
 import router from '/core/router.js';
 import './layout-header/layout-blank-header.js';
 import '/core/background-animation.js';
+import store from '/core/store.js';
 
 export default class LayoutBlank extends Component {
   cssFilePath = '/components/layouts/blank/layout-blank.css';
+  #isLoading = false;
 
   constructor() {
     super();
+
+    this.render = this.render.bind(this);
   }
 
-  onDestroy() {
+  disconnectedCallback() {
     router.removeEventListener('routeChange', this.render);
   }
 
   addEvents() {
-    router.removeEventListener('routeChange', this.render);
     router.addEventListener('routeChange', this.render);
-    this.addEventListener('onDestroy', this.onDestroy.bind(this));
   }
 
   async render() {
     super.render();
 
-    // console.log(`${router.route?.config?.component}.js`);
+    if (this.#isLoading) {
+      return;
+    }
+
+    this.#isLoading = true;
 
     try {
       const { default: Page } = await import(`${router.route?.config?.component}.js`);
@@ -34,6 +40,7 @@ export default class LayoutBlank extends Component {
       this.appendChild((new Page()));
     }
 
+    this.#isLoading = false;
     this.addEvents();
   }
 

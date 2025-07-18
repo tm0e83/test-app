@@ -37,14 +37,14 @@ export default class PageLogin extends Component {
     this.onSendVerificationLinkClick = this.onSendVerificationLinkClick.bind(this);
   }
 
+  disconnectedCallback() {
+    this.querySelector('form')?.removeEventListener('submit', this.onFormSubmit);
+    this.querySelector('.send-verification-link')?.removeEventListener('click', this.onSendVerificationLinkClick);
+  }
+
   addEvents() {
     this.querySelector('form')?.addEventListener('submit', this.onFormSubmit);
     this.querySelector('.send-verification-link')?.addEventListener('click', this.onSendVerificationLinkClick);
-  }
-
-  removeEvents() {
-    this.querySelector('form')?.removeEventListener('submit', this.onFormSubmit);
-    this.querySelector('.send-verification-link')?.removeEventListener('click', this.onSendVerificationLinkClick);
   }
 
   /**
@@ -84,8 +84,8 @@ export default class PageLogin extends Component {
           return;
         }
 
-        const idToken = await userCredential.user.getIdToken();
-        setCookie('idToken', idToken, null, 1);
+        // const idToken = await userCredential.user.getIdToken();
+        // setCookie('idToken', idToken, null, 1);
 
         try {
           const snapshot = await get(child(ref(getDatabase()), `users/${auth.currentUser.uid}`));

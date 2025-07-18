@@ -95,7 +95,7 @@ export default class PageResetPassword extends Component {
                 <input
                   type="email"
                   name="email"
-                  placeholder="E-mail"
+                  placeholder="${i18n.t('email')}"
                   autocomplete="email"
                   class="form-control mb-4"
                   required

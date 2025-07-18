@@ -6,20 +6,89 @@ import { getQueryParams } from './functions.js';
  * @property {string} layout - The layout associated with the route.
  * @property {string} title - The title of the route.
  * @property {string} component - The component to be loaded for the route.
+ * @property {string} accessLevel - The access level required to access the route.
  */
 
 class Router extends EventTarget {
   /** @type {RouteConfig[]} */
   routes = [
-    { path: 'styleguide', layout: 'standard', title: "styleguide", component: '/components/pages/styleguide/page-styleguide' },
-    { path: 'dashboard', layout: 'standard', title: "dashboard", component: '/components/pages/dashboard/page-dashboard' },
-    { path: 'login', layout: 'blank', title: "login", component: '/components/pages/login/page-login' },
-    { path: 'register', layout: 'blank', title: "register", component: '/components/pages/registration/page-registration' },
-    { path: 'reset-password', layout: 'blank', title: "resetPassword", component: '/components/pages/reset-password/page-reset-password' },
-    { path: 'verify-email', layout: 'blank', title: "verifyEmail", component: '/components/pages/verify-email/page-verify-email' },
-    { path: 'settings', layout: 'standard', title: "settings", component: '/components/pages/settings/page-settings' },
-    { path: 'games/limbo', layout: 'standard', title: "Limbo", component: '/components/pages/games/limbo/page-limbo-game' },
-    { path: 'games/mines', layout: 'standard', title: "Mines", component: '/components/pages/games/mines/page-mines-game' },
+    {
+      path: '',
+      layout: 'standard',
+      title: "dashboard",
+      component: '/components/pages/dashboard/page-dashboard',
+      accessLevel: 'user'
+    },
+    {
+      path: 'access-denied',
+      layout: 'standard',
+      title: "accessDenied",
+      component: '/components/pages/access-denied/page-access-denied',
+      accessLevel: 'guest'
+    },
+    {
+      path: 'styleguide',
+      layout: 'standard',
+      title: "styleguide",
+      component: '/components/pages/styleguide/page-styleguide',
+      accessLevel: 'admin'
+    },
+    {
+      path: 'dashboard',
+      layout: 'standard',
+      title: "dashboard",
+      component: '/components/pages/dashboard/page-dashboard',
+      accessLevel: 'user'
+    },
+    {
+      path: 'login',
+      layout: 'blank',
+      title: "login",
+      component: '/components/pages/login/page-login',
+      accessLevel: 'guest'
+    },
+    {
+      path: 'register',
+      layout: 'blank',
+      title: "register",
+      component: '/components/pages/registration/page-registration',
+      accessLevel: 'guest'
+    },
+    {
+      path: 'reset-password',
+      layout: 'blank',
+      title: "resetPassword",
+      component: '/components/pages/reset-password/page-reset-password',
+      accessLevel: 'guest'
+    },
+    {
+      path: 'verify-email',
+      layout: 'blank',
+      title: "verifyEmail",
+      component: '/components/pages/verify-email/page-verify-email',
+      accessLevel: 'guest'
+    },
+    {
+      path: 'settings',
+      layout: 'standard',
+      title: "settings",
+      component: '/components/pages/settings/page-settings',
+      accessLevel: 'admin'
+    },
+    {
+      path: 'games/limbo',
+      layout: 'standard',
+      title: "Limbo",
+      component: '/components/pages/games/limbo/page-limbo-game',
+      accessLevel: 'user'
+    },
+    {
+      path: 'games/mines',
+      layout: 'standard',
+      title: "Mines",
+      component: '/components/pages/games/mines/page-mines-game',
+      accessLevel: 'user'
+    },
   ];
 
   constructor() {
@@ -59,17 +128,17 @@ class Router extends EventTarget {
       const result = [];
       const pathToObjectMap = new Map();
 
-      // Erstelle eine Map für schnelleren Zugriff auf Objekte per "path"
+      // Create a map for faster access to objects by "path"
       objects.forEach(obj => pathToObjectMap.set(obj.path, obj));
 
       let currentPath = startPath;
 
       while (currentPath) {
           const obj = pathToObjectMap.get(currentPath);
-          if (!obj) break; // Beende, falls kein weiteres Objekt gefunden wird
+            if (!obj) break; // Stop if no further object is found
 
           result.unshift(obj);
-          currentPath = obj.parent || null; // Nächstes Objekt anhand "parent" suchen
+            currentPath = obj.parent || null; // Find next object by "parent"
       }
 
       return result;
@@ -93,7 +162,7 @@ class Router extends EventTarget {
     this.routes.forEach(route => {
       const patternSegments = route.path.split('/').filter(segment => !!segment);
 
-      const pattern = patternSegments.reduce((p, segment) => {
+      const pattern = patternSegments.reduce((/** @type {string[]} */ p, segment) => {
         if (segment[0] == ':') {
           p.push('[0-9a-zA-Z-]+');
         } else {

@@ -52,7 +52,7 @@ page-limbo-game {
   .game-canvas {
     position: relative;
     flex: 1;
-    background-color: var(--color-01);
+    background-color: var(--color-02);
     margin-left: 1px;
     padding: 5.5rem 1rem;
   }
@@ -75,14 +75,14 @@ page-limbo-game {
     }
 
     &::before {
-      background-color: var(--red-001);
+      background-color: var(--color-09);
       border-top-left-radius: 5px;
       border-bottom-left-radius: 5px;
       width: 52%;
     }
 
     &::after {
-      background-color: var(--green-001);
+      background-color: var(--color-03);
       border-top-right-radius: 5px;
       border-bottom-right-radius: 5px;
       width: 48%;
@@ -108,11 +108,11 @@ page-limbo-game {
     }
 
     &.win {
-      border-color: var(--green-001);
+      border-color: var(--color-03);
     }
 
     &.lose {
-      border-color: var(--red-001);
+      border-color: var(--color-09);
     }
   }
 
@@ -125,7 +125,7 @@ page-limbo-game {
     z-index: 2;
     left: 52%;
     top: -5px;
-    background-color: var(--blue-003);
+    background-color: var(--color-04);
   }
 
   .ruler {

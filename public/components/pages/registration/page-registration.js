@@ -51,9 +51,10 @@ export default class PageRegistration extends Component {
 
       set(ref(db, 'users/' + user.uid), {
         balance: 1000,
-        role: 'user',
         email: user.email,
+        emailVerified: false,
         language: 'de',
+        role: 'guest',
         uid: user.uid,
         totalWinnings: 0,
         gamesPlayed: {

@@ -13,14 +13,13 @@ layout-sidebar {
 
   .button-toggle-menu {
     cursor: pointer;
-    /* width: 50px; */
-    padding: 1.5rem 1rem;
+    padding: 1rem;
     border-left: 2px solid transparent;
   }
 
   .menu-head {
     height: 80px;
-    /* padding: 0 1rem; */
+    padding-bottom: 1rem;
     display: flex;
     align-items: center;
     border-bottom: 1px solid var(--bs-border-color);

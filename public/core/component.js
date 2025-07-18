@@ -15,7 +15,6 @@ export default class Component extends BaseComponent {
    */
   onStylesheetLoad(event) {
     LoadingBar.hide();
-    console.log('stylrsheet geladen', this.constructor.name);
   }
 
   /**

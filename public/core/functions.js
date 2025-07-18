@@ -4,13 +4,19 @@ import store from '/core/store.js';
  * test wheather user is logged in
  * @returns {boolean}
  */
-export const isLoggedIn = () => !!store.state.user.uid;
+export const isLoggedIn = () => !!store.state?.user?.uid;
 
 /**
- * test wheather user is logged in and has verified his email address
+ * test wheather user is logged in and has the role "admin"
  * @returns {boolean}
  */
 export const isAdmin = () => store.state.user.role === 'admin';
+
+/**
+ * test wheather user is logged in and has the role "user"
+ * @returns {boolean}
+ */
+export const isUser = () => store.state.user.role === 'user';
 
 /**
  * test wheather user has verified his email address
@@ -61,7 +67,7 @@ export const formatCurrency = (value, languageISO = 'de-DE') => {
 }
 
 /**
- * @param {number} number
+ * @param {number} num
  * @returns {number}
  */
 export const roundTo2Decimals = num => {
@@ -70,15 +76,15 @@ export const roundTo2Decimals = num => {
 
 /**
  * Shuffle an array
- * @param {array} array
+ * @param {[]} arr
  * @returns array
  */
-export const shuffle = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
+export const shuffle = (arr) => {
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  return array;
+  return arr;
 };
 
 /**
@@ -96,7 +102,7 @@ export const expireCookie = cookieName => {
  * @param {Date | null} expireDate default is Fri, 31 Dec 9999 23:59:59
  * @param {number} expireDays expireDate must be Null in order to use this option
  */
-export const setCookie = (cookieName, cookieValue = 1, expireDate = new Date('Fri, 31 Dec 9999 23:59:59'), expireDays = null) => {
+export const setCookie = (cookieName, cookieValue = 1, expireDate = new Date('Fri, 31 Dec 9999 23:59:59'), expireDays = 0) => {
   if (expireDate === null) {
     expireDate = new Date();
     expireDate.setTime(expireDate.getTime() + (expireDays * 24 * 60 * 60 * 1000));

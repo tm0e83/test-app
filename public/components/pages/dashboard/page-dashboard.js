@@ -5,10 +5,6 @@ import './teaser-boilerplate/teaser-boilerplate.js';
 export default class PageDashboard extends Component {
   cssFilePath = 'components/pages/dashboard/page-dashboard.css';
 
-  constructor() {
-    super();
-  }
-
   get template() {
     return /*html*/ `
       <!--<h1>${i18n.t('dashboard')}</h1>-->

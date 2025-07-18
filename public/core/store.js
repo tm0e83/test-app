@@ -2,13 +2,17 @@ import EventBus from './event-bus.js';
 
 /**
  * @typedef {Object} User
- * @property {string} name
  * @property {number} balance
- * @property {string} language
  * @property {string} email
  * @property {boolean} emailVerified
- * @property {string} uid
+ * @property {string} language
  * @property {string} role
+ * @property {string} uid
+ * @property {number} totalWinnings
+ * @property {Object} gamesPlayed
+ * @property {number} gamesPlayed.limbo
+ * @property {number} gamesPlayed.mines
+ * @property {[]} winningsHistory
  */
 
 /**
@@ -35,6 +39,26 @@ function reducer(state, action) {
       };
 
     case 'SET_USER':
+      if (action.payload === null) {
+        return {
+          ...state,
+          user: {
+            balance: 0,
+            email: '',
+            emailVerified: false,
+            language: 'de',
+            role: 'guest', // 'guest'|'user'|'admin' (default is 'guest')
+            uid: '',
+            totalWinnings: 0,
+            gamesPlayed: {
+              limbo: 0,
+              mines: 0
+            },
+            winningsHistory: [],
+          }
+        };
+      }
+
       return {
         ...state,
         user: {
@@ -68,13 +92,18 @@ class Store extends EventBus {
   /** @type {State} */
   state = {
     user: {
-      uid: '',
-      name: '',
       balance: 0,
-      language: 'de',
       email: '',
       emailVerified: false,
-      role: 'user', // default role
+      language: 'de',
+      role: 'guest', // 'guest'|'user'|'admin' (default is 'guest')
+      uid: '',
+      totalWinnings: 0,
+      gamesPlayed: {
+        limbo: 0,
+        mines: 0
+      },
+      winningsHistory: [],
     },
     layout: '',
     language: 'de',
