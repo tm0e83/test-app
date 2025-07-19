@@ -22,11 +22,14 @@ export default class LanguageSelection extends Component {
 
   render() {
     super.render();
+
     this.dropdown = /** @type {SelectDropdown} */ (this.querySelector('select-dropdown'));
+
     this.addEvents();
   }
 
   addEvents() {
+    this.removeEvents();
     this.dropdown?.addEventListener('select', this.onSelect);
   }
 

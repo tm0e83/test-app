@@ -19,35 +19,64 @@ export default class LayoutSidebar extends Component {
     this.onResize = this.onResize.bind(this);
     this.onLogoutButtonClick = this.onLogoutButtonClick.bind(this);
     this.render = this.render.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.onLinkClick = this.onLinkClick.bind(this);
   }
 
-  onDestroy() {
+  connectedCallback() {
+    this.addGlobalEvents();
+    super.connectedCallback();
+  }
+
+  disconnectedCallback() {
+    this.removeGlobalEvents();
+    this.removeEvents();
+    if (this.waitTimeout) clearTimeout(this.waitTimeout);
+    super.disconnectedCallback();
+  }
+
+  addGlobalEvents() {
+    window.addEventListener('resize', this.onResize);
+    router.addEventListener('routeChange', this.render);
+  }
+
+  removeGlobalEvents() {
     window.removeEventListener('resize', this.onResize);
     router.removeEventListener('routeChange', this.render);
   }
 
   addEvents() {
-    window.removeEventListener('resize', this.onResize);
-    window.addEventListener('resize', this.onResize);
+    this.removeEvents();
 
-    this.addEventListener('onDestroy', this.onDestroy.bind(this));
-
-    this.toggleMenuButton?.addEventListener('click', e => {
-      e.preventDefault();
-      this.toggle();
-    });
-
+    this.toggleMenuButton?.addEventListener('click', this.toggle);
     this.logoutButton?.addEventListener('click', this.onLogoutButtonClick);
 
     this.querySelectorAll('[data-link]').forEach(element => {
-      element.addEventListener('click', e => {
-        if (this.isMobile) {
-          this.close();
-        }
-      });
+      element.addEventListener('click', this.onLinkClick);
     });
 
-    router.addEventListener('routeChange', this.render);
+  }
+
+  removeEvents() {
+    this.toggleMenuButton?.removeEventListener('click', this.toggle);
+    this.logoutButton?.removeEventListener('click', this.onLogoutButtonClick);
+
+    this.querySelectorAll('[data-link]').forEach(element => {
+      element.removeEventListener('click', this.onLinkClick);
+    });
+  }
+
+  /**
+   * Handles link clicks in the sidebar.
+   * Prevents the default action and closes the sidebar if on a mobile device.
+   * @param {Event} event
+   */
+  onLinkClick(event) {
+    event.preventDefault();
+
+    if (this.isMobile) {
+      this.close();
+    }
   }
 
   /**
@@ -60,6 +89,10 @@ export default class LayoutSidebar extends Component {
     // expireCookie('idToken');
   }
 
+  /**
+   * Waits for a short period to allow the component to render before proceeding.
+   * @returns {Promise<null>}
+   */
   wait() {
     if (this.waitTimeout) clearTimeout(this.waitTimeout);
     return new Promise((resolve, reject) => {
@@ -68,11 +101,24 @@ export default class LayoutSidebar extends Component {
   }
 
   async onResize() {
+    if (this.resizeInProgress) return;
+    this.resizeInProgress = true;
+
     await this.wait();
     this.render();
+
+    this.resizeInProgress = false;
   }
 
-  toggle() {
+  /**
+   * Toggles the sidebar menu.
+   * If the screen is not mobile, it toggles the menu state in localStorage.
+   * If the screen is mobile, it toggles the internal state.
+   * @param {Event} event
+   */
+  toggle(event) {
+    event.preventDefault();
+
     if (!this.isMobile) {
       localStorage.setItem('menu-open', localStorage.getItem('menu-open') == '1' ? '0' : '1');
     } else {
@@ -83,8 +129,9 @@ export default class LayoutSidebar extends Component {
   }
 
   render() {
+    super.render();
+
     this.isOpen ? this.open() : this.close();
-    this.innerHTML = this.template;
     this.toggleMenuButton = this.querySelector('.button-toggle-menu');
     this.logoutButton = this.querySelector('.button-logout');
 
@@ -123,7 +170,9 @@ export default class LayoutSidebar extends Component {
    * @returns {string}
    */
   get template() {
-    const routePath = router?.route?.config?.path;
+    /** @type {any} */
+    const routeConfig = router?.route?.config;
+    const routePath = routeConfig?.path;
 
     return /*html*/ `
       <div class="menu-head">

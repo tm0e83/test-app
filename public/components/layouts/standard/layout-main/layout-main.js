@@ -1,5 +1,5 @@
 import Component from '/core/component.js';
-import Breadcrumbs from '/core/breadcrumbs.js';
+import '/core/breadcrumbs.js';
 import router from '/core/router.js';
 
 export default class LayoutMain extends Component {
@@ -14,10 +14,12 @@ export default class LayoutMain extends Component {
 
   disconnectedCallback() {
     router.removeEventListener('routeChange', this.render);
+    super.disconnectedCallback();
   }
 
-  addEvents() {
+  connectedCallback() {
     router.addEventListener('routeChange', this.render);
+    super.connectedCallback();
   }
 
   async render() {
@@ -32,7 +34,6 @@ export default class LayoutMain extends Component {
     this.page = new Page();
     this.appendChild(this.page);
     this.#isLoading = false;
-    this.addEvents();
   }
 
   get template() {

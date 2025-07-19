@@ -33,18 +33,25 @@ export default class PageLogin extends Component {
 
   constructor() {
     super();
+
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onSendVerificationLinkClick = this.onSendVerificationLinkClick.bind(this);
   }
 
   disconnectedCallback() {
-    this.querySelector('form')?.removeEventListener('submit', this.onFormSubmit);
-    this.querySelector('.send-verification-link')?.removeEventListener('click', this.onSendVerificationLinkClick);
+    this.removeEvents();
+    super.disconnectedCallback();
   }
 
   addEvents() {
-    this.querySelector('form')?.addEventListener('submit', this.onFormSubmit);
-    this.querySelector('.send-verification-link')?.addEventListener('click', this.onSendVerificationLinkClick);
+    this.removeEvents();
+    this.form?.addEventListener('submit', this.onFormSubmit);
+    this.sendEmailVerificationLinkButton?.addEventListener('click', this.onSendVerificationLinkClick);
+  }
+
+  removeEvents() {
+    this.form?.removeEventListener('submit', this.onFormSubmit);
+    this.sendEmailVerificationLinkButton?.removeEventListener('click', this.onSendVerificationLinkClick);
   }
 
   /**
@@ -125,7 +132,12 @@ export default class PageLogin extends Component {
   }
 
   render() {
+    this.removeEvents();
     super.render();
+
+    this.form = this.querySelector('form')
+    this.sendEmailVerificationLinkButton = this.querySelector('.send-verification-link');
+
     this.addEvents();
   }
 

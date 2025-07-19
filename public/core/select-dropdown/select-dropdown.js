@@ -15,16 +15,24 @@ export default class SelectDropdown extends Component {
 
   connectedCallback() {
     super.connectedCallback();
+    this.addGlobalEvents();
     this.dropdownContent = this.innerHTML;
     this.render();
   }
 
   disconnectedCallback() {
+    this.removeGlobalEvents();
     this.removeEvents();
     super.disconnectedCallback();
+    this.dropdownContent = '';
+    this.trigger = null;
+    this.searchInput = null;
+    this.innerHTML = '';
+    this.removeAttribute('open');
   }
 
   render() {
+    this.removeEvents();
     super.render();
 
     this.trigger = this.querySelector('.trigger');
@@ -33,8 +41,17 @@ export default class SelectDropdown extends Component {
     this.addEvents();
   }
 
-  addEvents() {
+  addGlobalEvents() {
     document.body?.addEventListener('click', this.onClickOutside);
+  }
+
+  removeGlobalEvents() {
+    document.body?.removeEventListener('click', this.onClickOutside);
+  }
+
+  addEvents() {
+    this.removeEvents();
+
     this.trigger?.addEventListener('click', this.onToggle);
     this.searchInput?.addEventListener('input', this.onSearch);
     this.querySelectorAll('.dropdown-content > a').forEach(item => {
@@ -43,7 +60,6 @@ export default class SelectDropdown extends Component {
   }
 
   removeEvents() {
-    document.body?.removeEventListener('click', this.onClickOutside);
     this.trigger?.removeEventListener('click', this.onToggle);
     this.searchInput?.removeEventListener('input', this.onSearch);
     this.querySelectorAll('.dropdown-content > a').forEach(item => {
@@ -95,7 +111,7 @@ export default class SelectDropdown extends Component {
   onClickOutside(event) {
     if (this.isOpen) {
       const target = /** @type {HTMLInputElement} */ (event.target);
-      if (target.closest('.language-selection') || target.closest('.select-dropdown')) {
+      if (this.contains(target) ||target.closest('.select-dropdown')) {
         return; // Click is inside the dropdown
       }
 
@@ -125,9 +141,7 @@ export default class SelectDropdown extends Component {
 
   get template() {
     return /*html*/ `
-      <div class="language-selection">
-        ${this.dropdownContent}
-      </div>
+      ${this.dropdownContent}
     `;
   }
 }

@@ -25,10 +25,17 @@ export default class PageLimboGame extends Component {
 
   disconnectedCallback() {
     this.removeEvents();
+    this.innerHTML = '';
+    this.stakeInput = null;
+    this.halveButton = null;
+    this.doubleButton = null;
+    this.maxButton = null;
+    this.betButton = null;
     super.disconnectedCallback();
   }
 
   addEvents() {
+    this.removeEvents();
     this.stakeInput?.addEventListener('input', this.onStakeInput);
     this.halveButton?.addEventListener('click', this.onHalveButtonClick);
     this.doubleButton?.addEventListener('click', this.onDoubleButtonClick);
@@ -159,6 +166,7 @@ export default class PageLimboGame extends Component {
   }
 
   render() {
+    this.removeEvents();
     super.render();
 
     this.stakeInput = /** @type {HTMLInputElement} */ (this.querySelector('input#stake-input'));

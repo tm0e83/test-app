@@ -6,25 +6,39 @@ export default class TileItem extends Component {
   constructor() {
     super();
 
+    this.element = /** @type {Component} */ (this);
     this.onClick = this.onClick.bind(this);
   }
 
-  addEvents() {
-    this.removeEventListener('click', this.onClick);
-    this.addEventListener('click', this.onClick.bind(this));
+  disconnectedCallback() {
+    this.removeEvents();
+    super.disconnectedCallback();
   }
 
-  onClick() {
+  addEvents() {
+    this.removeEvents();
+    this.element.addEventListener('click', this.onClick);
+  }
+
+  removeEvents() {
+    this.element.removeEventListener('click', this.onClick);
+  }
+
+  /**
+   * Handles the click event on the tile.
+   * @param {Event} event
+   */
+  onClick(event) {
     if (this.hasType) return;
-    this.dispatchEvent(new CustomEvent('selectionChange'));
+    this.element.dispatchEvent(new CustomEvent('selectionChange'));
   }
 
   get isMine() {
-    return this.getAttribute('type') === 'mine';
+    return this.element.getAttribute('type') === 'mine';
   }
 
   get hasType() {
-    return this.getAttribute('type') !== '';
+    return this.element.getAttribute('type') !== '';
   }
 
   render() {

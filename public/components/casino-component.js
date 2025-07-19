@@ -24,7 +24,6 @@ class CasinoComponent extends Component {
 
   disconnectedCallback() {
     this.removeEvents();
-    super.disconnectedCallback();
   }
 
   connectedCallback() {
@@ -40,13 +39,13 @@ class CasinoComponent extends Component {
   addEvents() {
     router.addEventListener('routeChange', this.render);
     store.subscribe('SET_LANGUAGE', this.onLanguageChange, { id: 'languageSelection' });
-    getAuth().onAuthStateChanged(this.onAuthStateChanged);
+    this.authStateChangedSubscription = getAuth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
   removeEvents() {
     router.removeEventListener('routeChange', this.render);
     store.unsubscribe('SET_LANGUAGE', 'languageSelection');
-    getAuth().onAuthStateChanged(this.onAuthStateChanged);
+    this.authStateChangedSubscription();
   }
 
   /**

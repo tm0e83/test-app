@@ -6,9 +6,6 @@ import BaseComponent from './base-component.js';
 export default class LoadingBar extends BaseComponent {
   cssFilePath = '/core/loading-bar.css';
 
-  /** @type {LoadingBar|null} */
-  static instance = null;
-
   /** @type {number} */
   static numLoadingProcesses = 0;
 

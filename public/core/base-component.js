@@ -4,17 +4,18 @@
  */
 export default class BaseComponent extends HTMLElement {
   /** @type {number} */
-  static _numInstances = 0;
+  // static _numInstances = 0;
 
   /** @type {HTMLLinkElement|null} */
-  static _stylesheet;
+  // static _stylesheet;
 
   /** @type {string} */
   cssFilePath = '';
 
+  /** @type {HTMLElement[]} */
   #animationElements = [];
 
-  constructor() {
+  constructor(loader = true) {
     super();
 
     this.render = this.render.bind(this);
@@ -28,7 +29,8 @@ export default class BaseComponent extends HTMLElement {
   connectedCallback() {
     /** @type {typeof BaseComponent} */
     // (this.constructor)._numInstances++;
-    this.addCSS().then(() => this.render());
+
+    this.addCSS().finally(() => this.render());
   }
 
   /**
@@ -36,19 +38,24 @@ export default class BaseComponent extends HTMLElement {
    * Subclasses may override this method to perform cleanup.
    */
   disconnectedCallback() {
-    const ctor = /** @type {typeof BaseComponent} */ (this.constructor);
+    // const ctor = /** @type {typeof BaseComponent} */ (this.constructor);
     // ctor._numInstances--;
 
-    if (ctor._stylesheet && !ctor._numInstances) {
+    // if (ctor._stylesheet && !ctor._numInstances) {
       // ctor._stylesheet?.parentElement?.removeChild(ctor._stylesheet);
       // ctor._stylesheet = null;
-    }
+    // }
 
     // Clean up any animation elements
     this.#animationElements.forEach(element => {
-      element.endElement?.();
+      if ('endElement' in element && typeof element.endElement === 'function') {
+        element.endElement();
+      }
     });
+
     this.#animationElements = [];
+    this.innerHTML = '';
+    this.cssFilePath = '';
   }
 
   /**
@@ -65,41 +72,37 @@ export default class BaseComponent extends HTMLElement {
   }
 
   /**
-   * @method addCSS
+   * Loads the CSS file specified by `cssFilePath` and appends it to the document head.
+   * If the CSS file is already loaded, it resolves immediately.
    * @returns {Promise<void>}
    */
   addCSS() {
     const ctor = /** @type {typeof BaseComponent} */ (this.constructor);
 
-    if (!this.cssFilePath || ctor._stylesheet) {
-      this.onStylesheetLoad(new Event('load'));
-      return Promise.resolve();
-    }
-
     return new Promise((resolve, reject) => {
-      ctor._stylesheet = document.createElement('link');
-      ctor._stylesheet.setAttribute('rel', 'stylesheet')
-      ctor._stylesheet.setAttribute('href', this.cssFilePath);
-      ctor._stylesheet.addEventListener('load', event => {
+      if (!this.cssFilePath || document.querySelector(`#stylesheet-${ctor.name}`)) {
         resolve();
-        this.onStylesheetLoad(event);
-      });
+        return;
+      }
 
-      document.head.appendChild(ctor._stylesheet);
+      const stylesheet = document.createElement('link');
+      stylesheet.setAttribute('id', `stylesheet-${ctor.name}`);
+      stylesheet.setAttribute('rel', 'stylesheet');
+      stylesheet.setAttribute('href', this.cssFilePath);
+
+      stylesheet.addEventListener('load', () => resolve());
+      stylesheet.addEventListener('error', (error) => reject(error));
+
+      document.head.appendChild(stylesheet);
     });
   }
-
-  /**
-   * @param {Event} event
-   */
-  onStylesheetLoad(event) {}
 
   /**
    * Render the component's content. Subclasses may override this method.
    */
   render() {
     this.innerHTML = this.template;
-    this.#animationElements = this.querySelectorAll('animate, animateTransform');
+    this.#animationElements = Array.from(this.querySelectorAll('animate, animateTransform'));
   }
 
   /**
@@ -107,6 +110,6 @@ export default class BaseComponent extends HTMLElement {
    * @returns {string}
    */
   get template() {
-    throw new Error('This must be implemented by subclasses of BaseComponent!');
+    throw new Error('This must be implemented by subclasses of Component!');
   }
 }

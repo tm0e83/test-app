@@ -79,6 +79,13 @@ function reducer(state, action) {
     case 'SET_LANGUAGE':
       return {
         ...state,
+        user: {
+          ...state.user,
+          language: action.payload
+        }
+      };
+      return {
+        ...state,
         language: action.payload
       };
 

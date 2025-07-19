@@ -11,6 +11,7 @@
       "/core/*": ["core/*"],
       "/i18n/*": ["i18n/*"],
       "/components/*": ["components/*"],
+      "/firebase/*": ["firebase/*"],
     }
   },
   "include": ["**/*.js"]
