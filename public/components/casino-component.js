@@ -1,5 +1,5 @@
 import Component from '/core/component.js';
-import { getCookie, hasVerifiedEmail, isLoggedIn } from '/core/functions.js';
+import { hasVerifiedEmail, isLoggedIn } from '/core/functions.js';
 import { i18n, initializeI18nAsync } from '/i18n/i18n.js';
 import '/core/loading-bar.js';
 import store from '/core/store.js';
@@ -8,8 +8,8 @@ import router from '/core/router.js';
 // @ts-ignore
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 
-// @ts-ignore
-import { child, get, getDatabase, ref } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+import DatabaseAPI from '/firebase/database-api.js';
+import LoadingBar from '/core/loading-bar.js';
 
 class CasinoComponent extends Component {
   cssFilePath = 'components/casino-component.css';
@@ -32,7 +32,6 @@ class CasinoComponent extends Component {
 
   async init() {
     await initializeI18nAsync();
-    // this.render();
     this.addEvents();
   }
 
@@ -74,16 +73,13 @@ class CasinoComponent extends Component {
 
     if (hasVerifiedEmail()) {
       try {
-        const snapshot = await get(child(ref(getDatabase()), `users/${user.uid}`));
+        LoadingBar.show();
+        const userData = await DatabaseAPI.getUser(user.uid);
+        LoadingBar.hide();
 
-        if (snapshot.exists()) {
-          store.dispatch('SET_USER', snapshot.val());
-          // return router.navigate('/dashboard');
+        if (userData) {
+          store.dispatch('SET_USER', userData);
         }
-        // else {
-        //   this.errorCode = 'auth/user-not-found';
-        //   this.render();
-        // }
       } catch (/** @type {any} */ error) {
         // this.errorCode = error.code;
         // this.render();
@@ -110,7 +106,7 @@ class CasinoComponent extends Component {
    * @returns {Promise<void>}
    */
   async onLanguageChange() {
-    const response = await fetch(`/i18n/locales/${store.state.language}.json`);
+    const response = await fetch(`/i18n/locales/${store.state.user.language}.json`);
     const lang = await response.json();
 
     Object.entries(lang).map(([namespace, translations]) => {
@@ -139,6 +135,7 @@ class CasinoComponent extends Component {
       return router.navigate('/login');
     }
 
+    this.layout?.remove();
     store.state.layout = nextLayout;
 
     /**

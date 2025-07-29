@@ -29,16 +29,30 @@ export default class Component extends BaseComponent {
       stylesheet.setAttribute('rel', 'stylesheet');
       stylesheet.setAttribute('href', this.cssFilePath);
 
-      stylesheet.addEventListener('load', () => {
+      /**
+       * Event handler for stylesheet load.
+       */
+      const onLoad = () => {
+        stylesheet.removeEventListener('load', onLoad);
+        stylesheet.removeEventListener('error', onError);
         LoadingBar.hide();
         resolve();
-      });
+      };
 
-      stylesheet.addEventListener('error', (error) => {
+      /**
+       * Event handler for stylesheet load error.
+       * @param {Event} error
+       */
+      const onError = (error) => {
+        stylesheet.removeEventListener('load', onLoad);
+        stylesheet.removeEventListener('error', onError);
         LoadingBar.hide();
         console.error(`Failed to load CSS: ${this.cssFilePath}`, error);
         reject(error);
-      });
+      }
+
+      stylesheet.addEventListener('load', onLoad);
+      stylesheet.addEventListener('error', onError);
 
       document.head.appendChild(stylesheet);
     });

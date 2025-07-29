@@ -3,11 +3,19 @@ layout-standard {
   height: 100%;
   display: flex;
 
-  &>div {
+  .lower-layout {
     display: flex;
     flex-direction: column;
     flex: 1;
     position: relative;
     overflow: hidden;
+
+    .inner-layout {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 80vh;
+      overflow-y: auto;
+    }
   }
 }

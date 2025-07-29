@@ -47,6 +47,11 @@ export default class LayoutStandardHeader extends Component {
         </div>
         <div class="header-right">
           <div>
+            <a href="/leaderboard" data-link>
+              <i class="fa-solid fa-ranking-star"></i>
+            </a>
+          </div>
+          <div>
             <a href="/dashboard" data-link>
               <i class="fa-solid fa-user"></i>
             </a>

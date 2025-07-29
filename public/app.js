@@ -5,6 +5,6 @@ import { firebaseConfig } from './firebase/config.js';
 
 initializeApp(firebaseConfig);
 
-window.addEventListener('error', (error) => {
-  console.log('ERROR', error);
-});
+// window.addEventListener('error', (error) => {
+//   console.log('ERROR', error);
+// });

@@ -1,9 +1,8 @@
 import { i18n } from '/i18n/i18n.js';
 import Component from '/core/component.js';
 import store from '/core/store.js';
-// import { roundTo2Decimals } from '/core/functions.js';
-// @ts-ignore
-import { getDatabase, ref, runTransaction } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+import LoadingBar from '/core/loading-bar.js';
+import DatabaseAPI from '/firebase/database-api.js';
 
 /**
  * @typedef {(currentBalance: number|null|undefined) => number} TransactionHandler
@@ -31,6 +30,7 @@ export default class PageLimboGame extends Component {
     this.doubleButton = null;
     this.maxButton = null;
     this.betButton = null;
+    this.valueContainer = null;
     super.disconnectedCallback();
   }
 
@@ -64,7 +64,7 @@ export default class PageLimboGame extends Component {
       const selectionEnd = eventTarget.selectionEnd;
 
       // Parse the input value as an integer
-      const stake = parseInt(eventTarget.value);
+      const stake = parseInt(eventTarget.value || '0');
 
       // Update the stake input value
       eventTarget.value = stake.toString();
@@ -116,37 +116,44 @@ export default class PageLimboGame extends Component {
    * Handles the click event on the bet button.
    * @param {Event} event
    */
-  onBetButtonClick(event) {
+  async onBetButtonClick(event) {
     this.#currentValue = Math.random() * 100;
 
     if (this.valueContainer) {
       this.valueContainer.style.left = `${this.roundedValue}%`;
-      this.valueContainer.textContent = this.roundedValue;
+      this.valueContainer.textContent = this.roundedValue.toString();
     }
 
     const stake = parseInt(this.stakeInput?.value ?? '0');
-
-    const db = getDatabase();
-    const balanceRef = ref(db, `users/${store.state.user.uid}/balance`);
 
     if (this.#currentValue > 52) {
       this.valueContainer?.classList.add('win');
       this.valueContainer?.classList.remove('lose');
       store.dispatch('UPDATE_BALANCE', store.state.user.balance + stake);
-      runTransaction(
-        balanceRef,
-        /** @type {TransactionHandler} */
-        (currentBalance) => (currentBalance ?? 0) + stake
-      );
+
+      LoadingBar.show();
+
+      await DatabaseAPI.updateUserBalance(store.state.user.uid, (currentBalance) => {
+        return (currentBalance ?? 0) + stake;
+      });
+
+      await DatabaseAPI.updateStatistics(store.state.user.uid, store.state.user.username, 'limbo', stake);
+
+      LoadingBar.hide();
     } else {
       this.valueContainer?.classList.add('lose');
       this.valueContainer?.classList.remove('win');
       store.dispatch('UPDATE_BALANCE', store.state.user.balance - stake);
-      runTransaction(
-        balanceRef,
-        /** @type {TransactionHandler} */
-        (currentBalance) => (currentBalance ?? 0) - stake
-      );
+
+      LoadingBar.show();
+
+      await DatabaseAPI.updateUserBalance(store.state.user.uid, (currentBalance) => {
+        return (currentBalance ?? 0) - stake;
+      });
+
+      await DatabaseAPI.updateStatistics(store.state.user.uid, store.state.user.username, 'limbo', -1 * stake);
+
+      LoadingBar.hide();
     }
 
     this.setMaxBetAmount();
@@ -162,11 +169,20 @@ export default class PageLimboGame extends Component {
   }
 
   get roundedValue() {
-    return this.#currentValue.toFixed(2);
+    return Math.round(this.#currentValue);
   }
 
   render() {
     this.removeEvents();
+
+    this.innerHTML = '';
+    this.stakeInput = null;
+    this.halveButton = null;
+    this.doubleButton = null;
+    this.maxButton = null;
+    this.betButton = null;
+    this.valueContainer = null;
+
     super.render();
 
     this.stakeInput = /** @type {HTMLInputElement} */ (this.querySelector('input#stake-input'));
@@ -191,17 +207,19 @@ export default class PageLimboGame extends Component {
       <div class="game-container">
         <div class="history"></div>
         <div class="game-menu">
-          <label for="stake-input">Einsatz</label>
-          <div class="input-wrapper">
-            <input
-              type="text"
-              id="stake-input"
-              class="form-control"
-              value="0"
-            >
-            <button class="btn secondary button-halve">/2</button>
-            <button class="btn secondary button-double">x2</button>
-            <button class="btn secondary button-max">Max</button>
+          <div>
+            <label for="stake-input">Einsatz</label>
+            <div class="input-wrapper">
+              <input
+                type="text"
+                id="stake-input"
+                class="form-control"
+                value="0"
+              >
+              <button class="btn secondary button-halve">/2</button>
+              <button class="btn secondary button-double">x2</button>
+              <button class="btn secondary button-max">Max</button>
+            </div>
           </div>
           <button class="btn primary button-bet" ${parseInt(this.stakeInput?.value ?? '0') > 0 ? '' : 'disabled'}>${i18n.t('bet')}</button>
         </div>

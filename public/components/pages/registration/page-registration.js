@@ -7,11 +7,14 @@ import '/core/icons/icon-playspot.js';
 // @ts-ignore
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js';
 // @ts-ignore
-import { getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+import { get, getDatabase, ref, set } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+import LoadingBar from '/core/loading-bar';
 
 export default class PageRegistration extends Component {
   cssFilePath = 'components/pages/registration/page-registration.css';
-  errorCode = '';
+  #errorCode = '';
+  #email = '';
+  #username = '';
 
   constructor() {
     super();
@@ -38,32 +41,49 @@ export default class PageRegistration extends Component {
     event.preventDefault();
 
     const eventTarget = /** @type {HTMLFormElement} */ (event.target);
+    const db = getDatabase();
+
+    const emailInput = /** @type {HTMLInputElement} */ (this.querySelector('input[name="email"]'))
+    const usernameInput = /** @type {HTMLInputElement} */ (this.querySelector('input[name="username"]'))
+    const passwordInput = /** @type {HTMLInputElement} */ (this.querySelector('input[name="password"]'))
+
+    this.#email = emailInput.value ?? '';
+    this.#username = usernameInput.value ?? '';
+    const password = passwordInput.value ?? '';
+
+    const usernameRef = ref(db, 'usernames/' + this.#username);
+    const snapshot = await get(usernameRef);
+    const usernameExists = snapshot.exists();
 
     if (!eventTarget.reportValidity()) {
       return false;
     }
 
-    const email = /** @type {HTMLInputElement} */ (this.querySelector('input[name="email"]')).value ?? '';
-    const password = /** @type {HTMLInputElement} */ (this.querySelector('input[name="password"]')).value ?? '';
+    if (usernameExists) {
+      this.#errorCode = 'auth/username-already-in-use';
+      this.render();
+      return;
+    }
+
+    LoadingBar.show();
 
     const auth = getAuth();
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, this.#email, password);
       const user = userCredential.user;
 
+      await set(ref(db, 'usernames/' + this.#username), user.uid);
       await sendEmailVerification(user);
-      console.log('send email verification to', user.email);
       await auth.signOut();
+
       router.navigate('/verify-email');
-      const db = getDatabase();
-      console.log('create new user in db');
 
       set(ref(db, 'users/' + user.uid), {
         balance: 1000,
         email: user.email,
         emailVerified: false,
-        language: 'de',
+        language: localStorage.getItem('language') || 'de',
         role: 'guest',
         uid: user.uid,
         totalWinnings: 0,
@@ -71,13 +91,16 @@ export default class PageRegistration extends Component {
           limbo: 0,
           mines: 0
         },
+        username: this.#username,
         winningsHistory: []
       });
 
     } catch (/** @type {any} */ error) {
-      this.errorCode = error.code;
+      this.#errorCode = error.code;
       this.render();
     }
+
+    LoadingBar.hide();
   }
 
   render() {
@@ -88,18 +111,21 @@ export default class PageRegistration extends Component {
   get errorTemplate() {
     let errorText = ''
 
-    switch(this.errorCode) {
+    switch(this.#errorCode) {
       case 'auth/email-already-in-use':
         errorText = i18n.t('emailAlreadyInUse');
-        break
+        break;
       case 'auth/invalid-email':
         errorText = i18n.t('invalidEmail');
-        break
+        break;
       case 'auth/weak-password':
         errorText = i18n.t('weakPassword');
-        break
+        break;
+      case 'auth/username-already-in-use':
+        errorText = i18n.t('usernameAlreadyInUse');
+        break;
       default:
-        errorText = i18n.t('unknownError', { errorCode: this.errorCode });
+        errorText = i18n.t('unknownError', { errorCode: this.#errorCode });
     }
 
     return /*html*/ `
@@ -122,7 +148,7 @@ export default class PageRegistration extends Component {
             </h1>
           </div>
           <div class="card-body">
-            ${this.errorCode ? this.errorTemplate : ''}
+            ${this.#errorCode ? this.errorTemplate : ''}
             <form>
               <input
                 type="email"
@@ -130,6 +156,17 @@ export default class PageRegistration extends Component {
                 placeholder="${i18n.t('email')}"
                 autocomplete="email"
                 class="form-control mb-4"
+                value="${this.#email}"
+                required
+              >
+              <input
+                type="text"
+                name="username"
+                placeholder="${i18n.t('username')}"
+                autocomplete="username"
+                class="form-control mb-4"
+                pattern="^[a-zA-Z0-9_\-]{3,16}$"
+                value="${this.#username}"
                 required
               >
               <input

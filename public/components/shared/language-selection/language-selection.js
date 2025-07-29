@@ -17,6 +17,7 @@ export default class LanguageSelection extends Component {
 
   disconnectedCallback() {
     this.removeEvents();
+    this.dropdown?.remove();
     super.disconnectedCallback();
   }
 
@@ -50,16 +51,16 @@ export default class LanguageSelection extends Component {
       <select-dropdown class="language-selection" open-left>
         <a class="trigger d-flex gap-2 align-items-center">
           <i class="fa-solid fa-globe"></i>
-          <span>${store.state.language.toUpperCase()}</span>
+          <span>${store.state.user.language.toUpperCase()}</span>
         </a>
         <div class="dropdown">
           <div class="dropdown-content">
             <div class="no-results" style="display: none;">${i18n.t('no-results')}</div>
-            <a data-value="de" ${store.state.language === 'de' ? 'class="selected"' : ''}>
+            <a data-value="de" ${store.state.user.language === 'de' ? 'class="selected"' : ''}>
               <icon-flag-de></icon-flag-de>
               <span>${i18n.t('german')}</span>
             </a>
-            <a data-value="en" ${store.state.language === 'en' ? 'class="selected"' : ''}>
+            <a data-value="en" ${store.state.user.language === 'en' ? 'class="selected"' : ''}>
               <icon-flag-en></icon-flag-en>
               <span>${i18n.t('english')}</span>
             </a>

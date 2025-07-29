@@ -7,17 +7,15 @@ import './layout-footer/layout-footer.js';
 export default class LayoutStandard extends Component {
   cssFilePath = '/components/layouts/standard/layout-standard.css';
 
-  constructor() {
-    super();
-  }
-
   get template() {
     return /*html*/ `
       <layout-sidebar></layout-sidebar>
-      <div>
+      <div class="lower-layout">
         <layout-standard-header></layout-standard-header>
-        <layout-main></layout-main>
-        <layout-footer></layout-footer>
+        <div class="inner-layout">
+          <layout-main></layout-main>
+          <layout-footer></layout-footer>
+        </div>
       </div>
     `;
   }

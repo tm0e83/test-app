@@ -1,4 +1,5 @@
 import Component from '/core/component.js';
+import { i18n } from '/i18n/i18n.js';
 
 export default class LayoutFooter extends Component {
   cssFilePath = '/components/layouts/standard/layout-footer/layout-footer.css';
@@ -7,9 +8,7 @@ export default class LayoutFooter extends Component {
     return /*html*/ `
       <footer>
         <div class="d-flex gap-4 justify-content-end">
-          <a href="#">Link 1</a>
-          <a href="#">Link 2</a>
-          <a href="#">Link 3</a>
+          <a href="/privacy">${i18n.t('dataProtection')}</a>
         </div>
       </footer>
     `;

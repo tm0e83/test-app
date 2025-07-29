@@ -41,6 +41,13 @@ class Router extends EventTarget {
       accessLevel: 'user'
     },
     {
+      path: 'leaderboard',
+      layout: 'standard',
+      title: "Leaderboard",
+      component: '/components/pages/leaderboard/page-leaderboard',
+      accessLevel: 'user'
+    },
+    {
       path: 'login',
       layout: 'blank',
       title: "login",
@@ -88,6 +95,20 @@ class Router extends EventTarget {
       title: "Mines",
       component: '/components/pages/games/mines/page-mines-game',
       accessLevel: 'user'
+    },
+    {
+      path: 'games/blockfall',
+      layout: 'standard',
+      title: "Blockfall",
+      component: '/components/pages/games/blockfall/page-blockfall-game',
+      accessLevel: 'user'
+    },
+    {
+      path: 'privacy',
+      layout: 'standard',
+      title: "privacy",
+      component: '/components/pages/privacy/page-privacy',
+      accessLevel: 'guest'
     },
   ];
 

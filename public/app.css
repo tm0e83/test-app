@@ -104,8 +104,6 @@ p {
 label {
   display: inline-block;
   margin-bottom: 0.25rem;
-  font-weight: 700;
-  font-size: 0.75rem;
 }
 
 input,
@@ -462,7 +460,8 @@ ol, ul {
     border-top-right-radius: var(--border-radius);
     background-color: var(--color-02);
 
-    h1 {
+    h1, h2, h3, h4, h5, h6,
+    .h1, .h2, .h3, .h4, .h5, .h6 {
       margin: 0;
       font-size: 1rem;
       text-transform: uppercase;

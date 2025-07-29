@@ -34,6 +34,11 @@
     "invalidCredential": "Invalid credentials.",
     "userNotFound": "User not found.",
     "invalidEmailVerification": "Please confirm your email address using the verification link you received after registration.<br><a class='send-verification-link' href>Resend email</a>",
-    "anErrorOccurred": "An error occurred: {{errorCode}}"
+    "anErrorOccurred": "An error occurred: {{errorCode}}",
+    "privacy": "Privacy Policy",
+    "alltime": "All Time",
+    "allGames": "All Games",
+    "username": "Username",
+    "dataProtection": "Data Protection"
   }
 }

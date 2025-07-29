@@ -2,8 +2,8 @@ import Component from '/core/component.js';
 import store from '/core/store.js';
 import { roundTo2Decimals } from '/core/functions.js';
 import './tile-item.js';
-// @ts-ignore
-import { getDatabase, ref, runTransaction } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+import DatabaseAPI from '/firebase/database-api.js';
+import LoadingBar from '/core/loading-bar.js';
 
 /**
  * @typedef {Object} TileItemData
@@ -43,6 +43,9 @@ export default class PageMinesGame extends Component {
   /** @type {boolean} */
   #settingsEnabled = true;
 
+  /** @type {number} */
+  totalWinFactor = 1;
+
   constructor() {
     super();
 
@@ -81,6 +84,7 @@ export default class PageMinesGame extends Component {
     this.#numMines = 8;
     this.#winAmount = 0;
     this.#settingsEnabled = true;
+    this.totalWinFactor = 1;
 
     super.disconnectedCallback();
   }
@@ -127,7 +131,7 @@ export default class PageMinesGame extends Component {
       const selectionEnd = eventTarget.selectionEnd;
 
       // Parse the input value as an integer
-      this.#stake = parseInt(eventTarget.value);
+      this.#stake = parseInt(eventTarget.value || '0');
 
       // Update the stake input value
       eventTarget.value = this.#stake.toString();
@@ -198,7 +202,7 @@ export default class PageMinesGame extends Component {
    * Starts the game by initializing the tile items and updating the user's balance.
    * @param {Event} event
    */
-  onPlayButtonClick(event) {
+  async onPlayButtonClick(event) {
     this.#gameStarted = true;
     this.#gameEnded = false;
     this.#winAmount = 0;
@@ -206,16 +210,59 @@ export default class PageMinesGame extends Component {
     this.#settingsEnabled = false;
     store.dispatch('UPDATE_BALANCE', store.state.user.balance - this.#stake);
 
-    const db = getDatabase();
-    const balanceRef = ref(db, `users/${store.state.user.uid}/balance`);
+    LoadingBar.show();
 
-    runTransaction(
-      balanceRef,
-      /** @type {TransactionHandler} */
-      (currentBalance) => (currentBalance ?? 0) - this.#stake
-    );
+    await DatabaseAPI.updateUserBalance(store.state.user.uid, (currentBalance) => {
+      return (currentBalance ?? 0) - this.#stake;
+    });
+
+    await DatabaseAPI.updateStatistics(store.state.user.uid, store.state.user.username, 'mines', -1 * this.#stake);
+
+    LoadingBar.hide();
 
     this.render();
+  }
+
+
+  /**
+   * Calculates the multiplier based on number of gems found and mines on the field
+   * Uses a progressive system that gives the house a statistical edge
+   * @param {number} gemsFound - Number of gems the player has found
+   * @param {number} totalMines - Total number of mines on the field
+   * @returns {number} The multiplier for the bet
+   */
+  calculateMultiplier(gemsFound, totalMines) {
+    if (gemsFound === 0) return 0;
+
+    const totalTiles = 25;
+    const safeTiles = totalTiles - totalMines;
+
+    // Base multiplier calculation - probability of success
+    let multiplier = 1;
+
+    for (let i = 0; i < gemsFound; i++) {
+      const remainingSafeTiles = safeTiles - i;
+      const remainingTiles = totalTiles - i;
+      const successProbability = remainingSafeTiles / remainingTiles;
+
+      // Inverse of probability gives us the fair odds
+      multiplier *= (1 / successProbability);
+    }
+
+    // Apply house edge (5-10% depending on risk)
+    const houseEdgeBase = 0.95; // 5% house edge minimum
+    const riskFactor = Math.min(totalMines / 24, 1); // More mines = slightly better odds
+    const houseEdge = houseEdgeBase + (riskFactor * 0.03); // Up to 8% house edge
+
+    multiplier *= houseEdge;
+
+    // Progressive bonus for taking more risk (finding more gems)
+    const progressiveBonus = 1 + (gemsFound - 1) * 0.02; // 2% bonus per additional gem
+
+    multiplier *= progressiveBonus;
+
+    // Round to 2 decimal places
+    return Math.round(multiplier * 100) / 100;
   }
 
   /**
@@ -223,24 +270,25 @@ export default class PageMinesGame extends Component {
    * Calculates the total win factor and updates the user's balance.
    * @param {Event} event
    */
-  onCashoutButtonClick(event) {
-    let baseWinFactor = this.#numMines * 0.08 * this.numSelectedTiles;
-    let bonusWinFactor = this.numSelectedTiles * 0.02 * this.numSelectedTiles;
-
-    this.totalWinFactor = baseWinFactor + bonusWinFactor;
-    const totalWinAmount = Math.round(this.#stake + this.totalWinFactor * this.#stake);
+  async onCashoutButtonClick(event) {
+    const gemsFound = this.numSelectedTiles;
+    const multiplier = this.calculateMultiplier(gemsFound, this.#numMines);
+    const totalWinAmount = Math.round(this.#stake * multiplier);
 
     this.#winAmount = Math.round(totalWinAmount - this.#stake);
+    this.totalWinFactor = multiplier;
+
     store.dispatch('UPDATE_BALANCE', store.state.user.balance + totalWinAmount);
 
-    const db = getDatabase();
-    const balanceRef = ref(db, `users/${store.state.user.uid}/balance`);
+    LoadingBar.show();
 
-    runTransaction(
-      balanceRef,
-      /** @type {TransactionHandler} */
-      (currentBalance) => (currentBalance ?? 0) + totalWinAmount
-    );
+    await DatabaseAPI.updateUserBalance(store.state.user.uid, (currentBalance) => {
+      return (currentBalance ?? 0) + totalWinAmount;
+    });
+
+    await DatabaseAPI.updateStatistics(store.state.user.uid, store.state.user.username, 'mines', totalWinAmount);
+
+    LoadingBar.hide();
 
     this.#gameStarted = false;
     this.#gameEnded = true;
@@ -286,6 +334,15 @@ export default class PageMinesGame extends Component {
     return this.#tileItemsData.filter(tileItem => tileItem.selected).length;
   }
 
+  /**
+   * Gets the current potential multiplier if the player cashes out now
+   * @returns {number} Current multiplier
+   */
+  get currentMultiplier() {
+    if (!this.#gameStarted || this.numSelectedTiles === 0) return 1;
+    return this.calculateMultiplier(this.numSelectedTiles, this.#numMines);
+  }
+
   setMaxBetAmount() {
     this.stakeInput?.setAttribute('max', store.state.user.balance.toString());
   }
@@ -326,7 +383,7 @@ export default class PageMinesGame extends Component {
   }
 
   get template() {
-    return /*html*/ `
+    const tpl = /*html*/ `
       <h1>Mines</h1>
       <div class="game-container">
         <div class="game-menu">
@@ -369,11 +426,11 @@ export default class PageMinesGame extends Component {
           ` : `
             ${this.numSelectedTiles === 0 ? `
               <button class="btn primary button-select" disabled>
-                Auswählen
+                Tile auswählen
               </button>
             ` : `
               <button class="btn primary button-cashout">
-                Auszahlen
+                Auszahlen (${this.currentMultiplier.toFixed(2)}x)
               </button>
             `}
           `}
@@ -392,13 +449,15 @@ export default class PageMinesGame extends Component {
 
           ${!this.#gameStarted && this.#gameEnded && this.#winAmount > 0 ? `
             <div class="win-message">
-                <strong>${this.totalWinFactor}x</strong>
+                <strong>${this.totalWinFactor.toFixed(2)}x</strong>
                 <span>+ ${this.#winAmount} <i class="fa-solid fa-gem"></i></span>
             </div>
           ` : ''}
         </div>
       </div>
     `;
+
+    return tpl;
   }
 }
 

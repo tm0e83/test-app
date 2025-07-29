@@ -31,8 +31,8 @@ export default class LayoutMain extends Component {
 
     this.#isLoading = true;
     const { default: Page } = await import(`${router.route.config.component}.js`);
-    this.page = new Page();
-    this.appendChild(this.page);
+    const page = new Page();
+    this.appendChild(page);
     this.#isLoading = false;
   }
 

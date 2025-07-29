@@ -9,7 +9,7 @@ import '/core/icons/icon-playspot.js';
 // @ts-ignore
 import { getAuth, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 // @ts-ignore
-import { child, get, getDatabase, ref, set, update } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
+import { child, get, getDatabase, off, ref, set, update } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js';
 import { setCookie } from '/core/functions.js';
 
 /**
@@ -95,7 +95,9 @@ export default class PageLogin extends Component {
         // setCookie('idToken', idToken, null, 1);
 
         try {
-          const snapshot = await get(child(ref(getDatabase()), `users/${auth.currentUser.uid}`));
+          const dbRef = ref(getDatabase());
+          const snapshot = await get(child(dbRef, `users/${auth.currentUser.uid}`));
+          off(dbRef);
 
           if (snapshot.exists()) {
             store.dispatch('SET_USER', snapshot.val());

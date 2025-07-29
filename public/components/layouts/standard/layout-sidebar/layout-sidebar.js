@@ -201,10 +201,15 @@ export default class LayoutSidebar extends Component {
                 <span>${i18n.t('mines')}</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link ${routePath === 'games/blockfall' ? 'active' : ''}" href="/games/blockfall" data-link>
+                <i class="fa-solid fa-cube"></i>
+                <span>${i18n.t('blockfall')}</span>
+              </a>
+            </li>
           </ul>
         </div>
         <div class="inner">
-          <hr>
           <ul class="nav flex-column">
             ${store.state.user.role === 'admin' ? /*html*/ `
               <li class="nav-item">

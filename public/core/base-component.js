@@ -15,7 +15,7 @@ export default class BaseComponent extends HTMLElement {
   /** @type {HTMLElement[]} */
   #animationElements = [];
 
-  constructor(loader = true) {
+  constructor() {
     super();
 
     this.render = this.render.bind(this);
@@ -29,7 +29,6 @@ export default class BaseComponent extends HTMLElement {
   connectedCallback() {
     /** @type {typeof BaseComponent} */
     // (this.constructor)._numInstances++;
-
     this.addCSS().finally(() => this.render());
   }
 
@@ -85,13 +84,33 @@ export default class BaseComponent extends HTMLElement {
         return;
       }
 
-      const stylesheet = document.createElement('link');
+      let stylesheet = document.createElement('link');
       stylesheet.setAttribute('id', `stylesheet-${ctor.name}`);
       stylesheet.setAttribute('rel', 'stylesheet');
       stylesheet.setAttribute('href', this.cssFilePath);
 
-      stylesheet.addEventListener('load', () => resolve());
-      stylesheet.addEventListener('error', (error) => reject(error));
+      /**
+       * Event handler for stylesheet load.
+       */
+      const onLoad = () => {
+        stylesheet.removeEventListener('load', onLoad);
+        stylesheet.removeEventListener('error', onError);
+        resolve();
+      };
+
+      /**
+       * Handles CSS load error event.
+       * @param {Event} error
+       */
+      const onError = (error /**: Event */) => {
+        stylesheet.removeEventListener('load', onLoad);
+        stylesheet.removeEventListener('error', onError);
+        console.error(`Failed to load CSS: ${this.cssFilePath}`, error);
+        reject(error);
+      }
+
+      stylesheet.addEventListener('load', onLoad);
+      stylesheet.addEventListener('error', onError);
 
       document.head.appendChild(stylesheet);
     });

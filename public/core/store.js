@@ -12,6 +12,7 @@ import EventBus from './event-bus.js';
  * @property {Object} gamesPlayed
  * @property {number} gamesPlayed.limbo
  * @property {number} gamesPlayed.mines
+ * @property {string} username
  * @property {[]} winningsHistory
  */
 
@@ -46,7 +47,7 @@ function reducer(state, action) {
             balance: 0,
             email: '',
             emailVerified: false,
-            language: 'de',
+            language: localStorage.getItem('language') || 'de',
             role: 'guest', // 'guest'|'user'|'admin' (default is 'guest')
             uid: '',
             totalWinnings: 0,

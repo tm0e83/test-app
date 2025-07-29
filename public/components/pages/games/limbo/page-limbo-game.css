@@ -15,7 +15,7 @@ page-limbo-game {
     gap: 1rem;
     flex: 1;
     background-color: var(--color-01);
-    padding: 1rem;
+    padding: 2rem;
 
     @media (min-width: 800px) {
       max-width: 275px;
@@ -35,13 +35,13 @@ page-limbo-game {
     }
 
     &>*:first-child {
-      border-top-left-radius: var(--bs-border-radius);
-      border-bottom-left-radius: var(--bs-border-radius);
+      border-top-left-radius: var(--border-radius);
+      border-bottom-left-radius: var(--border-radius);
     }
 
     &>*:last-child {
-      border-top-right-radius: var(--bs-border-radius);
-      border-bottom-right-radius: var(--bs-border-radius);
+      border-top-right-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
     }
 
     input {
@@ -54,7 +54,7 @@ page-limbo-game {
     flex: 1;
     background-color: var(--color-02);
     margin-left: 1px;
-    padding: 5.5rem 1rem;
+    padding: 5.5rem 2rem;
   }
 
   .bar {

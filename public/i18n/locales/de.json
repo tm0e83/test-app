@@ -11,6 +11,7 @@
     "logout": "Logout",
     "menu": "Menü",
     "mines": "Mines",
+    "blockfall": "Blockfall",
     "play": "Spielen",
     "register": "Registrierung",
     "save": "Speichern",
@@ -34,6 +35,11 @@
     "invalidCredential": "Ungültige Anmeldeinformationen.",
     "userNotFound": "Benutzer nicht gefunden.",
     "invalidEmailVerification": "Bitte bestätige deine E-Mail-Adresse über den Bestätigungslink, den du nach der Registrierung erhalten hast.<br><a class='send-verification-link' href>E-Mail erneut senden</a>",
-    "anErrorOccurred": " Ein Fehler ist aufgetreten: {{errorCode}}"
+    "anErrorOccurred": " Ein Fehler ist aufgetreten: {{errorCode}}",
+    "privacy": "Datenschutz",
+    "alltime": "Allzeit",
+    "allGames": "Alle Spiele",
+    "username": "Benutzername",
+    "dataProtection": "Datenschutz"
   }
 }
